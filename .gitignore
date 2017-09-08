@@ -1,0 +1,8 @@
+*.d
+*.o
+*.out
+weight
+mnist.dat
+mnist.pkl.gz
+eval_*
+*.dat
