@@ -3,6 +3,8 @@
 #include <string>
 #include <fstream>
 
+#include "fixed_point.hpp"
+
 using std::ifstream;
 using std::ofstream;
 using std::string;

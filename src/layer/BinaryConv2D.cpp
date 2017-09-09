@@ -21,7 +21,7 @@ BinaryConv2D<T>::~BinaryConv2D()
 template <typename T>
 void BinaryConv2D<T>::load(string path)
 {
-  vector<string> filename(shape[0]);
+  std::vector<string> filename(shape[0]);
 
   #ifdef _OPENMP
   #pragma omp parallel for

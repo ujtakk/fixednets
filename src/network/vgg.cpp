@@ -151,10 +151,10 @@ void VGGNet<T>::Load(string path)
 }
 
 template <typename T>
-vector<int> VGGNet<T>::calc(string data)
+std::vector<int> VGGNet<T>::calc(string data)
 {
   // Top-5 label
-  vector<int> number(5, -1);
+  std::vector<int> number(5, -1);
 
   load_image(data, input);
 
@@ -242,7 +242,7 @@ vector<int> VGGNet<T>::calc(string data)
 
   //output4.forward(output);
 
-  vector<int> index(LABEL);
+  std::vector<int> index(LABEL);
   iota(index.begin(), index.end(), 0);
   sort(index.begin(), index.end(), [&](int a, int b){
     return output[a] > output[b];

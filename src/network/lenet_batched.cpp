@@ -1,5 +1,7 @@
 #ifdef _LENET_HPP_
 
+#include <limits>
+
 template <typename T>
 LeNet<T>::LeNet()
     :   conv1{N_F1,    1, FHEI, FWID}
@@ -136,7 +138,7 @@ int LeNet<T>::calc(string data, int which, int amount)
     bn4.forward(bout, output);
 
     int number = -1;
-    int temp = INT_MIN;
+    int temp = std::numeric_limits<int>::min();
     for(int i=0;i<LABEL;i++){
       //printf("%d\n", output[i]);
       if (temp < output[i]) {

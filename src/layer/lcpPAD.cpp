@@ -26,7 +26,7 @@ lcpPAD<T>::~lcpPAD()
 template <typename T>
 void lcpPAD<T>::load(string path)
 {
-  vector<string> filename(cshape[0]);
+  std::vector<string> filename(cshape[0]);
 
   if (cshape[1] == 1) {
     #ifdef _OPENMP

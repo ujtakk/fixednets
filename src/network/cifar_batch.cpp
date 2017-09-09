@@ -1,5 +1,7 @@
 #ifdef _DEEPER_CIFAR_HPP_
 
+#include <limits>
+
 template <typename T>
 VGG_CIFAR<T>::VGG_CIFAR()
   : conv1{N_F1, 3, FHEI, FWID}
@@ -82,7 +84,7 @@ template <typename T>
 int VGG_CIFAR<T>::calc(char *data, int which, int amount)
 {
   int number = -1;
-  int temp = INT_MIN;
+  int temp = std::numeric_limits<int>::min();
 
   load_image(data, input);
 

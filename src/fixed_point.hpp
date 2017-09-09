@@ -1,6 +1,8 @@
 #ifndef _FIXED_POINT_HPP_
 #define _FIXED_POINT_HPP_
 
+#include <cmath>
+
 const int Q_BITS = 8;
 
 template <typename T>

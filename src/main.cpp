@@ -32,13 +32,16 @@ void classify(int number, int sample)
   int ans;
 #endif
 
+  auto data = [](string base, int number, int sample) {
+    return base + to_string(number) + "/data" + to_string(sample) + ".txt";
+  };
+
 #if defined _MLP
     filename = "/home/work/takau/2.mlearn/mnist_data/input/"
              + to_string(number)+"/data"+to_string(sample)+".txt";
     ans = mlp.calc(filename);
 #elif defined _LENET
-    filename = "/home/work/takau/2.mlearn/mnist_data/input/"
-             + to_string(number)+"/data"+to_string(sample)+".txt";
+    filename = data("../data/mnist/input/", number, sample);
     ans = lenet.calc(filename, 0, 0);
 #elif defined _CIFAR
     filename = "/home/work/takau/2.mlearn/cifar10_data/pro_input/"
@@ -68,14 +71,17 @@ double accuracy(int number, int which, int amount)
   int count = 0;
   double pnum;
 
+  auto data = [](string base, int number, int sample) {
+    return base + to_string(number) + "/data" + to_string(sample) + ".txt";
+  };
+
   for (int i=0; i < SAMPLE; i++) {
 #if defined _MLP
     filename[i] = "/home/work/takau/2.mlearn/mnist_data/input/"
                 + to_string(number)+"/data"+to_string(i)+".txt";
     ans[i] = mlp.calc(filename[i]);
 #elif defined _LENET
-    filename[i] = "/home/work/takau/2.mlearn/mnist_data/input/"
-                + to_string(number)+"/data"+to_string(i)+".txt";
+    filename[i] = data("../data/mnist/input/", number, i);
     ans[i] = lenet.calc(filename[i], 0, 0);
 #elif defined _CIFAR
     filename[i] = "/home/work/takau/2.mlearn/cifar10_data/pro_input/"
@@ -158,10 +164,7 @@ int main(int argc, char **argv)
   // mlp.Load("/home/work/takau/binary_net/mlp");
   mlp.Load("/ldisk/takau/tf_tutorial/tf_mlp");
 #elif defined _LENET
-  // lenet.Load("/ldisk/takau/tf_tutorial/tf_test");
-  lenet.Load("/home/work/takau/1.hw/bhewtek/data/mnist/lenet");
-  // lenet.Load("/home/work/takau/new_binary/binary_net/16_32");
-  // lenet.Load("/home/work/takau/bhewtek/hashed/train/16_32norm");
+  lenet.Load("../data/mnist/lenet");
 #elif defined _CIFAR
   cifar.Load("/home/work/takau/cifar10_data/src/cifar10_data/test");
 #elif defined _ALEX

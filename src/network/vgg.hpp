@@ -1,8 +1,10 @@
 #ifndef _VGG_HPP_
 #define _VGG_HPP_
 
+#include <vector>
+
 template <typename T>
-class VGGNet : Network<T, vector<int>>
+class VGGNet : Network<T, std::vector<int>>
 {
 private:
   const int INSIZE = 224;
@@ -150,7 +152,7 @@ public:
   ~VGGNet();
 
   void Load(string path);
-  vector<int> calc(string data);
+  std::vector<int> calc(string data);
 };
 
 #include "vgg.cpp"

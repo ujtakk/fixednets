@@ -1,6 +1,8 @@
 #ifndef _LENET_HPP_
 #define _LENET_HPP_
 
+#include "layer.hpp"
+
 template <typename T>
 class LeNet : Network<T, int>
 {

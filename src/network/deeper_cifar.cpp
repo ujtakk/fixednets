@@ -81,7 +81,7 @@ template <typename T>
 int Deeper<T>::calc(char *data, int which, int amount)
 {
   int number = -1;
-  int temp = INT_MIN;
+  int temp = std::numeric_limits<int>::min();
 
   load_image(data, input);
 

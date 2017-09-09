@@ -1,7 +1,7 @@
 #ifdef _CONVOLUTION2D_HPP_
 
-#include "func.hpp"
 #include "load.hpp"
+#include "function.hpp"
 
 using std::to_string;
 
@@ -14,7 +14,7 @@ Convolution2D<T>::Convolution2D(int n_out, int n_in, const int fil_h, const int 
   ib = zeros<T>(n_out);
   gb = zeros<T>(n_out);
   this->stride = stride;
-  this->pad  = pad;
+  this->pad    = pad;
 }
 
 template <typename T>
@@ -25,7 +25,7 @@ Convolution2D<T>::~Convolution2D()
 template <typename T>
 void Convolution2D<T>::load(string path)
 {
-  vector<string> filename(shape[0]);
+  std::vector<string> filename(shape[0]);
 
   #ifdef _OPENMP
   #pragma omp parallel for

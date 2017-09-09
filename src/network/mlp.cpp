@@ -1,5 +1,7 @@
 #ifdef _MLP_HPP_
 
+#include <limits>
+
 template <typename T>
 MLP<T>::MLP()
   : full1{N_UNITS, N_IN}
@@ -73,7 +75,7 @@ int MLP<T>::calc(string data)
     // bn3.forward(unit3, output);
 
   int number = -1;
-  int temp = INT_MIN;
+  int temp = std::numeric_limits<int>::min();
   for (int i=0; i<N_OUT; i++) {
     if (temp < output[i]) {
        temp = output[i];

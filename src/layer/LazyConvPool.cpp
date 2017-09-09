@@ -1,6 +1,7 @@
 #ifdef _LAZYCONVPOOL_HPP_
 
 #include <random>
+#include <limits>
 
 using std::to_string;
 
@@ -271,7 +272,7 @@ void LazyConvPool<T>::forward(Mat3D<T> &input, Mat3D<T> &output, int which, int 
   //           }
   //         }
   //       }
-  //       max[n]=INT_MIN;
+  //       max[n]=std::numeric_limits<int>::min();
   //     }
   //   }
   // }

@@ -20,7 +20,7 @@ BinaryFull<T>::~BinaryFull()
 template <typename T>
 void BinaryFull<T>::load(string path)
 {
-  vector<string> filename(shape[0]);
+  std::vector<string> filename(shape[0]);
 
   #ifdef _OPENMP
   #pragma omp parallel for

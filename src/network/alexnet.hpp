@@ -2,7 +2,7 @@
 #define _ALEXNET_HPP_
 
 template <typename T>
-class AlexNet : Network<T, vector<int>>
+class AlexNet : Network<T, std::vector<int>>
 {
 private:
   const int INSIZE = 227;
@@ -92,7 +92,7 @@ public:
   ~AlexNet();
 
   void Load(string path);
-  vector<int> calc(string data);
+  std::vector<int> calc(string data);
 };
 
 #include "alexnet.cpp"

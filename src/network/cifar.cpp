@@ -1,5 +1,7 @@
 #ifdef _CIFAR_HPP_
 
+#include <limits>
+
 template <typename T>
 CIFAR<T>::CIFAR()
 #if defined _EAGER
@@ -81,7 +83,7 @@ template <typename T>
 int CIFAR<T>::calc(string data, int which, int amount)
 {
   int number = -1;
-  int temp = INT_MIN;
+  int temp = std::numeric_limits<int>::min();
 
   load_image(data, input);
 
