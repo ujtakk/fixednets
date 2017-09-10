@@ -3,9 +3,11 @@
 
 #include "matrix.hpp"
 
-void activate(Mat2D<int> &input, const int ihei, const int iwid);
+template <typename T>
+void relu(Mat3D<T> &input, Mat3D<T> &output);
 
-void activate_1d(Mat1D<int> &input, const int ilen);
+template <typename T>
+void relu(Mat1D<T> &input, Mat1D<T> &output);
 
 int softmax(Mat1D<double> &output, int len);
 

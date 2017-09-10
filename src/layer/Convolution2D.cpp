@@ -49,47 +49,60 @@ void Convolution2D<T>::save(string path)
 template <typename T>
 void Convolution2D<T>::forward(Mat3D<T> &input, Mat3D<T> &output)
 {
-  const int ihei = input[0].size();
-  const int iwid = input[0][0].size();
+  const int n_out = output.size();
+  const int out_h = output[0].size();
+  const int out_w = output[0][0].size();
 
-  Mat3D<T> sum;
-  Mat3D<T> pro;
+  Mat3D<T> conved = zeros<T>(n_out, out_h, out_w);
 
-  pro = zeros<T>(shape[0],
-                 (ihei-shape[2]+stride+2*pad)/stride,
-                 (iwid-shape[3]+stride+2*pad)/stride);
-  sum = zeros<T>(shape[0],
-                 (ihei-shape[2]+stride+2*pad)/stride,
-                 (iwid-shape[3]+stride+2*pad)/stride);
-
-  #ifdef _OPENMP
-  #pragma omp parallel for
-  #endif
-  for (int i = 0; i < shape[0]; i++) {
-    for (int j = 0; j < shape[1]; j++) {
-      conv_plus_pad(input[j], iw[i][j], pro[i],
-                    ihei, iwid, shape[2], shape[3],
-                    stride, pad);
-
-      for (int k = 0; k < (ihei+2*pad-shape[2]+stride)/stride; k++) {
-        for (int l = 0; l < (iwid+2*pad-shape[3]+stride)/stride; l++) {
-          sum[i][k][l] += pro[i][k][l];
-        }
-      }
-    }
-
-    for (int k = 0; k < (ihei-shape[2]+stride+2*pad)/stride; k++) {
-      for (int l = 0; l < (iwid-shape[3]+stride+2*pad)/stride; l++) {
-        output[i][k][l] = sum[i][k][l] + ib[i];
-        sum[i][k][l] = 0;
-      }
-    }
-  }
+  conv_plus_pad(input, iw, conved, stride, pad);
+  bias(conved, ib, output);
 }
 
 template <typename T>
 void Convolution2D<T>::backward(Mat3D<T> &output, Mat3D<T> &input)
 {
+  const int ohei = output[0].size();
+  const int owid = output[0][0].size();
+
+  Mat4D<T> pro;
+  Mat2D<T> sum;
+
+  pro = zeros<T>(shape[0], shape[1], ohei+shape[2]-1, owid+shape[3]-1);
+  sum = zeros<T>(ohei+shape[2]-1, owid+shape[3]-1);
+
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
+  for (int i = 0; i < shape[1]; i++) {
+    for (int j = 0; j < shape[0]; j++) {
+      //conv_valid(input[i], output[j], gw[j][i], ohei+shape[2]-1, owid+shape[3]-1, ohei, owid);
+      //conv_full(output[j], iw[j][i], pro[j][i], ohei, owid, shape[2], shape[3]);
+
+      for (int k = 0; k < ohei+shape[2]-1; k++) {
+        for (int l = 0; l < owid+shape[3]-1; l++) {
+          sum[k][l] += pro[j][i][k][l];
+        }
+      }
+    }
+
+    for (int k = 0; k < ohei+shape[2]-1; k++) {
+      for (int l = 0; l < owid+shape[3]-1; l++) {
+        input[i][k][l] = sum[k][l];
+        sum[k][l] = 0;
+      }
+    }
+  }
+
+  for (int i = 0; i < shape[0]; i++) {
+    gb[i] = 0;
+
+    for (int k = 0; k < ohei; k++) {
+      for (int l = 0; l < owid; l++) {
+        gb[i] += output[i][k][l];
+      }
+    }
+  }
 }
 
 template <typename T>

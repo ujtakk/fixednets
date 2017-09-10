@@ -41,24 +41,12 @@ void FullyConnected<T>::save(string path)
 template <typename T>
 void FullyConnected<T>::forward(Mat1D<T> &input, Mat1D<T> &output)
 {
-  Mat1D<T> sum(shape[0], 0);
-  Mat1D<int> pro(shape[0], 0);
+  const int n_out = output.size();
 
-  #ifdef _OPENMP
-  #pragma omp parallel for
-  #endif
-  for (int i = 0; i < shape[0]; i++) {
-    for (int j = 0; j < shape[1]; j++) {
-      pro[i] = iw[i][j] * input[j];
-      if (pro[i] >= 0)
-        sum[i] += pro[i] / Q_OFFSET<T>;
-      else
-        sum[i] += pro[i] / Q_OFFSET<T> - 1;
-    }
+  Mat1D<T> fulled = zeros<T>(n_out);
 
-    output[i] = sum[i] + ib[i];
-    sum[i] = 0;
-  }
+  full(input, iw, fulled);
+  bias(fulled, ib, output);
 }
 
 template <typename T>

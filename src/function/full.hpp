@@ -3,11 +3,8 @@
 
 #include "matrix.hpp"
 
-void full_connect(
-  Mat1D<int> &input, Mat1D<int> &output,
-  Mat2D<int> &weight, Mat1D<int> &bias,
-  const int ilen, const int olen
-);
+template <typename T>
+void full(Mat1D<T> &input, Mat2D<T> &weight, Mat1D<T> &output);
 
 #include "full.cpp"
 #endif

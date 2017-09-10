@@ -13,5 +13,9 @@ void median_pooling(
   const int fmhei, const int fmwid, const int phei, const int pwid
 );
 
+template <typename T>
+void pool_max(Mat3D<T> &input, Mat3D<T> &output,
+              int fil_h, int fil_w, int stride);
+
 #include "pool.cpp"
 #endif

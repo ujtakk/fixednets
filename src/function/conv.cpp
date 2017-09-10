@@ -1,10 +1,9 @@
 #ifdef _CONV_HPP_
 
-#include "function/error.hpp"
-#include "function/approx.hpp"
+#include "function.hpp"
 
 /*convolution image to feature map*/
-void conv1(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
+void conv_error1(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
   const int ihei, const int iwid,
   const int fhei, const int fwid, const int N_EM1,
   Mat2D<int> &etable
@@ -28,7 +27,7 @@ void conv1(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
   }
 }
 
-void conv1_bias(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
+void conv_error1_bias(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
   const int ihei, const int iwid,
   const int fhei, const int fwid, const int N_EM1,
   int bias, double prob
@@ -52,7 +51,7 @@ void conv1_bias(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
   }
 }
 
-int conv2(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
+int conv_error2(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
   const int ihei, const int iwid,
   const int fhei, const int fwid, const int N_EM2,
   Mat2D<int> &etable
@@ -79,7 +78,7 @@ int conv2(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
   return err_flag;
 }
 
-int conv2_bias(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
+int conv_error2_bias(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
   const int ihei, const int iwid,
   const int fhei, const int fwid, const int N_EM2,
   int bias, double prob
@@ -119,7 +118,7 @@ void fm_fm_e(Mat3D<int> &infm, Mat3D<int> &outfm, Mat4D<int> &fweight,
 
   for (int i = 0; i < n_out; i++) {
     for (int j = 0; j < n_in; j++) {
-      conv2(infm[j],fweight[j][i],sum[i],ihei,iwid,fhei,fwid,N_EM2,etable);
+      conv_error2(infm[j],fweight[j][i],sum[i],ihei,iwid,fhei,fwid,N_EM2,etable);
       for (int k = 0; k < ihei-fhei+1; k++) {
         for (int l = 0; l < iwid-fwid+1; l++) {
           outfm[i][k][l] += sum[i][k][l];
@@ -143,7 +142,7 @@ void fm_fm_bias(Mat3D<int> &infm, Mat3D<int> &outfm, Mat4D<int> &fweight,
 
   for (int i = 0; i < n_out; i++) {
     for (int j = 0; j < n_in; j++) {
-      conv2_bias(infm[j],fweight[j][i],sum[i],ihei,iwid,fhei,fwid,N_EM2,bias,prob);
+      conv_error2_bias(infm[j],fweight[j][i],sum[i],ihei,iwid,fhei,fwid,N_EM2,bias,prob);
       for (int k = 0; k < ihei-fhei+1; k++) {
         for (int l = 0; l < iwid-fwid+1; l++) {
           outfm[i][k][l] += sum[i][k][l];
@@ -153,6 +152,73 @@ void fm_fm_bias(Mat3D<int> &infm, Mat3D<int> &outfm, Mat4D<int> &fweight,
   }
 
   //ifree_3d(sum,n_out,ihei-fhei+1);
+}
+
+void conv_approx(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
+  const int ihei, const int iwid, const int fhei, const int fwid,
+  int which, int amount
+)
+{
+  int pro = 0;
+  int sum = 0;
+
+  for (int i = 4; i < ihei; i++) {
+    for (int j = 4; j < iwid; j++) {
+      for (int k = 0; k < fhei; k++) {
+        for (int l = 0; l < fwid; l++) {
+          if (input[i-k][j-l] * fweight[k][l] >= 0)
+            pro = (input[i-k][j-l] * fweight[k][l]) >> 8;
+          else
+            pro = ((input[i-k][j-l] * fweight[k][l]) >> 8)-1;
+          sum = ADD(16, sum, pro, which, amount);
+        }
+      }
+      fmap[i-fhei+1][j-fwid+1] = sum;
+      sum = 0;
+    }
+  }
+}
+
+/*convolution feature map to feature map*/
+void fm_fm(Mat3D<int> &infm, Mat3D<int> &outfm, Mat4D<int> &fweight,
+  const int n_in, const int n_out, const int ihei, const int iwid, const int fhei, const int fwid
+)
+{
+  Mat4D<int> sum;
+
+  sum = zeros<int>(n_out,n_in,ihei-fhei+1,iwid-fwid+1);
+
+  for (int i = 0; i < n_out; i++) {
+    for (int j = 0; j < n_in; j++) {
+      conv(infm[j],fweight[j][i],sum[i][j],ihei,iwid,fhei,fwid);
+      for (int k = 0; k < ihei-fhei+1; k++) {
+        for (int l = 0; l < iwid-fwid+1; l++) {
+          outfm[i][k][l] += sum[i][j][k][l];
+        }
+      }
+    }
+  }
+}
+
+void fm_fm_approx(Mat3D<int> &infm, Mat3D<int> &outfm, Mat4D<int> &fweight,
+  const int n_in, const int n_out, const int ihei, const int iwid, const int fhei, const int fwid,
+  int which, int amount
+)
+{
+  Mat4D<int> sum;
+
+  sum = zeros<int>(n_out,n_in,ihei-fhei+1,iwid-fwid+1);
+
+  for (int i = 0; i < n_out; i++) {
+    for (int j = 0; j < n_in; j++) {
+      conv_approx(infm[j],fweight[j][i],sum[i][j],ihei,iwid,fhei,fwid,which,amount);
+      for (int k = 0; k < ihei-fhei+1; k++) {
+        for (int l = 0; l < iwid-fwid+1; l++) {
+          outfm[i][k][l] += sum[i][j][k][l];
+        }
+      }
+    }
+  }
 }
 
 /*convolution image to feature map*/
@@ -296,67 +362,42 @@ void conv_plus_pad(Mat2D<T> &input, Mat2D<T> &fweight, Mat2D<T> &fmap,
   }
 }
 
-void conv_approx(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
-  const int ihei, const int iwid, const int fhei, const int fwid,
-  int which, int amount
-)
+template <typename T>
+void conv_plus_pad(Mat3D<T> &input, Mat4D<T> &weight, Mat3D<T> &output,
+                   int stride, int pad)
 {
-  int pro = 0;
-  int sum = 0;
+  const int n_out = output.size();
 
-  for (int i = 4; i < ihei; i++) {
-    for (int j = 4; j < iwid; j++) {
-      for (int k = 0; k < fhei; k++) {
-        for (int l = 0; l < fwid; l++) {
-          if (input[i-k][j-l] * fweight[k][l] >= 0)
-            pro = (input[i-k][j-l] * fweight[k][l]) >> 8;
-          else
-            pro = ((input[i-k][j-l] * fweight[k][l]) >> 8)-1;
-          sum = ADD(16, sum, pro, which, amount);
-        }
-      }
-      fmap[i-fhei+1][j-fwid+1] = sum;
-      sum = 0;
-    }
-  }
-}
+  const int n_in = input.size();
+  const int in_h = input[0].size();
+  const int in_w = input[0][0].size();
 
-/*convolution feature map to feature map*/
-void fm_fm(Mat3D<int> &infm, Mat3D<int> &outfm, Mat4D<int> &fweight,
-  const int n_in, const int n_out, const int ihei, const int iwid, const int fhei, const int fwid
-)
-{
-  Mat4D<int> sum;
+  const int fil_h = weight[0][0].size();
+  const int fil_w = weight[0][0][0].size();
 
-  sum = zeros<int>(n_out,n_in,ihei-fhei+1,iwid-fwid+1);
+  const int fea_h = in_h - fil_h + stride + 2*pad;
+  const int fea_w = in_w - fil_w + stride + 2*pad;
 
-  for (int i = 0; i < n_out; i++) {
-    for (int j = 0; j < n_in; j++) {
-      conv(infm[j],fweight[j][i],sum[i][j],ihei,iwid,fhei,fwid);
-      for (int k = 0; k < ihei-fhei+1; k++) {
-        for (int l = 0; l < iwid-fwid+1; l++) {
-          outfm[i][k][l] += sum[i][j][k][l];
-        }
-      }
-    }
-  }
-}
+  // TODO: add static_assert
 
-void fm_fm_approx(Mat3D<int> &infm, Mat3D<int> &outfm, Mat4D<int> &fweight,
-  const int n_in, const int n_out, const int ihei, const int iwid, const int fhei, const int fwid,
-  int which, int amount
-)
-{
-  Mat4D<int> sum;
+  Mat3D<T> padded = zeros<T>(n_in, in_h+2*pad, in_w+2*pad);
 
-  sum = zeros<int>(n_out,n_in,ihei-fhei+1,iwid-fwid+1);
+  for (int m = 0; m < n_in; ++m)
+    for (int i = 0; i < in_h; ++i)
+      for (int j = 0; j < in_w; ++j)
+        padded[m][i+pad][j+pad] = input[m][i][j];
 
-  for (int i = 0; i < n_out; i++) {
-    for (int j = 0; j < n_in; j++) {
-      conv_approx(infm[j],fweight[j][i],sum[i][j],ihei,iwid,fhei,fwid,which,amount);
-      for (int k = 0; k < ihei-fhei+1; k++) {
-        for (int l = 0; l < iwid-fwid+1; l++) {
-          outfm[i][k][l] += sum[i][j][k][l];
+  // #ifdef _OPENMP
+  // #pragma omp parallel for
+  // #endif
+  for (int n = 0; n < n_out; ++n) {
+    for (int m = 0; m < n_in; ++m) {
+      for (int i = 0; i < fea_h; i+=stride) {
+        for (int j = 0; j < fea_w; j+=stride) {
+          for (int k = 0; k < fil_h; ++k)
+            for (int l = 0; l < fil_w; ++l)
+              output[n][i/stride][j/stride] +=
+                mult_fixed(padded[m][i+k][j+l], weight[n][m][k][l]);
         }
       }
     }

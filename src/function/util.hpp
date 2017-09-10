@@ -3,9 +3,14 @@
 
 #include "matrix.hpp"
 
-void add_bias(Mat2D<int> &input, int bias, int ihei, int iwid);
+template <typename BaseT, typename MultT=int>
+BaseT mult_fixed(BaseT a, BaseT b);
 
-double mean_1d(Mat1D<double> vec);
+template <typename T>
+void bias(Mat1D<T> &input, Mat1D<T> &bias, Mat1D<T> &output);
+
+template <typename T>
+void bias(Mat3D<T> &input, Mat1D<T> &bias, Mat3D<T> &output);
 
 int approx(int value, int bias, double prob);
 

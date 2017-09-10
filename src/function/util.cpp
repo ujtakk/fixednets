@@ -2,22 +2,39 @@
 
 #include <random>
 
-/*add bias*/
-void add_bias(Mat2D<int> &input,int bias,int ihei,int iwid)
+#include "fixed_point.hpp"
+
+template <typename BaseT, typename MultT=int>
+BaseT mult_fixed(BaseT a, BaseT b)
 {
-  for (int i = 0; i < ihei; i++)
-    for (int j = 0; j < iwid; j++)
-      input[i][j] = input[i][j] + bias;
+  MultT c = a * b;
+
+  if (c >= 0)
+    return c / Q_OFFSET<BaseT>;
+  else
+    return c / Q_OFFSET<BaseT> - 1;
 }
 
-double mean_1d(Mat1D<double> vec)
+template <typename T>
+void bias(Mat1D<T> &input, Mat1D<T> &bias, Mat1D<T> &output)
 {
-  double a=0.0;
+  const int n_in = input.size();
 
-  for (int i = 0; i < (int)vec.size(); i++)
-    a += vec[i];
+  for (int n = 0; n < n_in; ++n)
+    output[n] = input[n] + bias[n];
+}
 
-  return a / (double)vec.size();
+template <typename T>
+void bias(Mat3D<T> &input, Mat1D<T> &bias, Mat3D<T> &output)
+{
+  const int n_in = input.size();
+  const int in_h = input[0].size();
+  const int in_w = input[0][0].size();
+
+  for (int n = 0; n < n_in; ++n)
+    for (int i = 0; i < in_h; ++i)
+      for (int j = 0; j < in_w; ++j)
+        output[n][i][j] = input[n][i][j] + bias[n];
 }
 
 int approx(int value, int bias, double prob)

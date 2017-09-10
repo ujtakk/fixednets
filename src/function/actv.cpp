@@ -3,19 +3,32 @@
 #include <limits>
 
 /*activation by hinge function*/
-void activate(Mat2D<int> &input, const int ihei, const int iwid)
+template <typename T>
+void relu(Mat3D<T> &input, Mat3D<T> &output)
 {
-  for (int i = 0; i < ihei; i++)
-    for (int j = 0; j < iwid; j++)
-      if (input[i][j]<0)
-        input[i][j] = 0;
+  const int n_in = input.size();
+  const int in_h = input[0].size();
+  const int in_w = input[0][0].size();
+
+  for (int n = 0; n < n_in; ++n)
+    for (int i = 0; i < in_h; ++i)
+      for (int j = 0; j < in_w; ++j)
+        if (input[n][i][j] < 0)
+          output[n][i][j] = 0;
+        else
+          output[n][i][j] = input[n][i][j];
 }
 
-void activate_1d(Mat1D<int> &input, const int ilen)
+template <typename T>
+void relu(Mat1D<T> &input, Mat1D<T> &output)
 {
-  for (int i = 0; i < ilen; i++)
-    if (input[i]<0)
-      input[i] = 0;
+  const int n_in = input.size();
+
+  for (int n = 0; n < n_in; ++n)
+    if (input[n] < 0)
+      output[n] = 0;
+    else
+      output[n] = input[n];
 }
 
 int softmax(Mat1D<double> &output, int len) {

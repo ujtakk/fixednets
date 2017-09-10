@@ -14,7 +14,7 @@ class MaxPooling : Layer<Mat3D<T>>
 private:
 
 public:
-  MaxPooling(const int phei, const int pwid, int stride=2);
+  MaxPooling(const int fil_h, const int fil_w, int stride=2);
   ~MaxPooling();
 
   const int shape[2];

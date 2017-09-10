@@ -113,7 +113,7 @@ double accuracy(int number, int which, int amount)
     else if(ans[i][4] == number) count++;
   }
 #else
-    std::cout << filename[i] << ": answer is " << ans[i] << std::endl;
+    // std::cout << filename[i] << ": answer is " << ans[i] << std::endl;
   }
 
   for (int i=0; i < SAMPLE; i++)

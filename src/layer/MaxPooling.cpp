@@ -3,8 +3,8 @@
 #include <limits>
 
 template <typename T>
-MaxPooling<T>::MaxPooling(const int phei, const int pwid, int stride)
-  :   shape{phei, pwid}
+MaxPooling<T>::MaxPooling(const int pool_h, const int pool_w, int stride)
+  :   shape{pool_h, pool_w}
 {
   this->stride = stride;
 }
@@ -17,29 +17,7 @@ MaxPooling<T>::~MaxPooling()
 template <typename T>
 void MaxPooling<T>::forward(Mat3D<T> &input, Mat3D<T> &output)
 {
-  const int fmnum = input.size();
-  const int fmhei = input[0].size();
-  const int fmwid = input[0][0].size();
-
-  Mat1D<T> max(fmnum, std::numeric_limits<T>::min());
-
-  #ifdef _OPENMP
-  #pragma omp parallel for
-  #endif
-  for (int n = 0; n < fmnum; n++) {
-    for (int i = 0; i < fmhei-shape[0]+stride; i+=stride) {
-      for (int j = 0; j < fmwid-shape[1]+stride; j+=stride) {
-        for (int k = 0; k < shape[0]; k++) {
-          for (int l = 0; l < shape[1]; l++) {
-            if (input[n][i+k][j+l] > max[n])
-              max[n] = input[n][i+k][j+l];
-          }
-        }
-        output[n][i/stride][j/stride] = max[n];
-        max[n] = std::numeric_limits<T>::min();
-      }
-    }
-  }
+  pool_max(input, output, shape[0], shape[1], stride);
 }
 
 //propagate grads only for position of max in filter
