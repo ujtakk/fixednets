@@ -11,7 +11,7 @@ SoftMax<T>::~SoftMax()
 }
 
 template <typename T>
-void SoftMax<T>::forward(Mat1D<T> &input, Mat1D<T> &output)
+void SoftMax<T>::forward(Mat1D<T>& input, Mat1D<T>& output)
 {
   const int len = input.size();
 
@@ -31,7 +31,7 @@ void SoftMax<T>::forward(Mat1D<T> &input, Mat1D<T> &output)
 }
 
 template <typename T>
-void SoftMax<T>::backward(Mat1D<T> &output, Mat1D<T> &input)
+void SoftMax<T>::backward(Mat1D<T>& output, Mat1D<T>& input)
 {
   //const int len = output.size();
 }

@@ -43,4 +43,12 @@ public:
   virtual Rt calc(std::string data, int which, int amount) = 0;
 };
 
+class Dataset
+{
+private:
+public:
+  virtual int predict(int label, int sample) = 0;
+  virtual void test() = 0;
+};
+
 #endif

@@ -10,9 +10,9 @@ using std::ofstream;
 using std::string;
 
 void load_mnist(
-  Mat2D<double> &train_set_x, Mat1D<int> &train_set_y,
-  Mat2D<double> &valid_set_x, Mat1D<int> &valid_set_y,
-  Mat2D<double> &test_set_x,  Mat1D<int> &test_set_y
+  Mat2D<double>& train_set_x, Mat1D<int>& train_set_y,
+  Mat2D<double>& valid_set_x, Mat1D<int>& valid_set_y,
+  Mat2D<double>& test_set_x,  Mat1D<int>& test_set_y
 )
 {
   string filename = "mnist.dat";
@@ -44,7 +44,7 @@ void load_mnist(
 
 /*read data file and convert to Q8.8*/
 void load_convert(
-  Mat2D<double> &d, Mat2D<int> &li,
+  Mat2D<double>& d, Mat2D<int>& li,
   const int height, const int width
 )
 {
@@ -55,7 +55,7 @@ void load_convert(
 
 /*read data file and convert to Q8.8*/
 template <typename T>
-void load_image(string filename, Mat3D<T> &image)
+void load_image(string filename, Mat3D<T>& image)
 {
   ifstream ifs(filename);
 
@@ -76,7 +76,7 @@ void load_image(string filename, Mat3D<T> &image)
 }
 
 template <typename T>
-void load_image(string filename, Mat3D<T> &li, const int height, const int width)
+void load_image(string filename, Mat3D<T>& li, const int height, const int width)
 {
   ifstream ifs(filename);
   double d;
@@ -92,7 +92,7 @@ void load_image(string filename, Mat3D<T> &li, const int height, const int width
 }
 
 template <typename T>
-void load_color(string filename, Mat3D<T> &li, const int height, const int width)
+void load_color(string filename, Mat3D<T>& li, const int height, const int width)
 {
   ifstream ifs(filename);
   double d;
@@ -111,8 +111,8 @@ void load_color(string filename, Mat3D<T> &li, const int height, const int width
 template <typename T>
 void load_data(
   string filename,
-  Mat2D<T> &li1,
-  T &li2,
+  Mat2D<T>& li1,
+  T& li2,
   const int height, const int width
   )
 {
@@ -130,7 +130,7 @@ void load_data(
 }
 
 template <typename T>
-void load_data_bi(string filename, Mat2D<T> &li1, T &li2,
+void load_data_bi(string filename, Mat2D<T>& li1, T& li2,
   const int height, const int width
 )
 {
@@ -152,7 +152,7 @@ void load_data_bi(string filename, Mat2D<T> &li1, T &li2,
 }
 
 template <typename T>
-void load_w(string filename, Mat2D<T> &li1, const int height, const int width)
+void load_w(string filename, Mat2D<T>& li1, const int height, const int width)
 {
   ifstream ifs(filename);
   double d1;
@@ -166,7 +166,7 @@ void load_w(string filename, Mat2D<T> &li1, const int height, const int width)
 }
 
 template <typename T>
-void load_w_bi(string filename, Mat2D<T> &li1, const int height, const int width)
+void load_w_bi(string filename, Mat2D<T>& li1, const int height, const int width)
 {
   ifstream ifs(filename);
   double d1;
@@ -184,7 +184,7 @@ void load_w_bi(string filename, Mat2D<T> &li1, const int height, const int width
 }
 
 template <typename T>
-void load_b(string filename, T &li)
+void load_b(string filename, T& li)
 {
   ifstream ifs(filename);
   double d;
@@ -196,8 +196,8 @@ void load_b(string filename, T &li)
 template <typename T>
 void load_data_1d(
   string filename,
-  Mat1D<T> &li1,
-  T &li2,
+  Mat1D<T>& li1,
+  T& li2,
   const int length
 )
 {
@@ -216,8 +216,8 @@ void load_data_1d(
 template <typename T>
 void load_data_1d_bi(
   string filename,
-  Mat1D<T> &li1,
-  T &li2,
+  Mat1D<T>& li1,
+  T& li2,
   const int length
 )
 {
@@ -240,7 +240,7 @@ void load_data_1d_bi(
 template <typename T>
 void load_bn(
   string filename,
-  Mat1D<T> &vec,
+  Mat1D<T>& vec,
   const int channels
 )
 {
@@ -254,7 +254,7 @@ void load_bn(
 }
 
 template <typename T>
-void load_eps(string filename, T &eps)
+void load_eps(string filename, T& eps)
 {
   ifstream ifs(filename);
   double d;
@@ -264,7 +264,7 @@ void load_eps(string filename, T &eps)
 }
 
 template <typename T>
-void save_fmap(string filename, Mat3D<T> &image)
+void save_fmap(string filename, Mat3D<T>& image)
 {
   ofstream ofs(filename);
 
@@ -281,116 +281,106 @@ void save_fmap(string filename, Mat3D<T> &image)
   }
 }
 
+#include <iostream>
 template <typename T>
-void load(Mat1D<T> &x, std::string path)
+static inline T read(std::ifstream& ifs)
 {
-  std::ifstream ifs(path);
-  int tmp = 0;
+  double tmp = 0.0;
+  ifs >> tmp;
 
-  ifs >> std::hex;
-
-  for (int i = 0; i < x.size(); ++i) {
-    ifs >> tmp;
-    x[i] = static_cast<T>(tmp);
-  }
+  return static_cast<T>(rint(tmp * Q_OFFSET<T>));
 }
 
 template <typename T>
-void load(Mat2D<T> &x, std::string path)
+void load_txt(Mat1D<T>& x, std::string path)
 {
   std::ifstream ifs(path);
-  int tmp = 0;
 
-  ifs >> std::hex;
-
-  for (int i = 0; i < x.size(); ++i)
-    for (int j = 0; i < x[0].size(); ++j) {
-      ifs >> tmp;
-      x[i][j] = static_cast<T>(tmp);
-  }
+  for (auto& x_i : x)
+    x_i = read<T>(ifs);
 }
 
 template <typename T>
-void load(Mat3D<T> &x, std::string path)
+void load_txt(Mat2D<T>& x, std::string path)
 {
   std::ifstream ifs(path);
-  int tmp = 0;
 
-  ifs >> std::hex;
-
-  for (int i = 0; i < x.size(); ++i)
-    for (int j = 0; i < x[0].size(); ++j)
-      for (int k = 0; i < x[0][0].size(); ++k) {
-        ifs >> tmp;
-        x[i][j][k] = static_cast<T>(tmp);
-  }
+  for (auto& x_i : x)
+    for (auto& x_ij : x_i)
+      x_ij = read<T>(ifs);
 }
 
 template <typename T>
-void load(Mat4D<T> &x, std::string path)
+void load_txt(Mat3D<T>& x, std::string path)
 {
   std::ifstream ifs(path);
-  int tmp = 0;
 
-  ifs >> std::hex;
-
-  for (int i = 0; i < x.size(); ++i)
-    for (int j = 0; i < x[0].size(); ++j)
-      for (int k = 0; i < x[0][0].size(); ++k)
-        for (int l = 0; i < x[0][0][0].size(); ++l) {
-          ifs >> tmp;
-          x[i][j][k][l] = static_cast<T>(tmp);
-  }
+  for (auto& x_i : x)
+    for (auto& x_ij : x_i)
+      for (auto& x_ijk : x_ij)
+        x_ijk = read<T>(ifs);
 }
 
 template <typename T>
-void save(Mat1D<T> &y, std::string path)
+void load_txt(Mat4D<T>& x, std::string path)
+{
+  std::ifstream ifs(path);
+
+  for (auto& x_i : x)
+    for (auto& x_ij : x_i)
+      for (auto& x_ijk : x_ij)
+        for (auto& x_ijkl : x_ijk)
+          x_ijkl = read<T>(ifs);
+}
+
+template <typename T>
+void save_txt(Mat1D<T>& y, std::string path)
 {
   std::ofstream ofs(path);
 
   ofs << std::hex;
 
-  for (int i = 0; i < y.size(); ++i)
-    ofs << y[i] << std::endl;
+  for (auto& y_i : y)
+    ofs << y_i << std::endl;
 }
 
 template <typename T>
-void save(Mat2D<T> &y, std::string path)
+void save_txt(Mat2D<T>& y, std::string path)
 {
   std::ofstream ofs(path);
 
   ofs << std::hex;
 
-  for (int i = 0; i < y.size(); ++i)
-    for (int j = 0; i < y[0].size(); ++j)
-      ofs << y[i][j] << std::endl;
+  for (auto& y_i : y)
+    for (auto& y_ij : y_i)
+      ofs << y_ij << std::endl;
 }
 
 template <typename T>
-void save(Mat3D<T> &y, std::string path)
+void save_txt(Mat3D<T>& y, std::string path)
 {
   std::ofstream ofs(path);
 
   ofs << std::hex;
 
-  for (int i = 0; i < y.size(); ++i)
-    for (int j = 0; i < y[0].size(); ++j)
-      for (int k = 0; i < y[0][0].size(); ++k)
-        ofs << y[i][j][k] << std::endl;
+  for (auto& y_i : y)
+    for (auto& y_ij : y_i)
+      for (auto& y_ijk : y_ij)
+        ofs << y_ijk << std::endl;
 }
 
 template <typename T>
-void save(Mat4D<T> &y, std::string path)
+void save_txt(Mat4D<T>& y, std::string path)
 {
   std::ofstream ofs(path);
 
   ofs << std::hex;
 
-  for (int i = 0; i < y.size(); ++i)
-    for (int j = 0; i < y[0].size(); ++j)
-      for (int k = 0; i < y[0][0].size(); ++k)
-        for (int l = 0; i < y[0][0][0].size(); ++l)
-          ofs << y[i][j][k][l] << std::endl;
+  for (auto& y_i : y)
+    for (auto& y_ij : y_i)
+      for (auto& y_ijk : y_ij)
+        for (auto& y_ijkl : y_ijk)
+          ofs << y_ijkl << std::endl;
 }
 
 #endif

@@ -13,8 +13,8 @@ MedianPooling<T>::~MedianPooling()
 
 template <typename T>
 void MedianPooling<T>::forward(
-  Mat3D<T> &input,
-  Mat3D<T> &output
+  Mat3D<T>& input,
+  Mat3D<T>& output
   )
 {
   const int fmnum = input.size();
@@ -58,8 +58,8 @@ void MedianPooling<T>::forward(
 
 template <typename T>
 void MedianPooling<T>::backward(
-  Mat3D<T> &output,
-  Mat3D<T> &input
+  Mat3D<T>& output,
+  Mat3D<T>& input
   )
 {
   const int pmnum = output.size();

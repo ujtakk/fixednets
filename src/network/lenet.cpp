@@ -32,22 +32,28 @@ LeNet<T>::~LeNet()
 template <typename T>
 void LeNet<T>::Load(string path)
 {
+#if 1
+  conv1.load(path+"/conv1");
+  conv2.load(path+"/conv2");
+  full3.load(path+"/full3");
+  full4.load(path+"/full4");
+#else
   conv1.load(path+"/wb_1");
   conv2.load(path+"/wb_2");
   full3.load(path+"/wb_3");
   full4.load(path+"/wb_4");
+#endif
 }
 
 template <typename T>
 void LeNet<T>::Save(string path)
 {
-  conv1.save(path+"/wb_1");
-  conv2.save(path+"/wb_2");
-  full3.save(path+"/wb_3");
-  full4.save(path+"/wb_4");
+  conv1.save(path+"/conv0");
+  conv2.save(path+"/conv1");
+  full3.save(path+"/full2");
+  full4.save(path+"/full3");
 }
 
-/*argv[1]:input pixel file (00\n01\n .. 10\n11\n ..)*/
 template <typename T>
 void LeNet<T>::Forward(string data)
 {

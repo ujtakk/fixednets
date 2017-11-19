@@ -28,8 +28,8 @@ public:
   void load(string path);
   void save(string path);
 
-  void forward(Mat1D<T> &input, Mat1D<T> &output);
-  void forward(Mat3D<T> &input, Mat3D<T> &output);
+  void forward(Mat1D<T>& input, Mat1D<T>& output);
+  void forward(Mat3D<T>& input, Mat3D<T>& output);
   void backward();
   //void backward();
 

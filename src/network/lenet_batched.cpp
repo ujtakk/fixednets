@@ -10,10 +10,10 @@ LeNet<T>::LeNet()
     ,   pool2{PHEI, PWID}
     ,   full3{N_HL, N_F2*pm2hei*pm2wid}
     ,   full4{LABEL, N_HL}
-    // ,   bn1(N_F1)
-    // ,   bn2(N_F2)
-    ,   bn3(N_HL)
-    ,   bn4(LABEL)
+    ,   norm1(N_F1)
+    ,   norm2(N_F2)
+    ,   norm3(N_HL)
+    ,   norm4(LABEL)
 {
     input = zeros<T>(1, IMHEI, IMWID);
 
@@ -46,10 +46,10 @@ void LeNet<T>::Load(string path)
     full3.load(path+"/wb_3");
     full4.load(path+"/wb_4");
 
-    // bn1.load(path+"/bn_1");
-    // bn2.load(path+"/bn_2");
-    bn3.load(path+"/bn_3");
-    bn4.load(path+"/bn_4");
+    norm1.load(path+"/bn_1");
+    norm2.load(path+"/bn_2");
+    norm3.load(path+"/bn_3");
+    norm4.load(path+"/bn_4");
 }
 
 template <typename T>
@@ -119,23 +119,23 @@ int LeNet<T>::calc(string data, int which, int amount)
     load_image(data, input);
 
     conv1.forward(input, fmap1);
-    // bn1.forward(fmap1, bmap1);
+    norm1.forward(fmap1, bmap1);
     relu1.forward(fmap1, amap1);
     pool1.forward(amap1, pmap1);
 
-    onv2.forward(pmap1, fmap2);
-    // bn2.forward(fmap2, bmap2);
+    conv2.forward(pmap1, fmap2);
+    norm2.forward(fmap2, bmap2);
     relu2.forward(fmap2, amap2);
     pool2.forward(amap2, pmap2);
 
     flatten(pmap2, amap2_flat, N_F2, pm2hei, pm2wid);
 
     full3.forward(amap2_flat, hunit);
-    bn3.forward(hunit, bunit);
+    norm3.forward(hunit, bunit);
     relu3.forward(bunit, aunit);
 
     full4.forward(aunit, bout);
-    bn4.forward(bout, output);
+    norm4.forward(bout, output);
 
     int number = -1;
     int temp = std::numeric_limits<int>::min();

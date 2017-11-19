@@ -113,7 +113,7 @@ double accuracy(int number, int which, int amount)
     else if(ans[i][4] == number) count++;
   }
 #else
-    // std::cout << filename[i] << ": answer is " << ans[i] << std::endl;
+    std::cout << filename[i] << ": answer is " << ans[i] << std::endl;
   }
 
   for (int i=0; i < SAMPLE; i++)
@@ -165,6 +165,7 @@ int main(int argc, char **argv)
   mlp.Load("/ldisk/takau/tf_tutorial/tf_mlp");
 #elif defined _LENET
   lenet.Load("../data/mnist/lenet");
+  // lenet.Load("../../models_chainer/lenetbn");
 #elif defined _CIFAR
   cifar.Load("/home/work/takau/cifar10_data/src/cifar10_data/test");
 #elif defined _ALEX

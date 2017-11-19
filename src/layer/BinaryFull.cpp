@@ -38,7 +38,7 @@ void BinaryFull<T>::save(string path)
 }
 
 template <typename T>
-void BinaryFull<T>::forward(Mat1D<T> &input, Mat1D<T> &output)
+void BinaryFull<T>::forward(Mat1D<T>& input, Mat1D<T>& output)
 {
   Mat1D<T> sum(shape[0], 0);
   Mat1D<T> pro(shape[0], 0);
@@ -61,7 +61,7 @@ void BinaryFull<T>::forward(Mat1D<T> &input, Mat1D<T> &output)
 }
 
 template <typename T>
-void BinaryFull<T>::backward(Mat1D<T> &output, Mat1D<T> &input)
+void BinaryFull<T>::backward(Mat1D<T>& output, Mat1D<T>& input)
 {
   int pro;
   int sum = 0;

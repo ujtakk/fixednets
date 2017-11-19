@@ -26,7 +26,7 @@ public:
 
   void load(string path);
 
-  void forward(Mat3D<T> &input, Mat3D<T> &output, int which, int amount);
+  void forward(Mat3D<T>& input, Mat3D<T>& output, int which, int amount);
 };
 
 #include "lcpPAD.cpp"

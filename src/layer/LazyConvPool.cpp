@@ -53,7 +53,7 @@ TODO: truncate operands of first convolution;
     calculate second convolution only for areas indicated by the array;
 */
 template <typename T>
-void LazyConvPool<T>::forward(Mat3D<T> &input, Mat3D<T> &output, int which, int amount)
+void LazyConvPool<T>::forward(Mat3D<T>& input, Mat3D<T>& output, int which, int amount)
 {
 
 // lazy() is implemented in func.cpp

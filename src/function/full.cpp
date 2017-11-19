@@ -1,7 +1,7 @@
 #ifdef _FULL_HPP_
 
 template <typename T>
-void full(Mat1D<T> &input, Mat2D<T> &weight, Mat1D<T> &output)
+void full(Mat1D<T>& input, Mat2D<T>& weight, Mat1D<T>& output)
 {
   const int n_out = output.size();
   const int n_in = input.size();

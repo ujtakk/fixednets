@@ -4,7 +4,7 @@
 #include "matrix.hpp"
 
 template <typename T>
-void full(Mat1D<T> &input, Mat2D<T> &weight, Mat1D<T> &output);
+void full(Mat1D<T>& input, Mat2D<T>& weight, Mat1D<T>& output);
 
 #include "full.cpp"
 #endif

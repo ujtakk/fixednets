@@ -25,8 +25,8 @@ public:
   void load(string path);
   void save(string path);
 
-  void forward(Mat1D<T> &input, Mat1D<T> &output);
-  void backward(Mat1D<T> &output, Mat1D<T> &input);
+  void forward(Mat1D<T>& input, Mat1D<T>& output);
+  void backward(Mat1D<T>& output, Mat1D<T>& input);
 
   void update();
 };

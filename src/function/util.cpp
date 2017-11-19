@@ -4,9 +4,10 @@
 
 #include "fixed_point.hpp"
 
-template <typename BaseT, typename MultT=int>
+template <typename BaseT>
 BaseT mult_fixed(BaseT a, BaseT b)
 {
+  using MultT = int64_t;
   MultT c = a * b;
 
   if (c >= 0)
@@ -16,7 +17,7 @@ BaseT mult_fixed(BaseT a, BaseT b)
 }
 
 template <typename T>
-void bias(Mat1D<T> &input, Mat1D<T> &bias, Mat1D<T> &output)
+void bias(Mat1D<T>& input, Mat1D<T>& bias, Mat1D<T>& output)
 {
   const int n_in = input.size();
 
@@ -25,7 +26,7 @@ void bias(Mat1D<T> &input, Mat1D<T> &bias, Mat1D<T> &output)
 }
 
 template <typename T>
-void bias(Mat3D<T> &input, Mat1D<T> &bias, Mat3D<T> &output)
+void bias(Mat3D<T>& input, Mat1D<T>& bias, Mat3D<T>& output)
 {
   const int n_in = input.size();
   const int in_h = input[0].size();
@@ -53,7 +54,7 @@ int approx(int value, int bias, double prob)
 
 /*flatten 3D matrix*/
 template <typename T>
-void flatten(Mat3D<T> &matrix, Mat1D<T> &array)
+void flatten(Mat3D<T>& matrix, Mat1D<T>& array)
 {
   const int mdep = matrix.size();
   const int mhei = matrix[0].size();
@@ -66,7 +67,7 @@ void flatten(Mat3D<T> &matrix, Mat1D<T> &array)
 }
 
 template <typename T>
-void flatten(Mat3D<T> &matrix, Mat1D<T> &array,
+void flatten(Mat3D<T>& matrix, Mat1D<T>& array,
              const int mdep, const int mhei, const int mwid)
 {
   for (int i = 0; i < mdep; i++)
@@ -77,7 +78,7 @@ void flatten(Mat3D<T> &matrix, Mat1D<T> &array,
 
 /*reshape 3D matrix*/
 template <typename T>
-void reshape(Mat1D<T> &array, Mat3D<T> &matrix)
+void reshape(Mat1D<T>& array, Mat3D<T>& matrix)
 {
   const int mdep = matrix.size();
   const int mhei = matrix[0].size();
@@ -90,7 +91,7 @@ void reshape(Mat1D<T> &array, Mat3D<T> &matrix)
 }
 
 template <typename T>
-void reshape(Mat1D<T> &array, Mat3D<T> &matrix,
+void reshape(Mat1D<T>& array, Mat3D<T>& matrix,
              const int mdep, const int mhei, const int mwid)
 {
   for (int i = 0; i < mdep; i++)

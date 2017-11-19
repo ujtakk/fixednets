@@ -1,6 +1,6 @@
 #ifdef _ERROR_HPP_
 
-void load_error1(Mat2D<int> &etable, int volt)
+void load_error1(Mat2D<int>& etable, int volt)
 {
   FILE *fp;
   char filename[256];
@@ -18,7 +18,7 @@ void load_error1(Mat2D<int> &etable, int volt)
   fclose(fp);
 }
 
-void load_error2(Mat2D<int> &etable, int volt)
+void load_error2(Mat2D<int>& etable, int volt)
 {
   FILE *fp;
   char filename[256];
@@ -36,7 +36,7 @@ void load_error2(Mat2D<int> &etable, int volt)
   fclose(fp);
 }
 
-int rand_error1(int output, const int N_EM1, Mat2D<int> &etable)
+int rand_error1(int output, const int N_EM1, Mat2D<int>& etable)
 {
   int error = 0;
   int min   = 0;
@@ -96,7 +96,7 @@ int rand_error1(int output, const int N_EM1, Mat2D<int> &etable)
 }
 
 //output is scalar
-int rand_error2(int output, const int N_EM2, Mat2D<int> &etable, int &flag)
+int rand_error2(int output, const int N_EM2, Mat2D<int>& etable, int& flag)
 {
   int error = 0;
   int min   = 0;

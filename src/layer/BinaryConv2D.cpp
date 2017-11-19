@@ -43,7 +43,7 @@ void BinaryConv2D<T>::save(string path)
 }
 
 template <typename T>
-void BinaryConv2D<T>::forward(Mat3D<T> &input, Mat3D<T> &output)
+void BinaryConv2D<T>::forward(Mat3D<T>& input, Mat3D<T>& output)
 {
   const int ihei = input[0].size();
   const int iwid = input[0][0].size();

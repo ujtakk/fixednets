@@ -5,7 +5,6 @@ template <typename T>
 class LeNet : Network<T, int>
 {
 private:
-
   const int FWID = 5;
   const int FHEI = 5;
   const int IMWID = 28;
@@ -14,7 +13,7 @@ private:
   const int PHEI = 2;
   const int N_F1 = 16;
   const int N_F2 = 32;
-  const int N_HL = 256;
+  const int N_HL = 128;
   const int LABEL = 10;
   const int pm1hei = (IMHEI-FHEI+1)/PHEI;
   const int pm1wid = (IMWID-FWID+1)/PWID;
@@ -29,19 +28,19 @@ private:
   MaxPooling<T> pool2;
   // BST<T> relu1;
   // BST<T> relu2;
-  BST<T> relu3;
+  // BST<T> relu3;
   Rectifier<T> relu1;
   Rectifier<T> relu2;
-  // Rectifier<T> relu3;
-  BinaryFull<T> full3;
-  BinaryFull<T> full4;
-  // FullyConnected<T> full3;
-  // FullyConnected<T> full4;
+  Rectifier<T> relu3;
+  // BinaryFull<T> full3;
+  // BinaryFull<T> full4;
+  FullyConnected<T> full3;
+  FullyConnected<T> full4;
   SoftMax<T> output4;
-  // BatchNormalization<T> bn1;
-  // BatchNormalization<T> bn2;
-  BatchNormalization<T> bn3;
-  BatchNormalization<T> bn4;
+  BatchNormalization<T> norm1;
+  BatchNormalization<T> norm2;
+  BatchNormalization<T> norm3;
+  BatchNormalization<T> norm4;
 
   Mat3D<T> input;
   Mat3D<T> fmap1;
@@ -72,8 +71,6 @@ public:
 
   int calc(string data, int which, int amount);
 };
-
-int lenet_calc(string data, int which, int amount);
 
 #include "lenet_batched.cpp"
 #endif

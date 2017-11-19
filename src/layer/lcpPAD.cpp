@@ -55,7 +55,7 @@ void lcpPAD<T>::load(string path)
 
 // TODO: Make if padded ver.
 template <typename T>
-void lcpPAD<T>::forward(Mat3D<T> &input, Mat3D<T> &output, int which, int amount)
+void lcpPAD<T>::forward(Mat3D<T>& input, Mat3D<T>& output, int which, int amount)
 {
   const int ihei = input[0].size();
   const int iwid = input[0][0].size();

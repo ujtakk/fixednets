@@ -4,7 +4,7 @@
 
 /*activation by hinge function*/
 template <typename T>
-void relu(Mat3D<T> &input, Mat3D<T> &output)
+void relu(Mat3D<T>& input, Mat3D<T>& output)
 {
   const int n_in = input.size();
   const int in_h = input[0].size();
@@ -20,7 +20,7 @@ void relu(Mat3D<T> &input, Mat3D<T> &output)
 }
 
 template <typename T>
-void relu(Mat1D<T> &input, Mat1D<T> &output)
+void relu(Mat1D<T>& input, Mat1D<T>& output)
 {
   const int n_in = input.size();
 
@@ -31,7 +31,7 @@ void relu(Mat1D<T> &input, Mat1D<T> &output)
       output[n] = input[n];
 }
 
-int softmax(Mat1D<double> &output, int len) {
+int softmax(Mat1D<double>& output, int len) {
   double expsum = 0.0;
 
   for (int i = 0; i < len; i++)

@@ -11,19 +11,19 @@ Rectifier<T>::~Rectifier()
 }
 
 template <typename T>
-void Rectifier<T>::forward(Mat3D<T> &input, Mat3D<T> &output)
+void Rectifier<T>::forward(Mat3D<T>& input, Mat3D<T>& output)
 {
   relu(input, output);
 }
 
 template <typename T>
-void Rectifier<T>::forward(Mat1D<T> &input, Mat1D<T> &output)
+void Rectifier<T>::forward(Mat1D<T>& input, Mat1D<T>& output)
 {
   relu(input, output);
 }
 
 template <typename T>
-void Rectifier<T>::backward(Mat3D<T> &output, Mat3D<T> &input)
+void Rectifier<T>::backward(Mat3D<T>& output, Mat3D<T>& input)
 {
   const int onum = output.size();
   const int ohei = output[0].size();
@@ -45,7 +45,7 @@ void Rectifier<T>::backward(Mat3D<T> &output, Mat3D<T> &input)
 }
 
 template <typename T>
-void Rectifier<T>::backward(Mat1D<T> &output, Mat1D<T> &input)
+void Rectifier<T>::backward(Mat1D<T>& output, Mat1D<T>& input)
 {
   const int olen = output.size();
 

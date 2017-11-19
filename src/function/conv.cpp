@@ -3,10 +3,10 @@
 #include "function.hpp"
 
 /*convolution image to feature map*/
-void conv_error1(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
+void conv_error1(Mat2D<int>& input, Mat2D<int>& fweight, Mat2D<int>& fmap,
   const int ihei, const int iwid,
   const int fhei, const int fwid, const int N_EM1,
-  Mat2D<int> &etable
+  Mat2D<int>& etable
 )
 {
   int pro;
@@ -27,7 +27,7 @@ void conv_error1(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
   }
 }
 
-void conv_error1_bias(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
+void conv_error1_bias(Mat2D<int>& input, Mat2D<int>& fweight, Mat2D<int>& fmap,
   const int ihei, const int iwid,
   const int fhei, const int fwid, const int N_EM1,
   int bias, double prob
@@ -51,10 +51,10 @@ void conv_error1_bias(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
   }
 }
 
-int conv_error2(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
+int conv_error2(Mat2D<int>& input, Mat2D<int>& fweight, Mat2D<int>& fmap,
   const int ihei, const int iwid,
   const int fhei, const int fwid, const int N_EM2,
-  Mat2D<int> &etable
+  Mat2D<int>& etable
 )
 {
   int pro;
@@ -78,7 +78,7 @@ int conv_error2(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
   return err_flag;
 }
 
-int conv_error2_bias(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
+int conv_error2_bias(Mat2D<int>& input, Mat2D<int>& fweight, Mat2D<int>& fmap,
   const int ihei, const int iwid,
   const int fhei, const int fwid, const int N_EM2,
   int bias, double prob
@@ -106,10 +106,10 @@ int conv_error2_bias(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
 }
 
 /*convolution feature map to feature map*/
-void fm_fm_e(Mat3D<int> &infm, Mat3D<int> &outfm, Mat4D<int> &fweight,
+void fm_fm_e(Mat3D<int>& infm, Mat3D<int>& outfm, Mat4D<int>& fweight,
   const int n_in, const int n_out, const int ihei, const int iwid,
   const int fhei, const int fwid, const int N_EM2,
-  Mat2D<int> &etable
+  Mat2D<int>& etable
 )
 {
   Mat3D<int> sum;
@@ -130,7 +130,7 @@ void fm_fm_e(Mat3D<int> &infm, Mat3D<int> &outfm, Mat4D<int> &fweight,
   //ifree_3d(sum,n_out,ihei-fhei+1);
 }
 
-void fm_fm_bias(Mat3D<int> &infm, Mat3D<int> &outfm, Mat4D<int> &fweight,
+void fm_fm_bias(Mat3D<int>& infm, Mat3D<int>& outfm, Mat4D<int>& fweight,
   const int n_in, const int n_out, const int ihei, const int iwid,
   const int fhei, const int fwid, const int N_EM2,
   int bias, double prob
@@ -154,7 +154,7 @@ void fm_fm_bias(Mat3D<int> &infm, Mat3D<int> &outfm, Mat4D<int> &fweight,
   //ifree_3d(sum,n_out,ihei-fhei+1);
 }
 
-void conv_approx(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
+void conv_approx(Mat2D<int>& input, Mat2D<int>& fweight, Mat2D<int>& fmap,
   const int ihei, const int iwid, const int fhei, const int fwid,
   int which, int amount
 )
@@ -180,7 +180,7 @@ void conv_approx(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
 }
 
 /*convolution feature map to feature map*/
-void fm_fm(Mat3D<int> &infm, Mat3D<int> &outfm, Mat4D<int> &fweight,
+void fm_fm(Mat3D<int>& infm, Mat3D<int>& outfm, Mat4D<int>& fweight,
   const int n_in, const int n_out, const int ihei, const int iwid, const int fhei, const int fwid
 )
 {
@@ -200,7 +200,7 @@ void fm_fm(Mat3D<int> &infm, Mat3D<int> &outfm, Mat4D<int> &fweight,
   }
 }
 
-void fm_fm_approx(Mat3D<int> &infm, Mat3D<int> &outfm, Mat4D<int> &fweight,
+void fm_fm_approx(Mat3D<int>& infm, Mat3D<int>& outfm, Mat4D<int>& fweight,
   const int n_in, const int n_out, const int ihei, const int iwid, const int fhei, const int fwid,
   int which, int amount
 )
@@ -223,7 +223,7 @@ void fm_fm_approx(Mat3D<int> &infm, Mat3D<int> &outfm, Mat4D<int> &fweight,
 
 /*convolution image to feature map*/
 template <typename T>
-void conv(Mat2D<T> &input, Mat2D<T> &fweight, Mat2D<T> &fmap,
+void conv(Mat2D<T>& input, Mat2D<T>& fweight, Mat2D<T>& fmap,
   const int ihei, const int iwid, const int fhei, const int fwid
 )
 {
@@ -248,7 +248,7 @@ void conv(Mat2D<T> &input, Mat2D<T> &fweight, Mat2D<T> &fmap,
 }
 
 template <typename T>
-void conv_plus(Mat2D<T> &input, Mat2D<T> &fweight, Mat2D<T> &fmap,
+void conv_plus(Mat2D<T>& input, Mat2D<T>& fweight, Mat2D<T>& fmap,
   const int ihei, const int iwid, const int fhei, const int fwid
 )
 {
@@ -272,7 +272,7 @@ void conv_plus(Mat2D<T> &input, Mat2D<T> &fweight, Mat2D<T> &fmap,
   }
 }
 
-void conv_plus_bi(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
+void conv_plus_bi(Mat2D<int>& input, Mat2D<int>& fweight, Mat2D<int>& fmap,
   const int ihei, const int iwid, const int fhei, const int fwid
 )
 {
@@ -296,7 +296,7 @@ void conv_plus_bi(Mat2D<int> &input, Mat2D<int> &fweight, Mat2D<int> &fmap,
   }
 }
 template <typename T>
-void conv_plus_bi(Mat2D<T> &input, Mat2D<T> &fweight, Mat2D<T> &fmap,
+void conv_plus_bi(Mat2D<T>& input, Mat2D<T>& fweight, Mat2D<T>& fmap,
   const int ihei, const int iwid, const int fhei, const int fwid,
   int stride, int pad
 )
@@ -330,7 +330,7 @@ void conv_plus_bi(Mat2D<T> &input, Mat2D<T> &fweight, Mat2D<T> &fmap,
 
 
 template <typename T>
-void conv_plus_pad(Mat2D<T> &input, Mat2D<T> &fweight, Mat2D<T> &fmap,
+void conv_plus_pad(Mat2D<T>& input, Mat2D<T>& fweight, Mat2D<T>& fmap,
   const int ihei, const int iwid, const int fhei, const int fwid,
   int stride, int pad
 )
@@ -363,7 +363,7 @@ void conv_plus_pad(Mat2D<T> &input, Mat2D<T> &fweight, Mat2D<T> &fmap,
 }
 
 template <typename T>
-void conv_plus_pad(Mat3D<T> &input, Mat4D<T> &weight, Mat3D<T> &output,
+void conv_plus_pad(Mat3D<T>& input, Mat4D<T>& weight, Mat3D<T>& output,
                    int stride, int pad)
 {
   const int n_out = output.size();

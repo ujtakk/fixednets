@@ -21,8 +21,8 @@ public:
 
   Mat1D<T> y_pred;
 
-  void forward(Mat1D<T> &input, Mat1D<T> &output);
-  void backward(Mat1D<T> &output, Mat1D<T> &input);
+  void forward(Mat1D<T>& input, Mat1D<T>& output);
+  void backward(Mat1D<T>& output, Mat1D<T>& input);
 
   double negative_log_likelihood(Mat1D<T> y);
   void errors(Mat1D<T> input, Mat1D<T> output, int label);

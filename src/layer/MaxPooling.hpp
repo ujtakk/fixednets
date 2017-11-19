@@ -20,8 +20,8 @@ public:
   const int shape[2];
   int stride;
 
-  void forward(Mat3D<T> &input, Mat3D<T> &output);
-  void backward(Mat3D<T> &output, Mat3D<T> &input);
+  void forward(Mat3D<T>& input, Mat3D<T>& output);
+  void backward(Mat3D<T>& output, Mat3D<T>& input);
 };
 
 #include "MaxPooling.cpp"

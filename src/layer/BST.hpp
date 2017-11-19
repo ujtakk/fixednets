@@ -13,10 +13,10 @@ public:
   BST();
   ~BST();
 
-  void forward(Mat3D<T> &input, Mat3D<T> &output);
-  void forward(Mat1D<T> &input, Mat1D<T> &output);
-  void backward(Mat3D<T> &output, Mat3D<T> &input);
-  void backward(Mat1D<T> &output, Mat1D<T> &input);
+  void forward(Mat3D<T>& input, Mat3D<T>& output);
+  void forward(Mat1D<T>& input, Mat1D<T>& output);
+  void backward(Mat3D<T>& output, Mat3D<T>& input);
+  void backward(Mat1D<T>& output, Mat1D<T>& input);
 };
 
 #include "BST.cpp"

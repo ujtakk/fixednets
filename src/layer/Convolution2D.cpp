@@ -25,6 +25,10 @@ Convolution2D<T>::~Convolution2D()
 template <typename T>
 void Convolution2D<T>::load(string path)
 {
+#if 1
+  load_txt(iw, path+"/W.txt");
+  load_txt(ib, path+"/b.txt");
+#else
   std::vector<string> filename(shape[0]);
 
   #ifdef _OPENMP
@@ -39,15 +43,18 @@ void Convolution2D<T>::load(string path)
     filename[i] = path+"/data"+to_string(i)+".txt";
     load_b(filename[i], ib[i]);
   }
+#endif
 }
 
 template <typename T>
 void Convolution2D<T>::save(string path)
 {
+  save_txt(iw, path+"/W.txt");
+  save_txt(ib, path+"/b.txt");
 }
 
 template <typename T>
-void Convolution2D<T>::forward(Mat3D<T> &input, Mat3D<T> &output)
+void Convolution2D<T>::forward(Mat3D<T>& input, Mat3D<T>& output)
 {
   const int n_out = output.size();
   const int out_h = output[0].size();
@@ -60,7 +67,7 @@ void Convolution2D<T>::forward(Mat3D<T> &input, Mat3D<T> &output)
 }
 
 template <typename T>
-void Convolution2D<T>::backward(Mat3D<T> &output, Mat3D<T> &input)
+void Convolution2D<T>::backward(Mat3D<T>& output, Mat3D<T>& input)
 {
   const int ohei = output[0].size();
   const int owid = output[0][0].size();

@@ -1,6 +1,7 @@
 #ifdef _FULLYCONNECTED_HPP_
 
 #include "matrix.hpp"
+#include "load.hpp"
 
 using std::to_string;
 
@@ -22,6 +23,10 @@ FullyConnected<T>::~FullyConnected()
 template <typename T>
 void FullyConnected<T>::load(string path)
 {
+#if 1
+  load_txt(iw, path+"/W.txt");
+  load_txt(ib, path+"/b.txt");
+#else
   std::vector<string> filename(shape[0]);
 
   #ifdef _OPENMP
@@ -31,6 +36,7 @@ void FullyConnected<T>::load(string path)
     filename[i] = path+"/data"+to_string(i)+".txt";
     load_data_1d(filename[i], iw[i], ib[i], shape[1]);
   }
+#endif
 }
 
 template <typename T>
@@ -39,7 +45,7 @@ void FullyConnected<T>::save(string path)
 }
 
 template <typename T>
-void FullyConnected<T>::forward(Mat1D<T> &input, Mat1D<T> &output)
+void FullyConnected<T>::forward(Mat1D<T>& input, Mat1D<T>& output)
 {
   const int n_out = output.size();
 
@@ -50,7 +56,7 @@ void FullyConnected<T>::forward(Mat1D<T> &input, Mat1D<T> &output)
 }
 
 template <typename T>
-void FullyConnected<T>::backward(Mat1D<T> &output, Mat1D<T> &input)
+void FullyConnected<T>::backward(Mat1D<T>& output, Mat1D<T>& input)
 {
   int pro;
   int sum = 0;

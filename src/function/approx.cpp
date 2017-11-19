@@ -67,7 +67,7 @@ long long MULT(const int bitwidth, int x, int y, int radix, bool isbooth, int wh
 }
 
 //TODO: Confirm whether or not Cout is needed.
-int print(const int bitwidth, bool *A, bool sgnx, bool sgny, bool Cout)
+int print(const int bitwidth, bool* A, bool sgnx, bool sgny, bool Cout)
 {
   int total = 0;
 
@@ -90,7 +90,7 @@ int print(const int bitwidth, bool *A, bool sgnx, bool sgny, bool Cout)
   return total;
 }
 
-long long print_mult(const int bitwidth, bool *A, bool sgnx, bool sgny)
+long long print_mult(const int bitwidth, bool* A, bool sgnx, bool sgny)
 {
   long long total = 0;
 
@@ -105,7 +105,7 @@ long long print_mult(const int bitwidth, bool *A, bool sgnx, bool sgny)
   return total;
 }
 
-void convert(const int bitwidth, int number, bool *A)
+void convert(const int bitwidth, int number, bool* A)
 {
   int x = number;
   bool S, C;
@@ -134,13 +134,13 @@ void convert(const int bitwidth, int number, bool *A)
   }
 }
 
-void HA(bool A, bool B, bool &S, bool &C)
+void HA(bool A, bool B, bool& S, bool& C)
 {
   S = A ^ B;
   C = A & B;
 }
 
-void FA(bool A, bool B, bool Cin, bool &S, bool &Cout)
+void FA(bool A, bool B, bool Cin, bool& S, bool& Cout)
 {
   bool s1, c1, c2;
 
@@ -150,7 +150,7 @@ void FA(bool A, bool B, bool Cin, bool &S, bool &Cout)
   Cout = c1 | c2;
 }
 
-void AMA1(bool A, bool B, bool Cin, bool &S, bool &Cout)
+void AMA1(bool A, bool B, bool Cin, bool& S, bool& Cout)
 {
   if (!A) {
     if (!B) {
@@ -174,7 +174,7 @@ void AMA1(bool A, bool B, bool Cin, bool &S, bool &Cout)
   }
 }
 
-void AMA2(bool A, bool B, bool Cin, bool &S, bool &Cout)
+void AMA2(bool A, bool B, bool Cin, bool& S, bool& Cout)
 {
   if (!A) {
     if (!B) {
@@ -198,7 +198,7 @@ void AMA2(bool A, bool B, bool Cin, bool &S, bool &Cout)
   }
 }
 
-void AMA3(bool A, bool B, bool Cin, bool &S, bool &Cout)
+void AMA3(bool A, bool B, bool Cin, bool& S, bool& Cout)
 {
   if (!A) {
     if (!B) {
@@ -222,7 +222,7 @@ void AMA3(bool A, bool B, bool Cin, bool &S, bool &Cout)
   }
 }
 
-void AXA1(bool A, bool B, bool Cin, bool &S, bool &Cout)
+void AXA1(bool A, bool B, bool Cin, bool& S, bool& Cout)
 {
   if (!A) {
     if (!B) {
@@ -246,7 +246,7 @@ void AXA1(bool A, bool B, bool Cin, bool &S, bool &Cout)
   }
 }
 
-void AXA2(bool A, bool B, bool Cin, bool &S, bool &Cout)
+void AXA2(bool A, bool B, bool Cin, bool& S, bool& Cout)
 {
   if (!A) {
     if (!B) {
@@ -270,7 +270,7 @@ void AXA2(bool A, bool B, bool Cin, bool &S, bool &Cout)
   }
 }
 
-void AXA3(bool A, bool B, bool Cin, bool &S, bool &Cout)
+void AXA3(bool A, bool B, bool Cin, bool& S, bool& Cout)
 {
   if (!A) {
     if (!B) {
@@ -294,7 +294,7 @@ void AXA3(bool A, bool B, bool Cin, bool &S, bool &Cout)
   }
 }
 
-void hinagata(bool A, bool B, bool Cin, bool &S, bool &Cout)
+void hinagata(bool A, bool B, bool Cin, bool& S, bool& Cout)
 {
   if (!A) {
     if (!B) {
@@ -318,7 +318,7 @@ void hinagata(bool A, bool B, bool Cin, bool &S, bool &Cout)
   }
 }
 
-void RCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout)
+void RCA(const int bitwidth, bool* A, bool* B, bool Cin, bool* S, bool& Cout)
 {
   bool c[bitwidth];
 
@@ -330,7 +330,7 @@ void RCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout)
   Cout = c[bitwidth-1];
 }
 
-void Cut2RCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout)
+void Cut2RCA(const int bitwidth, bool* A, bool* B, bool Cin, bool* S, bool& Cout)
 {
   bool c[bitwidth];
 
@@ -346,7 +346,7 @@ void Cut2RCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout
   Cout = c[bitwidth-1];
 }
 
-void Cut4RCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout)
+void Cut4RCA(const int bitwidth, bool* A, bool* B, bool Cin, bool* S, bool& Cout)
 {
   bool c[bitwidth];
 
@@ -366,7 +366,7 @@ void Cut4RCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout
   Cout = c[bitwidth-1];
 }
 
-void AMRCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout, int which, int amount)
+void AMRCA(const int bitwidth, bool* A, bool* B, bool Cin, bool* S, bool& Cout, int which, int amount)
 {
   bool c[bitwidth];
 
@@ -398,7 +398,7 @@ void AMRCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout, 
   Cout = c[bitwidth-1];
 }
 
-void AXRCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout, int which, int amount)
+void AXRCA(const int bitwidth, bool* A, bool* B, bool Cin, bool* S, bool& Cout, int which, int amount)
 {
   bool c[bitwidth];
 
@@ -430,7 +430,7 @@ void AXRCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout, 
   Cout = c[bitwidth-1];
 }
 
-void LORCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout, int amount)
+void LORCA(const int bitwidth, bool* A, bool* B, bool Cin, bool* S, bool& Cout, int amount)
 {
   bool c[bitwidth];
   for (int i = 0; i < bitwidth; i++) {
@@ -453,7 +453,7 @@ void LORCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout, 
   Cout = c[bitwidth-1];
 }
 
-void ESRCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout, int length)
+void ESRCA(const int bitwidth, bool* A, bool* B, bool Cin, bool* S, bool& Cout, int length)
 {
   int num = bitwidth / length;
   int bottom = bitwidth % length;
@@ -489,7 +489,7 @@ void ESRCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout, 
   }
 }
 
-void TruncRCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout, int amount)
+void TruncRCA(const int bitwidth, bool* A, bool* B, bool Cin, bool* S, bool& Cout, int amount)
 {
   bool a[bitwidth-amount];
   bool b[bitwidth-amount];
@@ -510,7 +510,7 @@ void TruncRCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cou
   }
 }
 
-void GPRCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout, int length)
+void GPRCA(const int bitwidth, bool* A, bool* B, bool Cin, bool* S, bool& Cout, int length)
 {
   bool G[bitwidth];
   bool P[bitwidth];
@@ -529,7 +529,7 @@ void GPRCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout, 
   Cout = c[bitwidth];
 }
 
-void ETRCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout, int length)
+void ETRCA(const int bitwidth, bool* A, bool* B, bool Cin, bool* S, bool& Cout, int length)
 {
   bool G[bitwidth];
   bool P[bitwidth];
@@ -551,7 +551,7 @@ void ETRCA(const int bitwidth, bool *A, bool *B, bool Cin, bool *S, bool &Cout, 
   Cout = c[bitwidth];
 }
 
-void CSA(const int bitwidth, bool *X, bool *Y, bool *Z, bool *S, bool *C, int start, int which, int amount)
+void CSA(const int bitwidth, bool* X, bool* Y, bool* Z, bool* S, bool* C, int start, int which, int amount)
 {
   C[0] = false;
 
@@ -609,7 +609,7 @@ void CSA(const int bitwidth, bool *X, bool *Y, bool *Z, bool *S, bool *C, int st
     FA(X[i], Y[i], Z[i], S[i], C[i+1]);
 }
 
-void RCA_test(const int bitwidth, bool *X, bool *Y, bool Cin, bool *S, bool &Cout, int start, int which, int amount)
+void RCA_test(const int bitwidth, bool* X, bool* Y, bool Cin, bool* S, bool& Cout, int start, int which, int amount)
 {
   bool C[bitwidth+1];
 
@@ -671,7 +671,7 @@ void RCA_test(const int bitwidth, bool *X, bool *Y, bool Cin, bool *S, bool &Cou
   Cout = C[bitwidth];
 }
 
-void R2_Wallace2(bool *A, bool *B, bool *P)
+void R2_Wallace2(bool* A, bool* B, bool* P)
 {
   bool PP[4][4] = {{false}};
   bool PS[6][4] = {{false}};
@@ -705,7 +705,7 @@ void R2_Wallace2(bool *A, bool *B, bool *P)
   RCA(4, PS[1], PC[1], false, P, Cout);
 }
 
-void R2_Wallace4(bool *A, bool *B, bool *P)
+void R2_Wallace4(bool* A, bool* B, bool* P)
 {
   bool PP[8][8] = {{false}};
   bool PS[6][8] = {{false}};
@@ -745,7 +745,7 @@ void R2_Wallace4(bool *A, bool *B, bool *P)
   RCA(8, PS[5], PC[5], false, P, Cout);
 }
 
-void R2_Wallace8(bool *A, bool *B, bool *P)
+void R2_Wallace8(bool* A, bool* B, bool* P)
 {
   bool PP[16][16] = {{false}};
   bool PS[14][16] = {{false}};
@@ -795,7 +795,7 @@ void R2_Wallace8(bool *A, bool *B, bool *P)
   RCA(16, PS[13], PC[13], false, P, Cout);
 }
 
-void R2_Wallace16(bool *A, bool *B, bool *P, int which, int amount)
+void R2_Wallace16(bool* A, bool* B, bool* P, int which, int amount)
 {
   bool PP[32][32] = {{false}};
   bool PS[30][32] = {{false}};
@@ -863,7 +863,7 @@ void R2_Wallace16(bool *A, bool *B, bool *P, int which, int amount)
   RCA_test(32, PS[29], PC[29], false, P, Cout, 9, which, 0);
 }
 
-void R4_Booth16(bool *A, bool *B, bool *P, int which, int amount)
+void R4_Booth16(bool* A, bool* B, bool* P, int which, int amount)
 {
   bool PP[8][32] = {{false}};
   bool PS[15][32] = {{false}};

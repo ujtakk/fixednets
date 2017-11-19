@@ -3,7 +3,7 @@
 #include <limits>
 
 /*median pooling*/
-static void swap(Mat1D<int> &input,int i,int j)
+static void swap(Mat1D<int>& input,int i,int j)
 {
   int temp;
 
@@ -13,7 +13,7 @@ static void swap(Mat1D<int> &input,int i,int j)
 }
 
 void median_pooling(
-  Mat2D<int> &fmap, Mat2D<int> &pmap,
+  Mat2D<int>& fmap, Mat2D<int>& pmap,
   const int fmhei, const int fmwid, const int phei, const int pwid
 )
 {
@@ -38,7 +38,7 @@ void median_pooling(
 }
 
 template <typename T>
-void pool_max(Mat3D<T> &input, Mat3D<T> &output,
+void pool_max(Mat3D<T>& input, Mat3D<T>& output,
               int fil_h, int fil_w, int stride)
 {
   const int n_in = input.size();

@@ -11,7 +11,7 @@ BST<T>::~BST()
 }
 
 template <typename T>
-void BST<T>::forward(Mat3D<T> &input, Mat3D<T> &output)
+void BST<T>::forward(Mat3D<T>& input, Mat3D<T>& output)
 {
   const int inum = input.size();
   const int ihei = input[0].size();
@@ -33,7 +33,7 @@ void BST<T>::forward(Mat3D<T> &input, Mat3D<T> &output)
 }
 
 template <typename T>
-void BST<T>::forward(Mat1D<T> &input, Mat1D<T> &output)
+void BST<T>::forward(Mat1D<T>& input, Mat1D<T>& output)
 {
   const int ilen = input.size();
 
@@ -49,7 +49,7 @@ void BST<T>::forward(Mat1D<T> &input, Mat1D<T> &output)
 }
 
 template <typename T>
-void BST<T>::backward(Mat3D<T> &output, Mat3D<T> &input)
+void BST<T>::backward(Mat3D<T>& output, Mat3D<T>& input)
 {
   const int onum = output.size();
   const int ohei = output[0].size();
@@ -69,7 +69,7 @@ void BST<T>::backward(Mat3D<T> &output, Mat3D<T> &input)
 }
 
 template <typename T>
-void BST<T>::backward(Mat1D<T> &output, Mat1D<T> &input)
+void BST<T>::backward(Mat1D<T>& output, Mat1D<T>& input)
 {
   const int olen = output.size();
 
