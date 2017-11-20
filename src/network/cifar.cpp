@@ -80,6 +80,26 @@ void CIFAR<T>::Load(string path)
 }
 
 template <typename T>
+void CIFAR<T>::Save(string path)
+{
+}
+
+template <typename T>
+void CIFAR<T>::Forward(string data)
+{
+}
+
+template <typename T>
+void CIFAR<T>::Backward(int label)
+{
+}
+
+template <typename T>
+void CIFAR<T>::Update()
+{
+}
+
+template <typename T>
 int CIFAR<T>::calc(string data, int which, int amount)
 {
   int number = -1;

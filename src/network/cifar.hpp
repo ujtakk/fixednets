@@ -84,6 +84,12 @@ public:
   ~CIFAR();
 
   void Load(string path);
+  void Save(string path);
+
+  void Forward(string data);
+  void Backward(int label);
+  void Update();
+
   int calc(string data, int which, int amount);
 };
 
