@@ -1,5 +1,6 @@
 #ifdef _UTIL_HPP_
 
+#include <cassert>
 #include <random>
 
 #include "fixed_point.hpp"
@@ -98,6 +99,29 @@ void reshape(Mat1D<T>& array, Mat3D<T>& matrix,
     for (int j = 0; j < mhei; j++)
       for (int k = 0; k < mwid; k++)
         matrix[i][j][k] = array[i*mhei*mwid+j*mwid+k];
+}
+
+template <typename T>
+void concat(Mat3D<T>& a, Mat3D<T>& b, Mat3D<T>& c)
+{
+  const int n_a = a.size();
+  const int n_b = b.size();
+  const int n_c = c.size();
+
+  assert(n_c == n_b + n_a);
+
+  const int im_h = c[0].size();
+  const int im_w = c[0][0].size();
+
+  for (int i = 0; i < n_a; ++i)
+    for (int j = 0; j < im_h; ++j)
+      for (int k = 0; k < im_w; ++k)
+        c[i][j][k] = a[i][j][k];
+
+  for (int i = 0; i < n_b; ++i)
+    for (int j = 0; j < im_h; ++j)
+      for (int k = 0; k < im_w; ++k)
+        c[i+n_a][j][k] = b[i][j][k];
 }
 
 #endif

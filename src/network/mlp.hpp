@@ -19,10 +19,7 @@ private:
   FullyConnected<T> full3;
   Rectifier<T> relu1;
   Rectifier<T> relu2;
-  BatchNormalization<T> bn1;
-  BatchNormalization<T> bn2;
-  BatchNormalization<T> bn3;
-  SoftMax<T> output3;
+  SoftMax<T> prob3;
 
   Mat3D<T> input;
   Mat1D<T> input_flat;

@@ -28,5 +28,8 @@ template <typename T>
 void reshape(Mat1D<T>& array, Mat3D<T>& matrix,
              const int mdep, const int mhei, const int mwid);
 
+template <typename T>
+void concat(Mat3D<T>& a, Mat3D<T>& b, Mat3D<T>& c);
+
 #include "util.cpp"
 #endif

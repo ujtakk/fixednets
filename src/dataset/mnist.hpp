@@ -4,6 +4,7 @@
 #include "network.hpp"
 
 #define _LENET
+// #define _MLP
 #define _EAGER
 
 class MNIST : Dataset
@@ -25,7 +26,6 @@ public:
   MNIST();
   ~MNIST();
 
-  Mat3D<Q_TYPE> data();
   int predict(int label, int sample);
   void test();
 

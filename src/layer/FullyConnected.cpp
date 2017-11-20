@@ -1,7 +1,6 @@
 #ifdef _FULLYCONNECTED_HPP_
 
 #include "matrix.hpp"
-#include "load.hpp"
 
 using std::to_string;
 
@@ -80,9 +79,23 @@ void FullyConnected<T>::backward(Mat1D<T>& output, Mat1D<T>& input)
   }
 }
 
+// TODO: introduce batch
 template <typename T>
+// void FullyConnected<T>::update(float alpha)
 void FullyConnected<T>::update()
 {
+  float alpha = 0.0;
+
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
+  for (int i = 0; i < shape[0]; ++i)
+    for (int j = 0; j < shape[1]; ++j)
+      iw[i][j] -= alpha * gw[i][j];
+
+  for (int i = 0; i < shape[0]; i++) {
+    ib[i] -= alpha * gb[i];
+  }
 }
 
 #endif

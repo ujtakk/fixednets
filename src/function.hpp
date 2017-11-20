@@ -2,6 +2,7 @@
 #define _FUNCTION_HPP_
 
 #include "function/util.hpp"
+#include "function/load.hpp"
 
 #include "function/error.hpp"
 #include "function/approx.hpp"

@@ -1,6 +1,5 @@
 #ifdef _CONVOLUTION2D_HPP_
 
-#include "load.hpp"
 #include "function.hpp"
 
 using std::to_string;
