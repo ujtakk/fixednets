@@ -31,13 +31,13 @@ void relu(Mat1D<T>& input, Mat1D<T>& output)
       output[n] = input[n];
 }
 
-int softmax(Mat1D<double>& output, int len) {
-  double expsum = 0.0;
+int softmax(Mat1D<float>& output, int len) {
+  float expsum = 0.0;
 
   for (int i = 0; i < len; i++)
     expsum += exp(output[i]);
 
-  if (std::abs(expsum-0.0) < std::numeric_limits<double>::min())
+  if (std::abs(expsum-0.0) < std::numeric_limits<float>::min())
     throw "softmax calculation failed";
 
   for (int i = 0; i < len; i++)

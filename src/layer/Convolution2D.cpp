@@ -62,6 +62,7 @@ void Convolution2D<T>::forward(Mat3D<T>& input, Mat3D<T>& output)
   Mat3D<T> conved = zeros<T>(n_out, out_h, out_w);
 
   conv_plus_pad(input, iw, conved, stride, pad);
+  // conv_gemm(input, iw, conved, stride, pad);
   bias(conved, ib, output);
 }
 

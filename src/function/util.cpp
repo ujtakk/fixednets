@@ -5,8 +5,13 @@
 
 #include "fixed_point.hpp"
 
+inline float mul(float a, float b)
+{
+  return a * b;
+}
+
 template <typename BaseT>
-BaseT mult_fixed(BaseT a, BaseT b)
+inline BaseT mul(BaseT a, BaseT b)
 {
   using MultT = int64_t;
   MultT c = a * b;

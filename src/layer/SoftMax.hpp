@@ -26,6 +26,8 @@ public:
 
   double negative_log_likelihood(Mat1D<T> y);
   double errors(Mat1D<T> y);
+
+  void loss(int label, Mat1D<T>& output, Mat1D<T>& input);
 };
 
 #include "SoftMax.cpp"

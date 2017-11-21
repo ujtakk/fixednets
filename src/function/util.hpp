@@ -3,8 +3,10 @@
 
 #include "matrix.hpp"
 
+inline float mul(float a, float b);
+
 template <typename BaseT>
-BaseT mult_fixed(BaseT a, BaseT b);
+inline BaseT mul(BaseT a, BaseT b);
 
 template <typename T>
 void bias(Mat1D<T>& input, Mat1D<T>& bias, Mat1D<T>& output);

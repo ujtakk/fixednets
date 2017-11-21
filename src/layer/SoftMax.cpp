@@ -21,7 +21,10 @@ void SoftMax<T>::forward(Mat1D<T>& input, Mat1D<T>& output)
   #pragma omp parallel for
   #endif
   for (int i = 0; i < len; i++)
+  {
     expsum += exp((double)input[i]);
+    // std::cout << input[i] << std::endl;
+  }
 
   if (std::abs(expsum-0.0) < std::numeric_limits<T>::epsilon())
     throw "Softmax.forward calculation failed";
@@ -64,6 +67,22 @@ double SoftMax<T>::errors(Mat1D<T> y)
     if (y_pred[i] != y[i]) a += 1.0;
 
   return a / (double)y.size();
+}
+
+#include <cstdio>
+template <typename T>
+void SoftMax<T>::loss(int label, Mat1D<T>& output, Mat1D<T>& input)
+{
+  const int olen = output.size();
+  const int ilen = input.size();
+  Mat1D<T> truth = zeros<T>(olen);
+  truth[label] = 1.0;
+
+  for (int i = 0; i < olen; ++i) {
+    input[i] = output[i] - truth[i];
+    // printf("%7.3f", input[i]);
+  }
+  // printf("\n");
 }
 
 #endif

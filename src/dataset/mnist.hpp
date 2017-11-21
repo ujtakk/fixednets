@@ -3,8 +3,8 @@
 
 #include "network.hpp"
 
-#define _LENET
-// #define _MLP
+// #define _LENET
+#define _MLP
 #define _EAGER
 
 class MNIST : Dataset
@@ -12,12 +12,11 @@ class MNIST : Dataset
 private:
 #if defined _MLP
   MLP<Q_TYPE> model;
-  const std::string base = "/home/work/takau/2.mlearn/mnist_data/input/";
 #elif defined _LENET
   LeNet<Q_TYPE> model;
-  const std::string base = "../data/mnist/input/";
 #endif
 
+  const std::string base = "../data/mnist/input/";
   std::string data(int label, int sample) {
     return base + to_string(label) + "/data" + to_string(sample) + ".txt";
   };
@@ -25,6 +24,8 @@ private:
 public:
   MNIST();
   ~MNIST();
+
+  void train();
 
   int predict(int label, int sample);
   void test();

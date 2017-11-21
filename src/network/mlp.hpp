@@ -16,20 +16,14 @@ private:
 
   FullyConnected<T> full1;
   FullyConnected<T> full2;
-  FullyConnected<T> full3;
   Rectifier<T> relu1;
-  Rectifier<T> relu2;
-  SoftMax<T> prob3;
+  SoftMax<T> prob2;
 
   Mat3D<T> input;
   Mat1D<T> input_flat;
   Mat1D<T> unit1;
-  Mat1D<T> bunit1;
   Mat1D<T> aunit1;
   Mat1D<T> unit2;
-  Mat1D<T> bunit2;
-  Mat1D<T> aunit2;
-  Mat1D<T> unit3;
   Mat1D<T> output;
 
 public:
@@ -43,7 +37,7 @@ public:
   void Backward(int label);
   void Update();
 
-  int calc(string data);
+  int calc(string data, int which, int amount);
 };
 
 #include "mlp.cpp"

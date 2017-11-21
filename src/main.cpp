@@ -8,7 +8,8 @@ int main(int argc, char **argv)
   // CIFAR10 target;
   // ImageNet target;
 
-  target.test();
+  // target.test();
+  target.train();
 
   return 0;
 }

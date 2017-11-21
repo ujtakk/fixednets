@@ -7,7 +7,7 @@ int ADD(const int bitwidth, int x, int y, int which, int amount)
   bool bz[bitwidth];
 
   int z;
-  bool Cin=false;
+  bool Cin = false;
   bool Cout;
 
   convert(bitwidth, x, bx);

@@ -48,7 +48,7 @@ void FullyConnected<T>::forward(Mat1D<T>& input, Mat1D<T>& output)
 {
   const int n_out = output.size();
 
-  Mat1D<T> fulled = zeros<T>(n_out);
+  auto fulled = zeros<T>(n_out);
 
   full(input, iw, fulled);
   bias(fulled, ib, output);
@@ -57,8 +57,8 @@ void FullyConnected<T>::forward(Mat1D<T>& input, Mat1D<T>& output)
 template <typename T>
 void FullyConnected<T>::backward(Mat1D<T>& output, Mat1D<T>& input)
 {
-  int pro;
-  int sum = 0;
+  T pro;
+  T sum = 0;
 
   #ifdef _OPENMP
   #pragma omp parallel for
@@ -81,10 +81,9 @@ void FullyConnected<T>::backward(Mat1D<T>& output, Mat1D<T>& input)
 
 // TODO: introduce batch
 template <typename T>
-// void FullyConnected<T>::update(float alpha)
 void FullyConnected<T>::update()
 {
-  float alpha = 0.0;
+  float alpha = 0.003;
 
   #ifdef _OPENMP
   #pragma omp parallel for
