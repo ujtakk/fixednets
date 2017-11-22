@@ -5,7 +5,8 @@ MNIST::MNIST()
 #if defined _MLP
   model.Load("../data/mnist/mlp");
 #elif defined _LENET
-  model.Load("../data/mnist/lenet");
+  // model.Load("../data/mnist/lenet");
+  model.Load("../../models_chainer/lenet5x5");
 #endif
 }
 

@@ -112,21 +112,21 @@ void interpret(Mat3D<T> preds)
 template <typename T>
 BBoxMask<T> calc(std::string data, int which, int amount)
 {
-  conv1.forward(input, fmap1);
-  pool1.forward(fmap1, pmap1);
-  fire2.forward(pmap1, fmap2);
-  fire3.forward(fmap2, fmap3);
-  pool3.forward(fmap3, pmap3);
-  fire4.forward(pmap3, fmap4);
-  fire5.forward(fmap4, fmap5);
-  pool5.forward(fmap5, pmap5);
-  fire6.forward(pmap5, fmap6);
-  fire7.forward(fmap6, fmap7);
-  fire8.forward(fmap7, fmap8);
-  fire9.forward(fmap8, fmap9);
-  fire10.forward(fmap9, fmap10);
-  fire11.forward(fmap10, fmap11);
-  conv12.forward(fmap11, fmap12);
+  conv1.forward(fmap1, input);
+  pool1.forward(pmap1, fmap1);
+  fire2.forward(fmap2, pmap1);
+  fire3.forward(fmap3, fmap2);
+  pool3.forward(pmap3, fmap3);
+  fire4.forward(fmap4, pmap3);
+  fire5.forward(fmap5, fmap4);
+  pool5.forward(pmap5, fmap5);
+  fire6.forward(fmap6, pmap5);
+  fire7.forward(fmap7, fmap6);
+  fire8.forward(fmap8, fmap7);
+  fire9.forward(fmap9, fmap8);
+  fire10.forward(fmap10, fmap9);
+  fire11.forward(fmap11, fmap10);
+  conv12.forward(fmap12, fmap11);
 
   BBoxMask<T> bboxes = interpret(fmap12);
 

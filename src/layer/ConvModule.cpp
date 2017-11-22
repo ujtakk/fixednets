@@ -24,7 +24,7 @@ void ConvModule<T>::save(std::string path)
 }
 
 template <typename T>
-void ConvModule<T>::forward(Mat3D<T>& input, Mat3D<T>& output)
+void ConvModule<T>::forward(Mat3D<T>& output, Mat3D<T>& input)
 {
   const int n_out = output.size();
   const int out_h = output[0].size();
@@ -32,12 +32,12 @@ void ConvModule<T>::forward(Mat3D<T>& input, Mat3D<T>& output)
 
   Mat3D<T> conved = zeros<T>(n_out, out_h, out_w);
 
-  conv.forward(input, conved);
-  relu.forward(conved, output);
+  conv.forward(conved, input);
+  relu.forward(output, conved);
 }
 
 template <typename T>
-void ConvModule<T>::backward(Mat3D<T>& output, Mat3D<T>& input)
+void ConvModule<T>::backward(Mat3D<T>& input, Mat3D<T>& output)
 {
 }
 

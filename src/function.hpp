@@ -9,6 +9,4 @@
 #include "function/pool.hpp"
 #include "function/actv.hpp"
 
-#include "function/lazy.hpp"
-
 #endif

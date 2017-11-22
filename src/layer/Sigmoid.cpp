@@ -11,7 +11,7 @@ Sigmoid<T>::~Sigmoid()
 }
 
 template <typename T>
-void Sigmoid<T>::forward(Mat1D<T>& input, Mat1D<T>& output)
+void Sigmoid<T>::forward(Mat1D<T>& output, Mat1D<T>& input)
 {
   const int ilen = input.size();
 
@@ -24,7 +24,7 @@ void Sigmoid<T>::forward(Mat1D<T>& input, Mat1D<T>& output)
 }
 
 template <typename T>
-void Sigmoid<T>::backward(Mat1D<T>& output, Mat1D<T>& input)
+void Sigmoid<T>::backward(Mat1D<T>& input, Mat1D<T>& output)
 {
   const int olen = output.size();
 
@@ -39,7 +39,7 @@ void Sigmoid<T>::backward(Mat1D<T>& output, Mat1D<T>& input)
 }
 
 template <typename T>
-void Sigmoid<T>::errors(Mat1D<T> input, Mat1D<T> output, int label)
+void Sigmoid<T>::errors(Mat1D<T> output, Mat1D<T> input, int label)
 {
   const int ilen = input.size();
 

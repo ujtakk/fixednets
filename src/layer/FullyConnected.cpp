@@ -30,27 +30,18 @@ void FullyConnected<T>::save(std::string path)
 }
 
 template <typename T>
-void FullyConnected<T>::forward(Mat1D<T>& input, Mat1D<T>& output)
+void FullyConnected<T>::forward(Mat1D<T>& output, Mat1D<T>& input)
 {
   const int n_out = output.size();
 
   auto fulled = zeros<T>(n_out);
 
-  full(input, iw, fulled);
-  bias(fulled, ib, output);
+  full(fulled, input, iw);
+  bias(output, fulled, ib);
 }
 
 template <typename T>
-Mat1D<T> FullyConnected<T>::forward(Mat1D<T>& input)
-{
-  auto fulled = full(input, iw);
-  auto output = bias(fulled, ib);
-
-  return output;
-}
-
-template <typename T>
-void FullyConnected<T>::backward(Mat1D<T>& output, Mat1D<T>& input)
+void FullyConnected<T>::backward(Mat1D<T>& input, Mat1D<T>& output)
 {
   T pro;
   T sum = 0;
@@ -72,32 +63,6 @@ void FullyConnected<T>::backward(Mat1D<T>& output, Mat1D<T>& input)
   for (int i = 0; i < shape[0]; i++) {
     gb[i] = output[i];
   }
-}
-
-template <typename T>
-Mat1D<T> FullyConnected<T>::backward(Mat1D<T>& output)
-{
-  auto input = zeros(shape[1]);
-
-  #ifdef _OPENMP
-  #pragma omp parallel for
-  #endif
-  for (int i = 0; i < shape[1]; i++) {
-    T sum = 0;
-
-    for (int j = 0; j < shape[0]; j++) {
-      gw[j][i] = input[i] * output[j];
-      sum += iw[j][i] * output[j];
-    }
-
-    input[i] = sum;
-  }
-
-  for (int i = 0; i < shape[0]; i++) {
-    gb[i] = output[i];
-  }
-
-  return input;
 }
 
 // TODO: introduce batch

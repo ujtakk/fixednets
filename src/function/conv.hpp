@@ -4,11 +4,8 @@
 #include "matrix.hpp"
 
 template <typename T>
-void conv_plus_pad(Mat3D<T>& input, Mat4D<T>& weight, Mat3D<T>& output,
+void conv_plus_pad(Mat3D<T>& output, Mat3D<T>& input, Mat4D<T>& weight,
                    int stride, int pad);
-
-template <typename T>
-Mat3D<T> conv_plus_pad(Mat3D<T>& input, Mat4D<T>& weight, int stride, int pad);
 
 #include "conv.cpp"
 #endif

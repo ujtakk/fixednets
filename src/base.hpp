@@ -9,8 +9,8 @@ class Layer
 private:
 
 public:
-  virtual void forward(T &input, T &output) = 0;
-  virtual void backward(T &output, T &input) = 0;
+  virtual void forward(T &output, T &input) = 0;
+  virtual void backward(T &input, T &output) = 0;
 };
 
 template <typename T>
@@ -21,8 +21,8 @@ public:
   virtual void load(std::string path) = 0;
   virtual void save(std::string path) = 0;
 
-  virtual void forward(T &input, T &output) = 0;
-  virtual void backward(T &output, T &input) = 0;
+  virtual void forward(T &output, T &input) = 0;
+  virtual void backward(T &input, T &output) = 0;
 
   virtual void update() = 0;
 };

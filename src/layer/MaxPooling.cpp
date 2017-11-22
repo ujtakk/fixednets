@@ -15,14 +15,14 @@ MaxPooling<T>::~MaxPooling()
 }
 
 template <typename T>
-void MaxPooling<T>::forward(Mat3D<T>& input, Mat3D<T>& output)
+void MaxPooling<T>::forward(Mat3D<T>& output, Mat3D<T>& input)
 {
-  pool_max(input, output, shape[0], shape[1], stride);
+  pool_max(output, input, shape[0], shape[1], stride);
 }
 
 //propagate grads only for position of max in filter
 template <typename T>
-void MaxPooling<T>::backward(Mat3D<T>& output, Mat3D<T>& input)
+void MaxPooling<T>::backward(Mat3D<T>& input, Mat3D<T>& output)
 {
   const int pmnum = output.size();
   const int pmhei = output[0].size();

@@ -51,41 +51,41 @@ void LeNet<T>::Forward(std::string data)
 {
   load_txt(input, data);
 
-  conv1.forward(input, fmap1);
-  pool1.forward(fmap1, pmap1);
-  relu1.forward(pmap1, amap1);
+  conv1.forward(fmap1, input);
+  pool1.forward(pmap1, fmap1);
+  relu1.forward(amap1, pmap1);
 
-  conv2.forward(pmap1, fmap2);
-  pool2.forward(fmap2, pmap2);
-  relu2.forward(pmap2, amap2);
+  conv2.forward(fmap2, pmap1);
+  pool2.forward(pmap2, fmap2);
+  relu2.forward(amap2, pmap2);
 
-  flatten(pmap2, pmap2_flat);
+  flatten(pmap2_flat, pmap2);
 
-  full3.forward(pmap2_flat, fvec3);
-  relu3.forward(fvec3, avec3);
+  full3.forward(fvec3, pmap2_flat);
+  relu3.forward(avec3, fvec3);
 
-  full4.forward(avec3, fvec4);
-  prob4.forward(fvec4, output);
+  full4.forward(fvec4, avec3);
+  prob4.forward(output, fvec4);
 }
 
 template <typename T>
 void LeNet<T>::Backward(int label)
 {
-  prob4.loss(label, output, fvec4);
-  full4.backward(fvec4, avec3);
+  prob4.loss(fvec4, output, label);
+  full4.backward(avec3, fvec4);
 
-  relu3.backward(avec3, fvec3);
-  full3.backward(fvec3, pmap2_flat);
+  relu3.backward(fvec3, avec3);
+  full3.backward(pmap2_flat, fvec3);
 
-  reshape(pmap2_flat, pmap2);
+  reshape(pmap2, pmap2_flat);
 
-  relu2.backward(amap2, pmap2);
-  pool2.backward(pmap2, fmap2);
-  conv2.backward(fmap2, pmap1);
+  relu2.backward(pmap2, amap2);
+  pool2.backward(fmap2, pmap2);
+  conv2.backward(pmap1, fmap2);
 
-  relu1.backward(amap1, pmap1);
-  pool1.backward(pmap1, fmap1);
-  conv1.backward(fmap1, input);
+  relu1.backward(pmap1, amap1);
+  pool1.backward(fmap1, pmap1);
+  conv1.backward(input, fmap1);
 }
 
 template <typename T>
@@ -102,21 +102,21 @@ int LeNet<T>::calc(std::string data, int which, int amount)
 {
   load_txt(input, data);
 
-  conv1.forward(input, fmap1);
-  relu1.forward(fmap1, amap1);
-  pool1.forward(amap1, pmap1);
+  conv1.forward(fmap1, input);
+  relu1.forward(amap1, fmap1);
+  pool1.forward(pmap1, amap1);
 
-  conv2.forward(pmap1, fmap2);
-  relu2.forward(fmap2, amap2);
-  pool2.forward(amap2, pmap2);
+  conv2.forward(fmap2, pmap1);
+  relu2.forward(amap2, fmap2);
+  pool2.forward(pmap2, amap2);
 
-  flatten(pmap2, pmap2_flat);
+  flatten(pmap2_flat, pmap2);
 
-  full3.forward(pmap2_flat, fvec3);
-  relu3.forward(fvec3, avec3);
+  full3.forward(fvec3, pmap2_flat);
+  relu3.forward(avec3, fvec3);
 
-  full4.forward(avec3, fvec4);
-  prob4.forward(fvec4, output);
+  full4.forward(fvec4, avec3);
+  prob4.forward(output, fvec4);
 
   int number = -1;
   T temp = std::numeric_limits<T>::min();

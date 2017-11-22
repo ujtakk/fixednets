@@ -4,20 +4,12 @@
 #include "matrix.hpp"
 
 template <typename T>
-void relu(Mat3D<T>& input, Mat3D<T>& output);
+void relu(Mat3D<T>& output, Mat3D<T>& input);
 
 template <typename T>
-void relu(Mat1D<T>& input, Mat1D<T>& output);
+void relu(Mat1D<T>& output, Mat1D<T>& input);
 
-void softmax(Mat1D<float>& input, Mat1D<float>& output);
-
-template <typename T>
-Mat3D<T> relu(Mat3D<T>& input);
-
-template <typename T>
-Mat1D<T> relu(Mat1D<T>& input);
-
-Mat1D<float> softmax(Mat1D<float>& input);
+void softmax(Mat1D<float>& output, Mat1D<float>& input);
 
 #include "actv.cpp"
 #endif

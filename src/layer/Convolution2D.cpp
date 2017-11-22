@@ -29,12 +29,12 @@ void Convolution2D<T>::load(std::string path)
 template <typename T>
 void Convolution2D<T>::save(std::string path)
 {
-  save_txt(iw, path+"/W.txt");
-  save_txt(ib, path+"/b.txt");
+  save_txt(path+"/W.txt", iw);
+  save_txt(path+"/b.txt", ib);
 }
 
 template <typename T>
-void Convolution2D<T>::forward(Mat3D<T>& input, Mat3D<T>& output)
+void Convolution2D<T>::forward(Mat3D<T>& output, Mat3D<T>& input)
 {
   const int n_out = output.size();
   const int out_h = output[0].size();
@@ -42,13 +42,13 @@ void Convolution2D<T>::forward(Mat3D<T>& input, Mat3D<T>& output)
 
   Mat3D<T> conved = zeros<T>(n_out, out_h, out_w);
 
-  conv_plus_pad(input, iw, conved, stride, pad);
-  // conv_gemm(input, iw, conved, stride, pad);
-  bias(conved, ib, output);
+  conv_plus_pad(conved, input, iw, stride, pad);
+  // conv_gemm(conved, input, iw, stride, pad);
+  bias(output, conved, ib);
 }
 
 template <typename T>
-void Convolution2D<T>::backward(Mat3D<T>& output, Mat3D<T>& input)
+void Convolution2D<T>::backward(Mat3D<T>& input, Mat3D<T>& output)
 {
   const int ohei = output[0].size();
   const int owid = output[0][0].size();
@@ -92,63 +92,6 @@ void Convolution2D<T>::backward(Mat3D<T>& output, Mat3D<T>& input)
     }
   }
 }
-
-template <typename T>
-Mat3D<T> Convolution2D<T>::forward(Mat3D<T>& input)
-{
-  auto conved = conv_plus_pad(input, iw, stride, pad);
-  auto output = bias(conved, ib);
-
-  return output;
-}
-
-#if 0
-template <typename T>
-Mat3D<T> Convolution2D<T>::backward(Mat3D<T>& output)
-{
-  const int ohei = output[0].size();
-  const int owid = output[0][0].size();
-
-  Mat4D<T> pro;
-  Mat2D<T> sum;
-
-  pro = zeros<T>(shape[0], shape[1], ohei+shape[2]-1, owid+shape[3]-1);
-  sum = zeros<T>(ohei+shape[2]-1, owid+shape[3]-1);
-
-  #ifdef _OPENMP
-  #pragma omp parallel for
-  #endif
-  for (int i = 0; i < shape[1]; i++) {
-    for (int j = 0; j < shape[0]; j++) {
-      //conv_valid(input[i], output[j], gw[j][i], ohei+shape[2]-1, owid+shape[3]-1, ohei, owid);
-      //conv_full(output[j], iw[j][i], pro[j][i], ohei, owid, shape[2], shape[3]);
-
-      for (int k = 0; k < ohei+shape[2]-1; k++) {
-        for (int l = 0; l < owid+shape[3]-1; l++) {
-          sum[k][l] += pro[j][i][k][l];
-        }
-      }
-    }
-
-    for (int k = 0; k < ohei+shape[2]-1; k++) {
-      for (int l = 0; l < owid+shape[3]-1; l++) {
-        input[i][k][l] = sum[k][l];
-        sum[k][l] = 0;
-      }
-    }
-  }
-
-  for (int i = 0; i < shape[0]; i++) {
-    gb[i] = 0;
-
-    for (int k = 0; k < ohei; k++) {
-      for (int l = 0; l < owid; l++) {
-        gb[i] += output[i][k][l];
-      }
-    }
-  }
-}
-#endif
 
 template <typename T>
 void Convolution2D<T>::update()

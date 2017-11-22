@@ -116,48 +116,48 @@ std::vector<int> AlexNet<T>::calc(std::string data)
 #ifdef _LAZY
   const int which = 0;
   const int amount = 0;
-  //convpool1.forward(input, pmap1, which, amount);
-  conv1.forward(input, fmap1);
-    bn1.forward(fmap1, bmap1);
-  pool1.forward(bmap1, pmap1);
-  relu1.forward(pmap1, amap1);
-  //convpool2.forward(amap1, pmap2, which, amount);
-  conv2.forward(amap1, fmap2);
-    bn2.forward(fmap2, bmap2);
-  pool2.forward(bmap2, pmap2);
-  relu2.forward(pmap2, amap2);
-  conv3.forward(amap2, fmap3);
-  relu3.forward(fmap3, amap3);
-  conv4.forward(amap3, fmap4);
-  relu4.forward(fmap4, amap4);
-  convpool5.forward(amap4, pmap5, which, amount);
-  relu5.forward(pmap5, amap5);
+  // convpool1.forward(pmap1, input, which, amount);
+  conv1.forward(fmap1, input);
+    bn1.forward(bmap1, fmap1);
+  pool1.forward(pmap1, bmap1);
+  relu1.forward(amap1, pmap1);
+  // convpool2.forward(pmap2, amap1, which, amount);
+  conv2.forward(fmap2, amap1);
+    bn2.forward(bmap2, fmap2);
+  pool2.forward(pmap2, bmap2);
+  relu2.forward(amap2, pmap2);
+  conv3.forward(fmap3, amap2);
+  relu3.forward(amap3, fmap3);
+  conv4.forward(fmap4, amap3);
+  relu4.forward(amap4, fmap4);
+  convpool5.forward(pmap5, amap4, which, amount);
+  relu5.forward(amap5, pmap5);
 #else
-  conv1.forward(input, fmap1);
-    bn1.forward(fmap1, bmap1);
-  pool1.forward(bmap1, pmap1);
-  relu1.forward(pmap1, amap1);
-  conv2.forward(amap1, fmap2);
-    bn2.forward(fmap2, bmap2);
-  pool2.forward(bmap2, pmap2);
-  relu2.forward(pmap2, amap2);
-  conv3.forward(amap2, fmap3);
-  relu3.forward(fmap3, amap3);
-  conv4.forward(amap3, fmap4);
-  relu4.forward(fmap4, amap4);
-  conv5.forward(amap4, fmap5);
-  pool5.forward(fmap5, pmap5);
-  relu5.forward(pmap5, amap5);
+  conv1.forward(fmap1, input);
+    bn1.forward(bmap1, fmap1);
+  pool1.forward(pmap1, bmap1);
+  relu1.forward(amap1, pmap1);
+  conv2.forward(fmap2, amap1);
+    bn2.forward(bmap2, fmap2);
+  pool2.forward(pmap2, bmap2);
+  relu2.forward(amap2, pmap2);
+  conv3.forward(fmap3, amap2);
+  relu3.forward(amap3, fmap3);
+  conv4.forward(fmap4, amap3);
+  relu4.forward(amap4, fmap4);
+  conv5.forward(fmap5, amap4);
+  pool5.forward(pmap5, fmap5);
+  relu5.forward(amap5, pmap5);
 #endif
 
-  flatten(amap5, amap5_flat);
+  flatten(amap5_flat, amap5);
 
-  full6.forward(amap5_flat, hunit1);
-  relu6.forward(hunit1, aunit1);
-  full7.forward(aunit1, hunit2);
-  relu7.forward(hunit2, aunit2);
+  full6.forward(hunit1, amap5_flat);
+  relu6.forward(aunit1, hunit1);
+  full7.forward(hunit2, aunit1);
+  relu7.forward(aunit2, hunit2);
 
-  full8.forward(aunit2, output);
+  full8.forward(output, aunit2);
 
   //output4.forward(output);
 

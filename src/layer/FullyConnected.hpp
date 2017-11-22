@@ -25,11 +25,8 @@ public:
   void load(std::string path);
   void save(std::string path);
 
-  void forward(Mat1D<T>& input, Mat1D<T>& output);
-  void backward(Mat1D<T>& output, Mat1D<T>& input);
-
-  Mat1D<T> forward(Mat1D<T>& input);
-  Mat1D<T> backward(Mat1D<T>& output);
+  void forward(Mat1D<T>& output, Mat1D<T>& input);
+  void backward(Mat1D<T>& input, Mat1D<T>& output);
 
   void update();
 };

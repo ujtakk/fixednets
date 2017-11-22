@@ -38,24 +38,24 @@ template <typename T>
 void MLP<T>::Forward(std::string data)
 {
   load_txt(input, data);
-  flatten(input, input_flat);
+  flatten(input_flat, input);
 
-  full1.forward(input_flat, unit1);
-  relu1.forward(unit1, aunit1);
-  full2.forward(aunit1, unit2);
+  full1.forward(unit1, input_flat);
+  relu1.forward(aunit1, unit1);
+  full2.forward(unit2, aunit1);
 
-  prob2.prob(unit2, output);
+  prob2.prob(output, unit2);
 }
 
 #include <cstdio>
 template <typename T>
 void MLP<T>::Backward(int label)
 {
-  prob2.loss(label, output, unit2);
+  prob2.loss(unit2, output, label);
 
-  full2.backward(unit2, aunit1);
-  relu1.backward(aunit1, unit1);
-  full1.backward(unit1, input_flat);
+  full2.backward(aunit1, unit2);
+  relu1.backward(unit1, aunit1);
+  full1.backward(input_flat, unit1);
 }
 
 template <typename T>
@@ -69,13 +69,13 @@ template <typename T>
 int MLP<T>::calc(std::string data, int which, int amount)
 {
   load_txt(input, data);
-  flatten(input, input_flat);
+  flatten(input_flat, input);
 
-  full1.forward(input_flat, unit1);
-  relu1.forward(unit1, aunit1);
-  // full2.forward(aunit1, output);
-  full2.forward(aunit1, unit2);
-  prob2.forward(unit2, output);
+  full1.forward(unit1, input_flat);
+  relu1.forward(aunit1, unit1);
+  // full2.forward(output, aunit1);
+  full2.forward(unit2, aunit1);
+  prob2.forward(output, unit2);
 
   int number = -1;
   T temp = std::numeric_limits<T>::min();

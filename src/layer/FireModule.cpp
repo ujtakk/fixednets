@@ -28,7 +28,7 @@ void FireModule<T>::save(std::string path)
 }
 
 template <typename T>
-void FireModule<T>::forward(Mat3D<T>& input, Mat3D<T>& output)
+void FireModule<T>::forward(Mat3D<T>& output, Mat3D<T>& input)
 {
   const int out_h = output[0].size();
   const int out_w = output[0][0].size();
@@ -37,15 +37,15 @@ void FireModule<T>::forward(Mat3D<T>& input, Mat3D<T>& output)
   Mat3D<T> ex1x1 = zeros(e1x1, out_h, out_w);
   Mat3D<T> ex3x3 = zeros(e3x3, out_h, out_w);
 
-  squeeze1x1.forward(input, sq1x1);
-  expand1x1.forward(sq1x1, ex1x1);
-  expand3x3.forward(sq1x1, ex3x3);
+  squeeze1x1.forward(sq1x1, input);
+  expand1x1.forward(ex1x1, sq1x1);
+  expand3x3.forward(ex3x3, sq1x1);
 
-  concat(ex1x1, ex3x3, output);
+  concat(output, ex1x1, ex3x3);
 }
 
 template <typename T>
-void FireModule<T>::backward(Mat3D<T>& output, Mat3D<T>& input)
+void FireModule<T>::backward(Mat3D<T>& input, Mat3D<T>& output)
 {
 }
 
