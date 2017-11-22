@@ -7,6 +7,9 @@ template <typename T>
 void full(Mat1D<T>& input, Mat2D<T>& weight, Mat1D<T>& output);
 
 template <typename T>
+Mat1D<T> full(Mat1D<T>& input, Mat2D<T>& weight);
+
+template <typename T>
 void gemm(Mat2D<T>& input, Mat2D<T>& weight, Mat2D<T>& output);
 
 #include "full.cpp"

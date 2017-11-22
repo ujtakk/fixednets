@@ -20,4 +20,7 @@
 #include "layer/LazyConvPool.hpp"
 #include "layer/lcpPAD.hpp"
 
+#include "layer/ConvModule.hpp"
+#include "layer/FireModule.hpp"
+
 #endif

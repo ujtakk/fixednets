@@ -5,8 +5,6 @@
 
 #include "matrix.hpp"
 
-using std::string;
-
 template <typename T>
 class BatchNormalization : ParamLayer<Mat1D<T>>
 {
@@ -25,12 +23,17 @@ public:
 
   int shape;
 
-  void load(string path);
-  void save(string path);
+  void load(std::string path);
+  void save(std::string path);
 
   void forward(Mat1D<T>& input, Mat1D<T>& output);
   void forward(Mat3D<T>& input, Mat3D<T>& output);
   void backward();
+  //void backward();
+
+  Mat1D<T> forward(Mat1D<T>& input);
+  Mat3D<T> forward(Mat3D<T>& input);
+  // void backward();
   //void backward();
 
   void update();

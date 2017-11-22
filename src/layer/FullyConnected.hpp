@@ -2,9 +2,9 @@
 #define _FULLYCONNECTED_HPP_
 
 #include <string>
-#include "base.hpp"
 
-using std::string;
+#include "base.hpp"
+#include "matrix.hpp"
 
 template <typename T>
 class FullyConnected : ParamLayer<Mat1D<T>>
@@ -22,11 +22,14 @@ public:
 
   const int shape[2];
 
-  void load(string path);
-  void save(string path);
+  void load(std::string path);
+  void save(std::string path);
 
   void forward(Mat1D<T>& input, Mat1D<T>& output);
   void backward(Mat1D<T>& output, Mat1D<T>& input);
+
+  Mat1D<T> forward(Mat1D<T>& input);
+  Mat1D<T> backward(Mat1D<T>& output);
 
   void update();
 };

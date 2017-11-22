@@ -1,6 +1,7 @@
 #ifndef _LCPPAD_HPP_
 #define _LCPPAD_HPP_
 
+#include "base.hpp"
 #include "matrix.hpp"
 
 template <typename T>
@@ -24,7 +25,7 @@ public:
   int cpad;
   int pstride;
 
-  void load(string path);
+  void load(std::string path);
 
   void forward(Mat3D<T>& input, Mat3D<T>& output, int which, int amount);
 };

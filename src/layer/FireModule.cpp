@@ -15,7 +15,7 @@ FireModule<T>::~FireModule()
 }
 
 template <typename T>
-void FireModule<T>::load(string path)
+void FireModule<T>::load(std::string path)
 {
   squeeze1x1.load(path+"/squeeze1x1");
   expand1x1.load(path+"/expand1x1");
@@ -23,7 +23,7 @@ void FireModule<T>::load(string path)
 }
 
 template <typename T>
-void FireModule<T>::save(string path)
+void FireModule<T>::save(std::string path)
 {
 }
 

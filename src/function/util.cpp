@@ -3,7 +3,7 @@
 #include <cassert>
 #include <random>
 
-#include "fixed_point.hpp"
+#include "types.hpp"
 
 inline float mul(float a, float b)
 {
@@ -44,21 +44,32 @@ void bias(Mat3D<T>& input, Mat1D<T>& bias, Mat3D<T>& output)
         output[n][i][j] = input[n][i][j] + bias[n];
 }
 
-int approx(int value, int bias, double prob)
+template <typename T>
+Mat1D<T> bias(Mat1D<T>& input, Mat1D<T>& bias)
 {
-  int biased = value;
-  int rnd_value;
-  std::mt19937 mt(10);
+  const int n_in = input.size();
+  auto output = zeros<T>(n_in);
 
-  rnd_value = std::abs((int)mt()) % 10000000;
+  for (int n = 0; n < n_in; ++n)
+    output[n] = input[n] + bias[n];
 
-  if ((rnd_value / 10000000.0) < prob)
-    biased = biased + bias;
-
-  return biased;
+  return output;
 }
 
-/*flatten 3D matrix*/
+template <typename T>
+Mat3D<T> bias(Mat3D<T>& input, Mat1D<T>& bias)
+{
+  const int n_in = input.size();
+  const int in_h = input[0].size();
+  const int in_w = input[0][0].size();
+  auto output = zeros<T>(n_in, in_h, in_w);
+
+  for (int n = 0; n < n_in; ++n)
+    for (int i = 0; i < in_h; ++i)
+      for (int j = 0; j < in_w; ++j)
+        output[n][i][j] = input[n][i][j] + bias[n];
+}
+
 template <typename T>
 void flatten(Mat3D<T>& matrix, Mat1D<T>& array)
 {
@@ -73,17 +84,6 @@ void flatten(Mat3D<T>& matrix, Mat1D<T>& array)
 }
 
 template <typename T>
-void flatten(Mat3D<T>& matrix, Mat1D<T>& array,
-             const int mdep, const int mhei, const int mwid)
-{
-  for (int i = 0; i < mdep; i++)
-    for (int j = 0; j < mhei; j++)
-      for (int k = 0; k < mwid; k++)
-        array[i*mhei*mwid+j*mwid+k] = matrix[i][j][k];
-}
-
-/*reshape 3D matrix*/
-template <typename T>
 void reshape(Mat1D<T>& array, Mat3D<T>& matrix)
 {
   const int mdep = matrix.size();
@@ -97,13 +97,45 @@ void reshape(Mat1D<T>& array, Mat3D<T>& matrix)
 }
 
 template <typename T>
-void reshape(Mat1D<T>& array, Mat3D<T>& matrix,
-             const int mdep, const int mhei, const int mwid)
+Mat1D<T> flatten(Mat3D<T>& input)
 {
-  for (int i = 0; i < mdep; i++)
-    for (int j = 0; j < mhei; j++)
-      for (int k = 0; k < mwid; k++)
-        matrix[i][j][k] = array[i*mhei*mwid+j*mwid+k];
+  const int mdep = input.size();
+  const int mhei = input[0].size();
+  const int mwid = input[0][0].size();
+  auto output = zeros<T>(mdep * mhei * mwid);
+
+  int idx = 0;
+  for (int i = 0; i < mdep; ++i) {
+    for (int j = 0; j < mhei; ++j) {
+      for (int k = 0; k < mwid; k++) {
+        output[idx] = input[i][j][k];
+        ++idx;
+      }
+    }
+  }
+
+  return output;
+}
+
+template <typename T>
+Mat3D<T> reshape(Mat1D<T>& input, int shape[3])
+{
+  const int mdep = shape[0];
+  const int mhei = shape[1];
+  const int mwid = shape[2];
+  auto output = zeros<T>(mdep * mhei * mwid);
+
+  int idx = 0;
+  for (int i = 0; i < mdep; i++) {
+    for (int j = 0; j < mhei; j++) {
+      for (int k = 0; k < mwid; k++) {
+        output[i][j][k] = input[idx];
+        ++idx;
+      }
+    }
+  }
+
+  return output;
 }
 
 template <typename T>
@@ -127,6 +159,32 @@ void concat(Mat3D<T>& a, Mat3D<T>& b, Mat3D<T>& c)
     for (int j = 0; j < im_h; ++j)
       for (int k = 0; k < im_w; ++k)
         c[i+n_a][j][k] = b[i][j][k];
+}
+
+template <typename T>
+Mat3D<T> concat(Mat3D<T>& a, Mat3D<T>& b)
+{
+  const int n_a = a.size();
+  const int n_b = b.size();
+  const int im_h = a[0].size();
+  const int im_w = a[0][0].size();
+  auto c = zeros<T>(n_a + n_b, im_h, im_w);
+
+  // assert(n_c == n_b + n_a);
+  // assert(b[0].size() == im_h);
+  // assert(b[0][0].size() == im_w);
+
+  for (int i = 0; i < n_a; ++i)
+    for (int j = 0; j < im_h; ++j)
+      for (int k = 0; k < im_w; ++k)
+        c[i][j][k] = a[i][j][k];
+
+  for (int i = 0; i < n_b; ++i)
+    for (int j = 0; j < im_h; ++j)
+      for (int k = 0; k < im_w; ++k)
+        c[i+n_a][j][k] = b[i][j][k];
+
+  return c;
 }
 
 #endif

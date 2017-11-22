@@ -7,13 +7,13 @@ template <typename T>
 using Mat1D = std::vector<T>;
 
 template <typename T>
-using Mat2D = std::vector< std::vector<T> >;
+using Mat2D = std::vector<std::vector<T>>;
 
 template <typename T>
-using Mat3D = std::vector< std::vector< std::vector<T> > >;
+using Mat3D = std::vector<std::vector<std::vector<T>>>;
 
 template <typename T>
-using Mat4D = std::vector< std::vector< std::vector< std::vector<T> > > >;
+using Mat4D = std::vector<std::vector<std::vector<std::vector<T>>>>;
 
 template <typename T>
 Mat1D<T> zeros(int size1)

@@ -11,7 +11,7 @@ CIFAR10::~CIFAR10()
 
 int CIFAR10::predict(int label, int sample)
 {
-  string filename = data(label, sample);
+  std::string filename = data(label, sample);
   int ans = model.calc(filename, 0, 0);
 
   std::cout << filename << ": answer is " << ans << std::endl;

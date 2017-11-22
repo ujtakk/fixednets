@@ -3,7 +3,7 @@
 MNIST::MNIST()
 {
 #if defined _MLP
-  // model.Load("../data/mnist/mlp");
+  model.Load("../data/mnist/mlp");
 #elif defined _LENET
   model.Load("../data/mnist/lenet");
 #endif
@@ -16,6 +16,7 @@ MNIST::~MNIST()
 #include <random>
 #include <algorithm>
 #include <map>
+// TODO: introduce batch training
 void MNIST::train()
 {
   // const float alpha = 0.001;
@@ -33,9 +34,9 @@ void MNIST::train()
     for (auto target : batch) {
       const int label = target.first;
       const int sample = target.second;
-      const string filename = data(label, sample);
+      const std::string filename = data(label, sample);
 
-      printf("%d: ", label);
+      // printf("%d: ", label);
       model.Forward(filename);
       model.Backward(label);
       model.Update();
@@ -46,7 +47,7 @@ void MNIST::train()
 
 int MNIST::predict(int label, int sample)
 {
-  string filename = data(label, sample);
+  std::string filename = data(label, sample);
   int ans = model.calc(filename, 0, 0);
 
   // std::cout << filename << ": answer is " << ans << std::endl;

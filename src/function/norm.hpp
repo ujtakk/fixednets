@@ -9,4 +9,10 @@ void norm_batch(Mat1D<T>& input, Mat1D<T>& output, T gamma, T beta, T eps, T mea
 template <typename T>
 void norm_batch(Mat3D<T>& input, Mat3D<T>& output, T gamma, T beta, T eps, T mean, T var);
 
+template <typename T>
+Mat1D<T> norm_batch(Mat1D<T>& input, T gamma, T beta, T eps, T mean, T var);
+
+template <typename T>
+Mat3D<T> norm_batch(Mat3D<T>& input, T gamma, T beta, T eps, T mean, T var);
+
 #endif

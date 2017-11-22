@@ -10,7 +10,7 @@ private:
 
   const std::string base = "/home/work/takau/2.mlearn/cifar10_data/pro_input/";
   std::string data(int label, int sample) {
-    return base + to_string(label) + "/data" + to_string(sample) + ".txt";
+    return base + std::to_string(label) + "/data" + std::to_string(sample) + ".txt";
   };
 
 public:

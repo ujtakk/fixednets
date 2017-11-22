@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cmath>
 
-#include "fixed_point.hpp"
+#include "types.hpp"
 
 template <typename T>
 BatchNormalization<T>::BatchNormalization(int channels)
@@ -22,7 +22,7 @@ BatchNormalization<T>::~BatchNormalization()
 }
 
 template <typename T>
-void BatchNormalization<T>::load(string path)
+void BatchNormalization<T>::load(std::string path)
 {
   load_txt(gamma, path+"/gamma.txt");
   load_txt(beta, path+"/beta.txt");
@@ -40,7 +40,7 @@ void BatchNormalization<T>::load(string path)
 }
 
 template <typename T>
-void BatchNormalization<T>::save(string path)
+void BatchNormalization<T>::save(std::string path)
 {
 }
 

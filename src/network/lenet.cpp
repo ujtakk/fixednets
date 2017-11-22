@@ -4,8 +4,6 @@ template <typename T>
 LeNet<T>::LeNet()
   :  conv1{N_F1,    1, FHEI, FWID, 1, 0}
   ,  conv2{N_F2, N_F1, FHEI, FWID, 1, 0}
-  // :  conv1{N_F1,    1, FHEI, FWID}
-  // ,  conv2{N_F2, N_F1, FHEI, FWID}
   ,  pool1{PHEI, PWID}
   ,  pool2{PHEI, PWID}
   ,  full3{N_HL, N_F2*pm2hei*pm2wid}
@@ -19,8 +17,9 @@ LeNet<T>::LeNet()
   amap2 = zeros<T>(N_F2, pm1hei-FHEI+1, pm1wid-FWID+1);
   pmap2 = zeros<T>(N_F2, pm2hei, pm2wid);
   pmap2_flat = zeros<T>(N_F2*pm2hei*pm2wid);
-  hunit = zeros<T>(N_HL);
-  aunit = zeros<T>(N_HL);
+  fvec3 = zeros<T>(N_HL);
+  avec3 = zeros<T>(N_HL);
+  fvec4 = zeros<T>(LABEL);
   output = zeros<T>(LABEL);
 }
 
@@ -30,23 +29,16 @@ LeNet<T>::~LeNet()
 }
 
 template <typename T>
-void LeNet<T>::Load(string path)
+void LeNet<T>::Load(std::string path)
 {
-#if 1
   conv1.load(path+"/conv1");
   conv2.load(path+"/conv2");
   full3.load(path+"/full3");
   full4.load(path+"/full4");
-#else
-  conv1.load(path+"/wb_1");
-  conv2.load(path+"/wb_2");
-  full3.load(path+"/wb_3");
-  full4.load(path+"/wb_4");
-#endif
 }
 
 template <typename T>
-void LeNet<T>::Save(string path)
+void LeNet<T>::Save(std::string path)
 {
   conv1.save(path+"/conv0");
   conv2.save(path+"/conv1");
@@ -55,9 +47,9 @@ void LeNet<T>::Save(string path)
 }
 
 template <typename T>
-void LeNet<T>::Forward(string data)
+void LeNet<T>::Forward(std::string data)
 {
-  load_image(data, input);
+  load_txt(input, data);
 
   conv1.forward(input, fmap1);
   pool1.forward(fmap1, pmap1);
@@ -67,25 +59,25 @@ void LeNet<T>::Forward(string data)
   pool2.forward(fmap2, pmap2);
   relu2.forward(pmap2, amap2);
 
-  flatten(pmap2, pmap2_flat, N_F2, pm2hei, pm2wid);
+  flatten(pmap2, pmap2_flat);
 
-  full3.forward(pmap2_flat, hunit);
-  relu3.forward(hunit, aunit);
+  full3.forward(pmap2_flat, fvec3);
+  relu3.forward(fvec3, avec3);
 
-  full4.forward(hunit, output);
-  //output4.forward(ioutput);
+  full4.forward(avec3, fvec4);
+  prob4.forward(fvec4, output);
 }
 
 template <typename T>
 void LeNet<T>::Backward(int label)
 {
-  //output4.backward(output);
-  full4.backward(output, hunit);
+  prob4.loss(label, output, fvec4);
+  full4.backward(fvec4, avec3);
 
-  relu3.backward(aunit, hunit);
-  full3.backward(hunit, pmap2_flat);
+  relu3.backward(avec3, fvec3);
+  full3.backward(fvec3, pmap2_flat);
 
-  reshape(pmap2_flat, pmap2, N_F2, pm2hei, pm2wid);
+  reshape(pmap2_flat, pmap2);
 
   relu2.backward(amap2, pmap2);
   pool2.backward(pmap2, fmap2);
@@ -106,9 +98,9 @@ void LeNet<T>::Update()
 }
 
 template <typename T>
-int LeNet<T>::calc(string data, int which, int amount)
+int LeNet<T>::calc(std::string data, int which, int amount)
 {
-  load_image(data, input);
+  load_txt(input, data);
 
   conv1.forward(input, fmap1);
   relu1.forward(fmap1, amap1);
@@ -120,14 +112,15 @@ int LeNet<T>::calc(string data, int which, int amount)
 
   flatten(pmap2, pmap2_flat);
 
-  full3.forward(pmap2_flat, hunit);
-  relu3.forward(hunit, aunit);
+  full3.forward(pmap2_flat, fvec3);
+  relu3.forward(fvec3, avec3);
 
-  full4.forward(aunit, output);
+  full4.forward(avec3, fvec4);
+  prob4.forward(fvec4, output);
 
   int number = -1;
   T temp = std::numeric_limits<T>::min();
-  for (int i=0; i<LABEL; i++) {
+  for (int i = 0; i < LABEL; ++i) {
     if (temp < output[i]) {
       temp = output[i];
       number = i;

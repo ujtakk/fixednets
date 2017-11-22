@@ -3,11 +3,7 @@
 #include <string>
 #include <fstream>
 
-#include "fixed_point.hpp"
-
-using std::ifstream;
-using std::ofstream;
-using std::string;
+#include "types.hpp"
 
 #include <iostream>
 static inline float read(std::ifstream& ifs)
@@ -70,6 +66,60 @@ void load_txt(Mat4D<T>& x, std::string path)
 }
 
 template <typename T>
+Mat1D<T> load_txt(std::string path, int size0)
+{
+  std::ifstream ifs(path);
+  auto x = zeros<T>(size0);
+
+  for (auto& x_i : x)
+    x_i = read(ifs);
+
+  return x;
+}
+
+template <typename T>
+Mat2D<T> load_txt(std::string path, int size0, int size1)
+{
+  std::ifstream ifs(path);
+  auto x = zeros<T>(size0, size1);
+
+  for (auto& x_i : x)
+    for (auto& x_ij : x_i)
+      x_ij = read(ifs);
+
+  return x;
+}
+
+template <typename T>
+Mat3D<T> load_txt(std::string path, int size0, int size1, int size2)
+{
+  std::ifstream ifs(path);
+  auto x = zeros<T>(size0, size1, size2);
+
+  for (auto& x_i : x)
+    for (auto& x_ij : x_i)
+      for (auto& x_ijk : x_ij)
+        x_ijk = read(ifs);
+
+  return x;
+}
+
+template <typename T>
+Mat4D<T> load_txt(std::string path, int size0, int size1, int size2, int size3)
+{
+  std::ifstream ifs(path);
+  auto x = zeros<T>(size0, size1, size2, size3);
+
+  for (auto& x_i : x)
+    for (auto& x_ij : x_i)
+      for (auto& x_ijk : x_ij)
+        for (auto& x_ijkl : x_ijk)
+          x_ijkl = read(ifs);
+
+  return x;
+}
+
+template <typename T>
 void save_txt(Mat1D<T>& y, std::string path)
 {
   std::ofstream ofs(path);
@@ -119,37 +169,70 @@ void save_txt(Mat4D<T>& y, std::string path)
           ofs << y_ijkl << std::endl;
 }
 
-/*read data file and convert to Q8.8*/
 template <typename T>
-void load_image(string filename, Mat3D<T>& image)
+void save_txt(std::string path, Mat1D<T>& y)
 {
-  ifstream ifs(filename);
+  std::ofstream ofs(path);
 
-  const int color   = image.size();
-  const int height  = image[0].size();
-  const int width   = image[0][0].size();
+  ofs << std::hex;
 
-  double val;
-
-  for (int n = 0; n < color; n++) {
-    for (int i = 0; i < height; i++) {
-      for (int j = 0; j < width; j++) {
-        ifs >> val;
-        image[n][i][j] = rint(val * Q_OFFSET<double>);
-      }
-    }
-  }
+  for (auto& y_i : y)
+    ofs << y_i << std::endl;
 }
 
 template <typename T>
+void save_txt(std::string path, Mat2D<T>& y)
+{
+  std::ofstream ofs(path);
+
+  ofs << std::hex;
+
+  for (auto& y_i : y)
+    for (auto& y_ij : y_i)
+      ofs << y_ij << std::endl;
+}
+
+template <typename T>
+void save_txt(std::string path, Mat3D<T>& y)
+{
+  std::ofstream ofs(path);
+
+  ofs << std::hex;
+
+  for (auto& y_i : y)
+    for (auto& y_ij : y_i)
+      for (auto& y_ijk : y_ij)
+        ofs << y_ijk << std::endl;
+}
+
+template <typename T>
+void save_txt(std::string path, Mat4D<T>& y)
+{
+  std::ofstream ofs(path);
+
+  ofs << std::hex;
+
+  for (auto& y_i : y)
+    for (auto& y_ij : y_i)
+      for (auto& y_ijk : y_ij)
+        for (auto& y_ijkl : y_ijk)
+          ofs << y_ijkl << std::endl;
+}
+
+////////////////////////////////////////////////////////////
+// load functions below are deprecated.
+////////////////////////////////////////////////////////////
+
+
+template <typename T>
 void load_data(
-  string filename,
+  std::string filename,
   Mat2D<T>& li1,
   T& li2,
   const int height, const int width
   )
 {
-  ifstream ifs(filename);
+  std::ifstream ifs(filename);
   double d1, d2;
 
   for (int i = 0; i < height; i++) {
@@ -163,9 +246,9 @@ void load_data(
 }
 
 template <typename T>
-void load_w(string filename, Mat2D<T>& li1, const int height, const int width)
+void load_w(std::string filename, Mat2D<T>& li1, const int height, const int width)
 {
-  ifstream ifs(filename);
+  std::ifstream ifs(filename);
   double d1;
 
   for (int i = 0; i < height; i++) {
@@ -177,9 +260,9 @@ void load_w(string filename, Mat2D<T>& li1, const int height, const int width)
 }
 
 template <typename T>
-void load_b(string filename, T& li)
+void load_b(std::string filename, T& li)
 {
-  ifstream ifs(filename);
+  std::ifstream ifs(filename);
   double d;
 
   ifs >> d;
@@ -188,13 +271,13 @@ void load_b(string filename, T& li)
 
 template <typename T>
 void load_data_1d(
-  string filename,
+  std::string filename,
   Mat1D<T>& li1,
   T& li2,
   const int length
 )
 {
-  ifstream ifs(filename);
+  std::ifstream ifs(filename);
   double d1[length];
   double d2;
 

@@ -9,7 +9,15 @@ void relu(Mat3D<T>& input, Mat3D<T>& output);
 template <typename T>
 void relu(Mat1D<T>& input, Mat1D<T>& output);
 
-int softmax(Mat1D<double>& output, int len);
+void softmax(Mat1D<float>& input, Mat1D<float>& output);
+
+template <typename T>
+Mat3D<T> relu(Mat3D<T>& input);
+
+template <typename T>
+Mat1D<T> relu(Mat1D<T>& input);
+
+Mat1D<float> softmax(Mat1D<float>& input);
 
 #include "actv.cpp"
 #endif

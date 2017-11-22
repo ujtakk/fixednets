@@ -1,7 +1,5 @@
 #ifdef _BINARYFULL_HPP_
 
-using std::to_string;
-
 template <typename T>
 BinaryFull<T>::BinaryFull(int out_channels, int in_channels)
   : shape{out_channels, in_channels}
@@ -18,22 +16,22 @@ BinaryFull<T>::~BinaryFull()
 }
 
 template <typename T>
-void BinaryFull<T>::load(string path)
+void BinaryFull<T>::load(std::string path)
 {
-  std::vector<string> filename(shape[0]);
+  std::vector<std::string> filename(shape[0]);
 
   #ifdef _OPENMP
   #pragma omp parallel for
   #endif
   for (int i = 0; i < shape[0]; i++)
   {
-    filename[i] = path+"/data"+to_string(i)+".txt";
+    filename[i] = path+"/data"+std::to_string(i)+".txt";
     load_data_1d(filename[i], iw[i], ib[i], shape[1]);
   }
 }
 
 template <typename T>
-void BinaryFull<T>::save(string path)
+void BinaryFull<T>::save(std::string path)
 {
 }
 

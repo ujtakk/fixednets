@@ -6,8 +6,6 @@
 #include "base.hpp"
 #include "layer.hpp"
 
-using std::string;
-
 template <typename T>
 struct BBoxMask
 {
@@ -56,14 +54,14 @@ public:
   SqueezeDet(DetConf config);
   ~SqueezeDet();
 
-  void Load(string path);
-  void Save(string path);
+  void Load(std::string path);
+  void Save(std::string path);
 
-  void Forward(string data);
+  void Forward(std::string data);
   void Backward(int label);
   void Update();
 
-  BBoxMask<T> calc(string data, int which, int amount);
+  BBoxMask<T> calc(std::string data, int which, int amount);
 };
 
 #include "squeeze_det.cpp"

@@ -1,12 +1,8 @@
 #ifndef _SIGMOID_HPP_
 #define _SIGMOID_HPP_
 
-#include <string>
-
 #include "base.hpp"
 #include "matrix.hpp"
-
-using std::string;
 
 template <typename T>
 class Sigmoid : Layer<Mat1D<T>>

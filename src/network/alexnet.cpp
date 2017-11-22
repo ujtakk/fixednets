@@ -4,16 +4,7 @@
 
 template <typename T>
 AlexNet<T>::AlexNet()
-#if defined _EAGER
-  : conv1{N_F1,    3, FSIZE1, FSIZE1, STRID1,            0}
-  , conv2{N_F2, N_F1, FSIZE2, FSIZE2,      1, (FSIZE2-1)/2}
-  , conv3{N_F3, N_F2, FSIZE3, FSIZE3,      1, (FSIZE3-1)/2}
-  , conv4{N_F4, N_F3, FSIZE3, FSIZE3,      1, (FSIZE3-1)/2}
-  , conv5{N_F5, N_F4, FSIZE3, FSIZE3,      1, (FSIZE3-1)/2}
-  , pool1{PSIZE, PSIZE, STRID2}
-  , pool2{PSIZE, PSIZE, STRID2}
-  , pool5{PSIZE, PSIZE, STRID2}
-#elif defined _LAZY
+#ifdef _LAZY
   //: convpool1{N_F1,    3, FSIZE1, FSIZE1, PSIZE, PSIZE, STRID1, 0, STRID2}
   //, convpool2{N_F2, N_F1, FSIZE2, FSIZE2, PSIZE, PSIZE, 1, (FSIZE2-1)/2, STRID2}
   : conv1{N_F1,    3, FSIZE1, FSIZE1, STRID1,            0}
@@ -23,6 +14,15 @@ AlexNet<T>::AlexNet()
   , convpool5{N_F5, N_F4, FSIZE3, FSIZE3, PSIZE, PSIZE, 1, (FSIZE3-1)/2, STRID2}
   , pool1{PSIZE, PSIZE, STRID2}
   , pool2{PSIZE, PSIZE, STRID2}
+#else
+  : conv1{N_F1,    3, FSIZE1, FSIZE1, STRID1,            0}
+  , conv2{N_F2, N_F1, FSIZE2, FSIZE2,      1, (FSIZE2-1)/2}
+  , conv3{N_F3, N_F2, FSIZE3, FSIZE3,      1, (FSIZE3-1)/2}
+  , conv4{N_F4, N_F3, FSIZE3, FSIZE3,      1, (FSIZE3-1)/2}
+  , conv5{N_F5, N_F4, FSIZE3, FSIZE3,      1, (FSIZE3-1)/2}
+  , pool1{PSIZE, PSIZE, STRID2}
+  , pool2{PSIZE, PSIZE, STRID2}
+  , pool5{PSIZE, PSIZE, STRID2}
 #endif
   , full6{N_H1, N_F5*pm5hei*pm5wid}
   , full7{N_H2, N_H1}
@@ -67,22 +67,22 @@ AlexNet<T>::~AlexNet()
 }
 
 template <typename T>
-void AlexNet<T>::Load(string path)
+void AlexNet<T>::Load(std::string path)
 {
-#if defined _EAGER
-  conv1.load(path+"/wb_1");
-#elif defined _LAZY
+#ifdef _LAZY
   conv1.load(path+"/wb_1");
   //convpool1.load(filename);
+#else
+  conv1.load(path+"/wb_1");
 #endif
   std::cout << "conv1 loaded." << std::endl;
   bn1.load(path+"/bn_1");
   std::cout << "bn1 loaded." << std::endl;
-#if defined _EAGER
-  conv2.load(path+"/wb_2");
-#elif defined _LAZY
+#ifdef _LAZY
   conv2.load(path+"/wb_2");
   //convpool2.load(filename);
+#else
+  conv2.load(path+"/wb_2");
 #endif
   std::cout << "conv2 loaded." << std::endl;
   bn2.load(path+"/bn_2");
@@ -91,10 +91,10 @@ void AlexNet<T>::Load(string path)
   std::cout << "conv3 loaded." << std::endl;
   conv4.load(path+"/wb_4");
   std::cout << "conv4 loaded." << std::endl;
-#if defined _EAGER
-  conv5.load(path+"/wb_5");
-#elif defined _LAZY
+#ifdef _LAZY
   convpool5.load(path+"/wb_5");
+#else
+  conv5.load(path+"/wb_5");
 #endif
   std::cout << "conv5 loaded." << std::endl;
   full6.load(path+"/wb_6");
@@ -106,30 +106,14 @@ void AlexNet<T>::Load(string path)
 }
 
 template <typename T>
-std::vector<int> AlexNet<T>::calc(string data)
+std::vector<int> AlexNet<T>::calc(std::string data)
 {
   // Top-5 label
   std::vector<int> number(5, -1);
 
-  load_image(data, input);
+  load_txt(input, data);
 
-#if defined _EAGER
-  conv1.forward(input, fmap1);
-    bn1.forward(fmap1, bmap1);
-  pool1.forward(bmap1, pmap1);
-  relu1.forward(pmap1, amap1);
-  conv2.forward(amap1, fmap2);
-    bn2.forward(fmap2, bmap2);
-  pool2.forward(bmap2, pmap2);
-  relu2.forward(pmap2, amap2);
-  conv3.forward(amap2, fmap3);
-  relu3.forward(fmap3, amap3);
-  conv4.forward(amap3, fmap4);
-  relu4.forward(fmap4, amap4);
-  conv5.forward(amap4, fmap5);
-  pool5.forward(fmap5, pmap5);
-  relu5.forward(pmap5, amap5);
-#elif defined _LAZY
+#ifdef _LAZY
   const int which = 0;
   const int amount = 0;
   //convpool1.forward(input, pmap1, which, amount);
@@ -148,9 +132,25 @@ std::vector<int> AlexNet<T>::calc(string data)
   relu4.forward(fmap4, amap4);
   convpool5.forward(amap4, pmap5, which, amount);
   relu5.forward(pmap5, amap5);
+#else
+  conv1.forward(input, fmap1);
+    bn1.forward(fmap1, bmap1);
+  pool1.forward(bmap1, pmap1);
+  relu1.forward(pmap1, amap1);
+  conv2.forward(amap1, fmap2);
+    bn2.forward(fmap2, bmap2);
+  pool2.forward(bmap2, pmap2);
+  relu2.forward(pmap2, amap2);
+  conv3.forward(amap2, fmap3);
+  relu3.forward(fmap3, amap3);
+  conv4.forward(amap3, fmap4);
+  relu4.forward(fmap4, amap4);
+  conv5.forward(amap4, fmap5);
+  pool5.forward(fmap5, pmap5);
+  relu5.forward(pmap5, amap5);
 #endif
 
-  flatten(amap5, amap5_flat, N_F5, pm5hei, pm5wid);
+  flatten(amap5, amap5_flat);
 
   full6.forward(amap5_flat, hunit1);
   relu6.forward(hunit1, aunit1);

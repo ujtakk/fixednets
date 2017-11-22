@@ -3,7 +3,8 @@
 
 #include <string>
 
-using std::string;
+#include "base.hpp"
+#include "matrix.hpp"
 
 template <typename T>
 class LazyConvPool : ParamLayer<Mat3D<T>>
@@ -21,7 +22,7 @@ public:
   const int cshape[4];
   const int pshape[2];
 
-  void load(string path);
+  void load(std::string path);
 
   void forward(Mat3D<T>& input, Mat3D<T>& output, int which, int amount);
 };

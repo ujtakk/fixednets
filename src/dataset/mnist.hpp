@@ -5,7 +5,6 @@
 
 // #define _LENET
 #define _MLP
-#define _EAGER
 
 class MNIST : Dataset
 {
@@ -18,7 +17,7 @@ private:
 
   const std::string base = "../data/mnist/input/";
   std::string data(int label, int sample) {
-    return base + to_string(label) + "/data" + to_string(sample) + ".txt";
+    return base + std::to_string(label) + "/data" + std::to_string(sample) + ".txt";
   };
 
 public:

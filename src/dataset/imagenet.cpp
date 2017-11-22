@@ -15,7 +15,7 @@ ImageNet::~ImageNet()
 
 int ImageNet::predict(int label, int sample)
 {
-  string filename = data(label, sample);
+  std::string filename = data(label, sample);
   std::vector<int> ans(5);
   ans = model.calc(filename, 0, 0);
 

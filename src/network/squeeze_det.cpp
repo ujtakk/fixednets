@@ -11,7 +11,7 @@ SqueezeDet<T>::~SqueezeDet()
 }
 
 template <typename T>
-void Load(string path)
+void Load(std::string path)
 {
   conv1.load(path+"/conv1");
   fire2.load(path+"/fire2");
@@ -28,12 +28,12 @@ void Load(string path)
 }
 
 template <typename T>
-void Save(string path)
+void Save(std::string path)
 {
 }
 
 template <typename T>
-void Forward(string data)
+void Forward(std::string data)
 {
 }
 
@@ -110,7 +110,7 @@ void interpret(Mat3D<T> preds)
 }
 
 template <typename T>
-BBoxMask<T> calc(string data, int which, int amount)
+BBoxMask<T> calc(std::string data, int which, int amount)
 {
   conv1.forward(input, fmap1);
   pool1.forward(fmap1, pmap1);

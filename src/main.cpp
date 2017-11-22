@@ -1,6 +1,4 @@
-#define _EAGER
-
-#include "dataset.hpp"
+#include "fixednets.hpp"
 
 int main(int argc, char **argv)
 {
@@ -8,8 +6,8 @@ int main(int argc, char **argv)
   // CIFAR10 target;
   // ImageNet target;
 
-  // target.test();
-  target.train();
+  target.test();
+  // target.train();
 
   return 0;
 }

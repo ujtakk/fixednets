@@ -1,5 +1,5 @@
-#ifndef _FIXED_POINT_HPP_
-#define _FIXED_POINT_HPP_
+#ifndef _TYPES_HPP_
+#define _TYPES_HPP_
 
 #include <cmath>
 
@@ -17,6 +17,10 @@ const int Q_BITS = 0;
 
 template <typename T>
 T Q_OFFSET = static_cast<T>(pow(2, Q_BITS));
+#endif
+
+#if 0
+using fixed = int16_t;
 #endif
 
 #endif

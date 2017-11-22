@@ -4,7 +4,13 @@
 
 template <typename T>
 CIFAR<T>::CIFAR()
-#if defined _EAGER
+#ifdef _LAZY
+  : convpool1{N_F1,    3, FHEI, FWID, PHEI, PWID}
+  , convpool2{N_F2, N_F1, FHEI, FWID, PHEI, PWID}
+  , convpool3{N_F3, N_F2, FHEI, FWID, PHEI, PWID}
+  , convpool4{N_F4, N_F3, FHEI, FWID, PHEI, PWID}
+  , convpool5{N_F5, N_F4, FHEI, FWID, PHEI, PWID}
+#else
   : conv1{N_F1,    3, FHEI, FWID, 1, (FHEI-1)/2}
   , conv2{N_F2, N_F1, FHEI, FWID, 1, (FHEI-1)/2}
   , conv3{N_F3, N_F2, FHEI, FWID, 1, (FHEI-1)/2}
@@ -15,12 +21,6 @@ CIFAR<T>::CIFAR()
   , pool3{PHEI, PWID, 2}
   , pool4{PHEI, PWID, 2}
   , pool5{PHEI, PWID, 2}
-#elif defined _LAZY
-  : convpool1{N_F1,    3, FHEI, FWID, PHEI, PWID}
-  , convpool2{N_F2, N_F1, FHEI, FWID, PHEI, PWID}
-  , convpool3{N_F3, N_F2, FHEI, FWID, PHEI, PWID}
-  , convpool4{N_F4, N_F3, FHEI, FWID, PHEI, PWID}
-  , convpool5{N_F5, N_F4, FHEI, FWID, PHEI, PWID}
 #endif
   , full6{N_H1, N_F5*pm5hei*pm5wid}
   , full7{LABEL, N_H1}
@@ -60,32 +60,32 @@ CIFAR<T>::~CIFAR()
 }
 
 template <typename T>
-void CIFAR<T>::Load(string path)
+void CIFAR<T>::Load(std::string path)
 {
-#if defined _EAGER
-  conv1.load(path+"/wb_1");
-  conv2.load(path+"/wb_2");
-  conv3.load(path+"/wb_3");
-  conv4.load(path+"/wb_4");
-  conv5.load(path+"/wb_5");
-#elif defined _LAZY
+#ifdef _LAZY
   convpool1.load(path+"/wb_1");
   convpool2.load(path+"/wb_2");
   convpool3.load(path+"/wb_3");
   convpool4.load(path+"/wb_4");
   convpool5.load(path+"/wb_5");
+#else
+  conv1.load(path+"/wb_1");
+  conv2.load(path+"/wb_2");
+  conv3.load(path+"/wb_3");
+  conv4.load(path+"/wb_4");
+  conv5.load(path+"/wb_5");
 #endif
   full6.load(path+"/wb_6");
   full7.load(path+"/wb_7");
 }
 
 template <typename T>
-void CIFAR<T>::Save(string path)
+void CIFAR<T>::Save(std::string path)
 {
 }
 
 template <typename T>
-void CIFAR<T>::Forward(string data)
+void CIFAR<T>::Forward(std::string data)
 {
 }
 
@@ -100,14 +100,25 @@ void CIFAR<T>::Update()
 }
 
 template <typename T>
-int CIFAR<T>::calc(string data, int which, int amount)
+int CIFAR<T>::calc(std::string data, int which, int amount)
 {
   int number = -1;
   int temp = std::numeric_limits<int>::min();
 
-  load_image(data, input);
+  load_txt(input, data);
 
-#if defined _EAGER
+#ifdef _LAZY
+  convpool1.forward(input, pmap1, which, amount);
+  relu1.forward(pmap1, amap1);
+  convpool2.forward(amap1, pmap2, which, amount);
+  relu2.forward(pmap2, amap2);
+  convpool3.forward(amap2, pmap3, which, amount);
+  relu3.forward(pmap3, amap3);
+  convpool4.forward(amap3, pmap4, which, amount);
+  relu4.forward(pmap4, amap4);
+  convpool5.forward(amap4, pmap5, which, amount);
+  relu5.forward(pmap5, amap5);
+#else
   conv1.forward(input, fmap1);
   pool1.forward(fmap1, pmap1);
   relu1.forward(pmap1, amap1);
@@ -123,20 +134,9 @@ int CIFAR<T>::calc(string data, int which, int amount)
   conv5.forward(amap4, fmap5);
   pool5.forward(fmap5, pmap5);
   relu5.forward(pmap5, amap5);
-#elif defined _LAZY
-  convpool1.forward(input, pmap1, which, amount);
-  relu1.forward(pmap1, amap1);
-  convpool2.forward(amap1, pmap2, which, amount);
-  relu2.forward(pmap2, amap2);
-  convpool3.forward(amap2, pmap3, which, amount);
-  relu3.forward(pmap3, amap3);
-  convpool4.forward(amap3, pmap4, which, amount);
-  relu4.forward(pmap4, amap4);
-  convpool5.forward(amap4, pmap5, which, amount);
-  relu5.forward(pmap5, amap5);
 #endif
 
-  flatten(amap5, amap5_flat, N_F5, pm5hei, pm5wid);
+  flatten(amap5, amap5_flat);
 
   full6.forward(amap5_flat, hunit1);
   relu6.forward(hunit1, aunit1);

@@ -6,8 +6,6 @@
 #include "base.hpp"
 #include "matrix.hpp"
 
-using std::string;
-
 template <typename T>
 class FireModule : ParamLayer<Mat3D<T>>
 {
@@ -23,11 +21,14 @@ public:
 
   int s1x1, e1x1, e3x3, n_in;
 
-  void load(string path);
-  void save(string path);
+  void load(std::string path);
+  void save(std::string path);
 
   void forward(Mat3D<T>& input, Mat3D<T>& output);
   void backward(Mat3D<T>& output, Mat3D<T>& input);
+
+  Mat3D<T> forward(Mat3D<T>& input);
+  Mat3D<T> backward(Mat3D<T>& output);
 
   void update();
 };

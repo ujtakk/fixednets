@@ -3,8 +3,6 @@
 #include <random>
 #include <limits>
 
-using std::to_string;
-
 template <typename T>
 LazyConvPool<T>::LazyConvPool(int out_channels, int in_channels, const int f_height, const int f_width, const int phei, const int pwid)
   : cshape{out_channels, in_channels, f_height, f_width}
@@ -22,26 +20,26 @@ LazyConvPool<T>::~LazyConvPool()
 }
 
 template <typename T>
-void LazyConvPool<T>::load(string path)
+void LazyConvPool<T>::load(std::string path)
 {
-  string filename;
+  std::string filename;
 
   if (cshape[1]==1) {
     for (int i=0; i<cshape[0]; i++) {
-      filename = path+"/data"+to_string(i)+".txt";
+      filename = path+"/data"+std::to_string(i)+".txt";
       load_data(filename, iw[i][0], ib[i], cshape[2], cshape[3]);
     }
   }
   else {
     for (int i=0; i<cshape[0]; i++) {
       for (int j=0; j<cshape[1]; j++) {
-        filename = path+"/data"+to_string(i)+"_"+to_string(j)+".txt";
+        filename = path+"/data"+std::to_string(i)+"_"+std::to_string(j)+".txt";
         load_w(filename, iw[i][j], cshape[2], cshape[3]);
       }
     }
 
     for (int i=0; i<cshape[1]; i++) {
-      filename = path+"/data"+to_string(i)+".txt";
+      filename = path+"/data"+std::to_string(i)+".txt";
       load_b(filename, ib[i]);
     }
   }

@@ -2,8 +2,6 @@
 
 #include "matrix.hpp"
 
-using std::to_string;
-
 template <typename T>
 FullyConnected<T>::FullyConnected(int n_out, int n_in)
   : shape{n_out, n_in}
@@ -20,26 +18,14 @@ FullyConnected<T>::~FullyConnected()
 }
 
 template <typename T>
-void FullyConnected<T>::load(string path)
+void FullyConnected<T>::load(std::string path)
 {
-#if 1
   load_txt(iw, path+"/W.txt");
   load_txt(ib, path+"/b.txt");
-#else
-  std::vector<string> filename(shape[0]);
-
-  #ifdef _OPENMP
-  #pragma omp parallel for
-  #endif
-  for (int i = 0; i < shape[0]; i++) {
-    filename[i] = path+"/data"+to_string(i)+".txt";
-    load_data_1d(filename[i], iw[i], ib[i], shape[1]);
-  }
-#endif
 }
 
 template <typename T>
-void FullyConnected<T>::save(string path)
+void FullyConnected<T>::save(std::string path)
 {
 }
 
@@ -52,6 +38,15 @@ void FullyConnected<T>::forward(Mat1D<T>& input, Mat1D<T>& output)
 
   full(input, iw, fulled);
   bias(fulled, ib, output);
+}
+
+template <typename T>
+Mat1D<T> FullyConnected<T>::forward(Mat1D<T>& input)
+{
+  auto fulled = full(input, iw);
+  auto output = bias(fulled, ib);
+
+  return output;
 }
 
 template <typename T>
@@ -79,11 +74,37 @@ void FullyConnected<T>::backward(Mat1D<T>& output, Mat1D<T>& input)
   }
 }
 
+template <typename T>
+Mat1D<T> FullyConnected<T>::backward(Mat1D<T>& output)
+{
+  auto input = zeros(shape[1]);
+
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
+  for (int i = 0; i < shape[1]; i++) {
+    T sum = 0;
+
+    for (int j = 0; j < shape[0]; j++) {
+      gw[j][i] = input[i] * output[j];
+      sum += iw[j][i] * output[j];
+    }
+
+    input[i] = sum;
+  }
+
+  for (int i = 0; i < shape[0]; i++) {
+    gb[i] = output[i];
+  }
+
+  return input;
+}
+
 // TODO: introduce batch
 template <typename T>
 void FullyConnected<T>::update()
 {
-  float alpha = 0.003;
+  float alpha = 0.001;
 
   #ifdef _OPENMP
   #pragma omp parallel for

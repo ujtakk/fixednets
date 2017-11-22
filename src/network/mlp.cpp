@@ -21,36 +21,30 @@ MLP<T>::~MLP()
 }
 
 template <typename T>
-void MLP<T>::Load(string path)
+void MLP<T>::Load(std::string path)
 {
   full1.load(path+"/full1");
   full2.load(path+"/full2");
 }
 
 template <typename T>
-void MLP<T>::Save(string path)
+void MLP<T>::Save(std::string path)
 {
   full1.save(path+"/full1");
   full2.save(path+"/full2");
 }
 
 template <typename T>
-void MLP<T>::Forward(string data)
+void MLP<T>::Forward(std::string data)
 {
-  load_image(data, input);
+  load_txt(input, data);
   flatten(input, input_flat);
 
   full1.forward(input_flat, unit1);
   relu1.forward(unit1, aunit1);
   full2.forward(aunit1, unit2);
 
-  prob2.forward(unit2, output);
-
-  for (int i = 0; i < output.size(); ++i) {
-    printf("%7.3f", output[i]);
-  }
-  printf("\n");
-
+  prob2.prob(unit2, output);
 }
 
 #include <cstdio>
@@ -72,9 +66,9 @@ void MLP<T>::Update()
 }
 
 template <typename T>
-int MLP<T>::calc(string data, int which, int amount)
+int MLP<T>::calc(std::string data, int which, int amount)
 {
-  load_image(data, input);
+  load_txt(input, data);
   flatten(input, input_flat);
 
   full1.forward(input_flat, unit1);
@@ -83,14 +77,9 @@ int MLP<T>::calc(string data, int which, int amount)
   full2.forward(aunit1, unit2);
   prob2.forward(unit2, output);
 
-  // for (int i = 0; i < output.size(); ++i) {
-  //   printf("%7.3f", output[i]);
-  // }
-  // printf("\n");
-
   int number = -1;
-  int temp = std::numeric_limits<int>::min();
-  for (int i=0; i<N_OUT; i++) {
+  T temp = std::numeric_limits<T>::min();
+  for (int i = 0; i < N_OUT; ++i) {
     if (temp < output[i]) {
        temp = output[i];
        number = i;

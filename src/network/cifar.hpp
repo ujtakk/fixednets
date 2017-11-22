@@ -1,6 +1,11 @@
 #ifndef _CIFAR_HPP_
 #define _CIFAR_HPP_
 
+#include "base.hpp"
+#include "layer.hpp"
+
+// #define _LAZY
+
 template <typename T>
 class CIFAR : Network<T, int>
 {
@@ -30,7 +35,13 @@ private:
   const int pm5hei = pm4hei / PHEI;
   const int pm5wid = pm4wid / PWID;
 
-#if defined _EAGER
+#ifdef _LAZY
+  lcpPAD<T> convpool1;
+  lcpPAD<T> convpool2;
+  lcpPAD<T> convpool3;
+  lcpPAD<T> convpool4;
+  lcpPAD<T> convpool5;
+#else
   Convolution2D<T> conv1;
   Convolution2D<T> conv2;
   Convolution2D<T> conv3;
@@ -41,12 +52,6 @@ private:
   MaxPooling<T> pool3;
   MaxPooling<T> pool4;
   MaxPooling<T> pool5;
-#elif defined _LAZY
-  lcpPAD<T> convpool1;
-  lcpPAD<T> convpool2;
-  lcpPAD<T> convpool3;
-  lcpPAD<T> convpool4;
-  lcpPAD<T> convpool5;
 #endif
   Rectifier<T> relu1;
   Rectifier<T> relu2;
@@ -83,15 +88,16 @@ public:
   CIFAR();
   ~CIFAR();
 
-  void Load(string path);
-  void Save(string path);
+  void Load(std::string path);
+  void Save(std::string path);
 
-  void Forward(string data);
+  void Forward(std::string data);
   void Backward(int label);
   void Update();
 
-  int calc(string data, int which, int amount);
+  int calc(std::string data, int which, int amount);
 };
 
 #include "cifar.cpp"
+#undef _LAZY
 #endif

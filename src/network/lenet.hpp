@@ -35,7 +35,7 @@ private:
   Rectifier<T>      relu3;
   FullyConnected<T> full3;
   FullyConnected<T> full4;
-  SoftMax<T>        output4;
+  SoftMax<T>        prob4;
 
   Mat3D<T> input;
   Mat3D<T> fmap1;
@@ -45,22 +45,23 @@ private:
   Mat3D<T> pmap2;
   Mat3D<T> amap2;
   Mat1D<T> pmap2_flat;
-  Mat1D<T> hunit;
-  Mat1D<T> aunit;
+  Mat1D<T> fvec3;
+  Mat1D<T> avec3;
+  Mat1D<T> fvec4;
   Mat1D<T> output;
 
 public:
   LeNet();
   ~LeNet();
 
-  void Load(string path);
-  void Save(string path);
+  void Load(std::string path);
+  void Save(std::string path);
 
-  void Forward(string data);
+  void Forward(std::string data);
   void Backward(int label);
   void Update();
 
-  int calc(string data, int which, int amount);
+  int calc(std::string data, int which, int amount);
 };
 
 #include "lenet.cpp"

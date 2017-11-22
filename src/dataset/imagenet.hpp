@@ -15,7 +15,7 @@ private:
 #endif
 
   auto data = [](int label, int sample) {
-    return base + to_string(label) + "/data" + to_string(sample) + ".txt";
+    return base + std::to_string(label) + "/data" + std::to_string(sample) + ".txt";
   };
 
 public:

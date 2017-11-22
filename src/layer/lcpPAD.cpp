@@ -1,7 +1,5 @@
 #ifdef _LCPPAD_HPP_
 
-using std::to_string;
-
 #define THRES 256
 
 template <typename T>
@@ -24,16 +22,16 @@ lcpPAD<T>::~lcpPAD()
 }
 
 template <typename T>
-void lcpPAD<T>::load(string path)
+void lcpPAD<T>::load(std::string path)
 {
-  std::vector<string> filename(cshape[0]);
+  std::vector<std::string> filename(cshape[0]);
 
   if (cshape[1] == 1) {
     #ifdef _OPENMP
     #pragma omp parallel for
     #endif
     for (int i=0; i<cshape[0]; i++) {
-      filename[i] = path+"/data"+to_string(i)+".txt";
+      filename[i] = path+"/data"+std::to_string(i)+".txt";
       load_data(filename[i], iw[i][0], ib[i], cshape[2], cshape[3]);
     }
   }
@@ -43,11 +41,11 @@ void lcpPAD<T>::load(string path)
     #endif
     for (int i=0; i<cshape[0]; i++) {
       for (int j=0; j<cshape[1]; j++) {
-        filename[i] = path+"/data"+to_string(i)+"_"+to_string(j)+".txt";
+        filename[i] = path+"/data"+std::to_string(i)+"_"+std::to_string(j)+".txt";
         load_w(filename[i], iw[i][j], cshape[2], cshape[3]);
       }
 
-      filename[i] = path+"/data"+to_string(i)+".txt";
+      filename[i] = path+"/data"+std::to_string(i)+".txt";
       load_b(filename[i], ib[i]);
     }
   }

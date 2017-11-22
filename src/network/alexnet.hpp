@@ -1,6 +1,11 @@
 #ifndef _ALEXNET_HPP_
 #define _ALEXNET_HPP_
 
+#include "base.hpp"
+#include "layer.hpp"
+
+// #define _LAZY
+
 template <typename T>
 class AlexNet : Network<T, std::vector<int>>
 {
@@ -30,16 +35,7 @@ private:
   const int pm5hei = (pm2hei-PSIZE+STRID2)/STRID2;
   const int pm5wid = pm5hei;
 
-#if defined _EAGER
-  Convolution2D<T> conv1;
-  Convolution2D<T> conv2;
-  Convolution2D<T> conv3;
-  Convolution2D<T> conv4;
-  Convolution2D<T> conv5;
-  MaxPooling<T> pool1;
-  MaxPooling<T> pool2;
-  MaxPooling<T> pool5;
-#elif defined _LAZY
+#ifdef _LAZY
   /* TODO: Handle BN in LCP (It may be tough) */
   //lcpPAD<T> convpool1;
   //lcpPAD<T> convpool2;
@@ -50,6 +46,15 @@ private:
   lcpPAD<T> convpool5;
   MaxPooling<T> pool1;
   MaxPooling<T> pool2;
+#else
+  Convolution2D<T> conv1;
+  Convolution2D<T> conv2;
+  Convolution2D<T> conv3;
+  Convolution2D<T> conv4;
+  Convolution2D<T> conv5;
+  MaxPooling<T> pool1;
+  MaxPooling<T> pool2;
+  MaxPooling<T> pool5;
 #endif
   Rectifier<T> relu1;
   Rectifier<T> relu2;
@@ -91,9 +96,10 @@ public:
   AlexNet();
   ~AlexNet();
 
-  void Load(string path);
-  std::vector<int> calc(string data);
+  void Load(std::string path);
+  std::vector<int> calc(std::string data);
 };
 
 #include "alexnet.cpp"
+#undef _LAZY
 #endif

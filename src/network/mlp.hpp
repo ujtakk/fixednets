@@ -30,14 +30,14 @@ public:
   MLP();
   ~MLP();
 
-  void Load(string path);
-  void Save(string path);
+  void Load(std::string path);
+  void Save(std::string path);
 
-  void Forward(string data);
+  void Forward(std::string data);
   void Backward(int label);
   void Update();
 
-  int calc(string data, int which, int amount);
+  int calc(std::string data, int which, int amount);
 };
 
 #include "mlp.cpp"

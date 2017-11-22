@@ -13,30 +13,30 @@ SoftMax<T>::~SoftMax()
 template <typename T>
 void SoftMax<T>::forward(Mat1D<T>& input, Mat1D<T>& output)
 {
-  const int len = input.size();
-
-  double expsum = 0.0;
-
-  #ifdef _OPENMP
-  #pragma omp parallel for
-  #endif
-  for (int i = 0; i < len; i++)
-  {
-    expsum += exp((double)input[i]);
-    // std::cout << input[i] << std::endl;
-  }
-
-  if (std::abs(expsum-0.0) < std::numeric_limits<T>::epsilon())
-    throw "Softmax.forward calculation failed";
-
-  for (int i = 0; i < len; i++)
-    output[i] = exp((double)input[i])/expsum;
+  softmax(input, output);
 }
 
 template <typename T>
 void SoftMax<T>::backward(Mat1D<T>& output, Mat1D<T>& input)
 {
   //const int len = output.size();
+}
+
+template <typename T>
+Mat1D<T> SoftMax<T>::forward(Mat1D<T>& input)
+{
+  auto output = softmax(input);
+
+  return output;
+}
+
+template <typename T>
+Mat1D<T> SoftMax<T>::backward(Mat1D<T>& output)
+{
+  const int len = output.size();
+  auto input = zeros<T>(len);
+
+  return input;
 }
 
 template <typename T>
@@ -69,12 +69,18 @@ double SoftMax<T>::errors(Mat1D<T> y)
   return a / (double)y.size();
 }
 
+template <typename T>
+void SoftMax<T>::prob(Mat1D<T>& input, Mat1D<T>& output)
+{
+  softmax(input, output);
+}
+
 #include <cstdio>
 template <typename T>
 void SoftMax<T>::loss(int label, Mat1D<T>& output, Mat1D<T>& input)
 {
   const int olen = output.size();
-  const int ilen = input.size();
+  // const int ilen = input.size();
   Mat1D<T> truth = zeros<T>(olen);
   truth[label] = 1.0;
 
@@ -83,6 +89,26 @@ void SoftMax<T>::loss(int label, Mat1D<T>& output, Mat1D<T>& input)
     // printf("%7.3f", input[i]);
   }
   // printf("\n");
+}
+
+template <typename T>
+Mat1D<T> SoftMax<T>::loss(Mat1D<T>& output, int label)
+{
+  const int len = output.size();
+  auto input = zeros<T>(len);
+  auto truth = zeros<T>(len);
+  truth[label] = 1.0;
+
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
+  for (int i = 0; i < len; ++i) {
+    input[i] = output[i] - truth[i];
+    // printf("%7.3f", input[i]);
+  }
+  // printf("\n");
+
+  return input;
 }
 
 #endif
