@@ -18,16 +18,8 @@ BinaryFull<T>::~BinaryFull()
 template <typename T>
 void BinaryFull<T>::load(std::string path)
 {
-  std::vector<std::string> filename(shape[0]);
-
-  #ifdef _OPENMP
-  #pragma omp parallel for
-  #endif
-  for (int i = 0; i < shape[0]; i++)
-  {
-    filename[i] = path+"/data"+std::to_string(i)+".txt";
-    load_data_1d(filename[i], iw[i], ib[i], shape[1]);
-  }
+  load_txt(iw, path+"/W.txt");
+  load_txt(ib, path+"/b.txt");
 }
 
 template <typename T>

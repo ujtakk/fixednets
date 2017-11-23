@@ -23,5 +23,5 @@ void reshape(Mat3D<T>& output, Mat1D<T>& input);
 template <typename T>
 void concat(Mat3D<T>& c, Mat3D<T>& a, Mat3D<T>& b);
 
-#include "util.cpp"
+#include "utility.cpp"
 #endif

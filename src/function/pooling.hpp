@@ -17,5 +17,5 @@ template <typename T>
 void pool_max(Mat3D<T>& output, Mat3D<T>& input,
               int fil_h, int fil_w, int stride);
 
-#include "pool.cpp"
+#include "pooling.cpp"
 #endif

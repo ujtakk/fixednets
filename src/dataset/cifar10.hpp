@@ -6,7 +6,7 @@
 class CIFAR10 : Dataset
 {
 private:
-  CIFAR<Q_TYPE> model;
+  CifarNet<Q_TYPE> model;
 
   const std::string base = "/home/work/takau/2.mlearn/cifar10_data/pro_input/";
   std::string data(int label, int sample) {

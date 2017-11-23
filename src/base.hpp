@@ -40,7 +40,7 @@ public:
 
   virtual void Update() = 0;
 
-  virtual Rt calc(std::string data, int which, int amount) = 0;
+  virtual Rt calc(std::string data) = 0;
 };
 
 class Dataset

@@ -4,10 +4,8 @@
 #include "base.hpp"
 #include "layer.hpp"
 
-// #define _LAZY
-
 template <typename T>
-class CIFAR : Network<T, int>
+class CifarNet : Network<T, int>
 {
 private:
   const int FWID = 5;
@@ -35,13 +33,6 @@ private:
   const int pm5hei = pm4hei / PHEI;
   const int pm5wid = pm4wid / PWID;
 
-#ifdef _LAZY
-  lcpPAD<T> convpool1;
-  lcpPAD<T> convpool2;
-  lcpPAD<T> convpool3;
-  lcpPAD<T> convpool4;
-  lcpPAD<T> convpool5;
-#else
   Convolution2D<T> conv1;
   Convolution2D<T> conv2;
   Convolution2D<T> conv3;
@@ -52,7 +43,6 @@ private:
   MaxPooling<T> pool3;
   MaxPooling<T> pool4;
   MaxPooling<T> pool5;
-#endif
   Rectifier<T> relu1;
   Rectifier<T> relu2;
   Rectifier<T> relu3;
@@ -85,8 +75,8 @@ private:
   Mat1D<T> output;
 
 public:
-  CIFAR();
-  ~CIFAR();
+  CifarNet();
+  ~CifarNet();
 
   void Load(std::string path);
   void Save(std::string path);
@@ -95,9 +85,8 @@ public:
   void Backward(int label);
   void Update();
 
-  int calc(std::string data, int which, int amount);
+  int calc(std::string data);
 };
 
-#include "cifar.cpp"
-#undef _LAZY
+#include "cifar_net.cpp"
 #endif

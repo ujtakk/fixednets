@@ -110,7 +110,7 @@ void interpret(Mat3D<T> preds)
 }
 
 template <typename T>
-BBoxMask<T> calc(std::string data, int which, int amount)
+BBoxMask<T> calc(std::string data)
 {
   conv1.forward(fmap1, input);
   pool1.forward(pmap1, fmap1);

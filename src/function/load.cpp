@@ -5,7 +5,6 @@
 
 #include "types.hpp"
 
-#include <iostream>
 static inline float read(std::ifstream& ifs)
 {
   float tmp = 0.0;
@@ -23,6 +22,7 @@ static inline T read(std::ifstream& ifs)
   return static_cast<T>(rint(tmp * Q_OFFSET<T>));
 }
 
+#if 1
 template <typename T>
 void load_txt(Mat1D<T>& x, std::string path)
 {
@@ -64,6 +64,49 @@ void load_txt(Mat4D<T>& x, std::string path)
         for (auto& x_ijkl : x_ijk)
           x_ijkl = read<T>(ifs);
 }
+#else
+template <typename T>
+void load_txt(Mat1D<T>& x, std::string path)
+{
+  std::ifstream ifs(path);
+
+  for (auto& x_i : x)
+    x_i = read(ifs);
+}
+
+template <typename T>
+void load_txt(Mat2D<T>& x, std::string path)
+{
+  std::ifstream ifs(path);
+
+  for (auto& x_i : x)
+    for (auto& x_ij : x_i)
+      x_ij = read(ifs);
+}
+
+template <typename T>
+void load_txt(Mat3D<T>& x, std::string path)
+{
+  std::ifstream ifs(path);
+
+  for (auto& x_i : x)
+    for (auto& x_ij : x_i)
+      for (auto& x_ijk : x_ij)
+        x_ijk = read(ifs);
+}
+
+template <typename T>
+void load_txt(Mat4D<T>& x, std::string path)
+{
+  std::ifstream ifs(path);
+
+  for (auto& x_i : x)
+    for (auto& x_ij : x_i)
+      for (auto& x_ijk : x_ij)
+        for (auto& x_ijkl : x_ijk)
+          x_ijkl = read(ifs);
+}
+#endif
 
 template <typename T>
 void save_txt(std::string path, Mat1D<T>& y)
@@ -113,76 +156,6 @@ void save_txt(std::string path, Mat4D<T>& y)
       for (auto& y_ijk : y_ij)
         for (auto& y_ijkl : y_ijk)
           ofs << y_ijkl << std::endl;
-}
-
-////////////////////////////////////////////////////////////
-// load functions below are deprecated.
-////////////////////////////////////////////////////////////
-
-
-template <typename T>
-void load_data(
-  std::string filename,
-  Mat2D<T>& li1,
-  T& li2,
-  const int height, const int width
-  )
-{
-  std::ifstream ifs(filename);
-  double d1, d2;
-
-  for (int i = 0; i < height; i++) {
-    for (int j = 0; j < width; j++) {
-      ifs >> d1;
-      li1[i][j] = rint(d1 * Q_OFFSET<double>);
-    }
-  }
-  ifs >> d2;
-  li2 = rint(d2 * Q_OFFSET<double>);
-}
-
-template <typename T>
-void load_w(std::string filename, Mat2D<T>& li1, const int height, const int width)
-{
-  std::ifstream ifs(filename);
-  double d1;
-
-  for (int i = 0; i < height; i++) {
-    for (int j = 0; j < width; j++) {
-      ifs >> d1;
-      li1[i][j] = rint(d1 * Q_OFFSET<double>);
-    }
-  }
-}
-
-template <typename T>
-void load_b(std::string filename, T& li)
-{
-  std::ifstream ifs(filename);
-  double d;
-
-  ifs >> d;
-  li = rint(d * Q_OFFSET<double>);
-}
-
-template <typename T>
-void load_data_1d(
-  std::string filename,
-  Mat1D<T>& li1,
-  T& li2,
-  const int length
-)
-{
-  std::ifstream ifs(filename);
-  double d1[length];
-  double d2;
-
-  for (int i = 0; i < length; i++) {
-    ifs >> d1[i];
-    li1[i] = rint(d1[i] * Q_OFFSET<double>);
-  }
-  ifs >> d2;
-  li2 = rint(d2 * Q_OFFSET<double>);
 }
 
 #endif

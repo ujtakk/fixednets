@@ -3,10 +3,8 @@
 
 #include <vector>
 
-// #define _LAZY
-
 template <typename T>
-class VGGNet : Network<T, std::vector<int>>
+class VGG : Network<T, std::vector<int>>
 {
 private:
   const int INSIZE = 224;
@@ -37,29 +35,6 @@ private:
   const int pm5hei = pm4hei/PSTRID; //(pm2hei-PSIZE+STRID2)/STRID2;
   const int pm5wid = pm5hei;
 
-#ifdef _LAZY
-  Convolution2D<T> conv1_1;
-  lcpPAD convpool1;
-
-  Convolution2D<T> conv2_1;
-  lcpPAD convpool2;
-
-  Convolution2D<T> conv3_1;
-  Convolution2D<T> conv3_2;
-  lcpPAD convpool3;
-
-  Convolution2D<T> conv4_1;
-  Convolution2D<T> conv4_2;
-  lcpPAD convpool4;
-
-  Convolution2D<T> conv5_1;
-  Convolution2D<T> conv5_2;
-  lcpPAD convpool5;
-
-  FullyConnected<T> full6;
-  FullyConnected<T> full7;
-  FullyConnected<T> full8;
-#else
   Convolution2D<T> conv1_1;
   Convolution2D<T> conv1_2;
   MaxPooling<T> pool1;
@@ -86,7 +61,6 @@ private:
   FullyConnected<T> full6;
   FullyConnected<T> full7;
   FullyConnected<T> full8;
-#endif
 
   Rectifier<T> relu1_1;
   Rectifier<T> relu1_2;
@@ -150,13 +124,12 @@ private:
   Mat1D<T> output;
 
 public:
-  VGGNet();
-  ~VGGNet();
+  VGG();
+  ~VGG();
 
   void Load(std::string path);
   std::vector<int> calc(std::string data);
 };
 
 #include "vgg.cpp"
-#undef _LAZY
 #endif

@@ -17,7 +17,8 @@ private:
 
   const std::string base = "../data/mnist/input/";
   std::string data(int label, int sample) {
-    return base + std::to_string(label) + "/data" + std::to_string(sample) + ".txt";
+    using std::to_string;
+    return base + to_string(label) + "/data" + to_string(sample) + ".txt";
   };
 
 public:

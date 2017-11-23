@@ -4,8 +4,7 @@
 #include "network/mlp.hpp"
 #include "network/lenet.hpp"
 #include "network/lenet_batched.hpp"
-#include "network/cifar.hpp"
-#include "network/alexnet.hpp"
+#include "network/cifar_net.hpp"
 #include "network/vgg.hpp"
 
 #endif

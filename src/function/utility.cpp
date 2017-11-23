@@ -1,7 +1,6 @@
 #ifdef _UTIL_HPP_
 
 #include <cassert>
-#include <random>
 
 #include "types.hpp"
 
@@ -51,9 +50,9 @@ void flatten(Mat1D<T>& output, Mat3D<T>& input)
   const int mhei = input[0].size();
   const int mwid = input[0][0].size();
 
-  for (int i = 0; i < mdep; i++)
-    for (int j = 0; j < mhei; j++)
-      for (int k = 0; k < mwid; k++)
+  for (int i = 0; i < mdep; ++i)
+    for (int j = 0; j < mhei; ++j)
+      for (int k = 0; k < mwid; ++k)
         output[i*mhei*mwid+j*mwid+k] = input[i][j][k];
 }
 
@@ -64,9 +63,9 @@ void reshape(Mat3D<T>& output, Mat1D<T>& input)
   const int mhei = output[0].size();
   const int mwid = output[0][0].size();
 
-  for (int i = 0; i < mdep; i++)
-    for (int j = 0; j < mhei; j++)
-      for (int k = 0; k < mwid; k++)
+  for (int i = 0; i < mdep; ++i)
+    for (int j = 0; j < mhei; ++j)
+      for (int k = 0; k < mwid; ++k)
         output[i][j][k] = input[i*mhei*mwid+j*mwid+k];
 }
 

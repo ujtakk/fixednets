@@ -66,12 +66,10 @@ void MLP<T>::Update()
 }
 
 template <typename T>
-int MLP<T>::calc(std::string data, int which, int amount)
+int MLP<T>::calc(std::string data)
 {
   load_txt(input, data);
   flatten(input_flat, input);
-  // for (auto i : input_flat)
-  //   std::cout << i << std::endl;
 
   full1.forward(unit1, input_flat);
   relu1.forward(aunit1, unit1);
@@ -79,16 +77,7 @@ int MLP<T>::calc(std::string data, int which, int amount)
   // full2.forward(unit2, aunit1);
   // prob2.forward(output, unit2);
 
-  int number = -1;
-  T temp = std::numeric_limits<T>::min();
-  for (int i = 0; i < N_OUT; ++i) {
-    if (temp < output[i]) {
-       temp = output[i];
-       number = i;
-    }
-  }
-
-  return number;
+  return classify(output);
 }
 
 #endif

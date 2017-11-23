@@ -1,31 +1,7 @@
 #ifdef _VGG_HPP_
 
-/*
- * TODO: Implement _LAZY Version
- */
-
 template <typename T>
-VGGNet<T>::VGGNet()
-#ifdef _LAZY
-  : conv1_1{N_F1,    3, FSIZE, FSIZE, FSTRID, FPAD}
-  , conv1_2{N_F1, N_F1, FSIZE, FSIZE, FSTRID, FPAD}
-  , conv2_1{N_F2, N_F1, FSIZE, FSIZE, FSTRID, FPAD}
-  , conv2_2{N_F2, N_F2, FSIZE, FSIZE, FSTRID, FPAD}
-  , conv3_1{N_F3, N_F2, FSIZE, FSIZE, FSTRID, FPAD}
-  , conv3_2{N_F3, N_F3, FSIZE, FSIZE, FSTRID, FPAD}
-  , conv3_3{N_F3, N_F3, FSIZE, FSIZE, FSTRID, FPAD}
-  , conv4_1{N_F4, N_F3, FSIZE, FSIZE, FSTRID, FPAD}
-  , conv4_2{N_F4, N_F4, FSIZE, FSIZE, FSTRID, FPAD}
-  , conv4_3{N_F4, N_F4, FSIZE, FSIZE, FSTRID, FPAD}
-  , conv5_1{N_F5, N_F4, FSIZE, FSIZE, FSTRID, FPAD}
-  , conv5_2{N_F5, N_F5, FSIZE, FSIZE, FSTRID, FPAD}
-  , conv5_3{N_F5, N_F5, FSIZE, FSIZE, FSTRID, FPAD}
-  , pool1{PSIZE, PSIZE, PSTRID}
-  , pool2{PSIZE, PSIZE, PSTRID}
-  , pool3{PSIZE, PSIZE, PSTRID}
-  , pool4{PSIZE, PSIZE, PSTRID}
-  , pool5{PSIZE, PSIZE, PSTRID}
-#else
+VGG<T>::VGG()
   : conv1_1{N_F1,    3, FSIZE, FSIZE, FSTRID, FPAD}
   , conv1_2{N_F1, N_F1, FSIZE, FSIZE, FSTRID, FPAD}
   , pool1{PSIZE, PSIZE, PSTRID}
@@ -44,7 +20,6 @@ VGGNet<T>::VGGNet()
   , conv5_2{N_F5, N_F5, FSIZE, FSIZE, FSTRID, FPAD}
   , conv5_3{N_F5, N_F5, FSIZE, FSIZE, FSTRID, FPAD}
   , pool5{PSIZE, PSIZE, PSTRID}
-#endif
   , full6{N_H1, N_F5*pm5hei*pm5wid}
   , full7{N_H2, N_H1}
   , full8{LABEL, N_H2}
@@ -96,103 +71,36 @@ VGGNet<T>::VGGNet()
 }
 
 template <typename T>
-VGGNet<T>::~VGGNet()
+VGG<T>::~VGG()
 {
 }
 
 template <typename T>
-void VGGNet<T>::Load(std::string path)
+void VGG<T>::Load(std::string path)
 {
-#ifdef _LAZY
   conv1_1.load(path+"/wb_1_1");
   conv1_2.load(path+"/wb_1_2");
-  //convpool1.load(filename);
   conv2_1.load(path+"/wb_2_1");
   conv2_2.load(path+"/wb_2_2");
-  //convpool2.load(filename);
   conv3_1.load(path+"/wb_3_1");
   conv3_2.load(path+"/wb_3_2");
   conv3_3.load(path+"/wb_3_3");
-  //convpool3.load(filename);
   conv4_1.load(path+"/wb_4_1");
   conv4_2.load(path+"/wb_4_2");
   conv4_3.load(path+"/wb_4_3");
-  //convpool4.load(filename);
   conv5_1.load(path+"/wb_5_1");
   conv5_2.load(path+"/wb_5_2");
   conv5_3.load(path+"/wb_5_3");
-  //convpool5.load(filename);
-#else
-  conv1_1.load(path+"/wb_1_1");
-  conv1_2.load(path+"/wb_1_2");
-  std::cout << "1" << std::endl;
-  conv2_1.load(path+"/wb_2_1");
-  conv2_2.load(path+"/wb_2_2");
-  std::cout << "2" << std::endl;
-  conv3_1.load(path+"/wb_3_1");
-  conv3_2.load(path+"/wb_3_2");
-  conv3_3.load(path+"/wb_3_3");
-  std::cout << "3" << std::endl;
-  conv4_1.load(path+"/wb_4_1");
-  conv4_2.load(path+"/wb_4_2");
-  conv4_3.load(path+"/wb_4_3");
-  std::cout << "4" << std::endl;
-  conv5_1.load(path+"/wb_5_1");
-  conv5_2.load(path+"/wb_5_2");
-  conv5_3.load(path+"/wb_5_3");
-  std::cout << "5" << std::endl;
-#endif
   full6.load(path+"/wb_6");
-  std::cout << "6" << std::endl;
   full7.load(path+"/wb_7");
-  std::cout << "7" << std::endl;
   full8.load(path+"/wb_8");
-  std::cout << "8" << std::endl;
 }
 
 template <typename T>
-std::vector<int> VGGNet<T>::calc(std::string data)
+std::vector<int> VGG<T>::calc(std::string data)
 {
-  // Top-5 label
-  std::vector<int> number(5, -1);
-
   load_txt(input, data);
 
-#ifdef _LAZY
-  const int which = 0;
-  const int amount = 0;
-  conv1_1.forward(fmap1_1,   input);
-  relu1_1.forward(amap1_1, fmap1_1);
-  conv1_2.forward(fmap1_2, amap1_1);
-    pool1.forward(pmap1, fmap1_2);
-  relu1_2.forward(amap1_2, pmap1);
-  conv2_1.forward(fmap2_1, amap1_2);
-  relu2_1.forward(amap2_1, fmap2_1);
-  conv2_2.forward(fmap2_2, amap2_1);
-    pool2.forward(pmap2, fmap2_2);
-  relu2_2.forward(amap2_2, pmap2);
-  conv3_1.forward(fmap3_1, amap2_2);
-  relu3_1.forward(amap3_1, fmap3_1);
-  conv3_2.forward(fmap3_2, amap3_1);
-  relu3_2.forward(amap3_2, fmap3_2);
-  conv3_3.forward(fmap3_3, amap3_2);
-    pool3.forward(pmap3, fmap3_3);
-  relu3_3.forward(amap3_3, pmap3);
-  conv4_1.forward(fmap4_1, amap3_3);
-  relu4_1.forward(amap4_1, fmap4_1);
-  conv4_2.forward(fmap4_2, amap4_1);
-  relu4_2.forward(amap4_2, fmap4_2);
-  conv4_3.forward(fmap4_3, amap4_2);
-    pool4.forward(pmap4, fmap4_3);
-  relu4_3.forward(amap4_3, pmap4);
-  conv5_1.forward(fmap5_1, amap4_3);
-  relu5_1.forward(amap5_1, fmap5_1);
-  conv5_2.forward(fmap5_2, amap5_1);
-  relu5_2.forward(amap5_2, fmap5_2);
-  conv5_3.forward(fmap5_3, amap5_2);
-    pool5.forward(pmap5, fmap5_3);
-  relu5_3.forward(amap5_3, pmap5);
-#else
   conv1_1.forward(fmap1_1,   input);
   relu1_1.forward(amap1_1, fmap1_1);
   conv1_2.forward(fmap1_2, amap1_1);
@@ -228,7 +136,6 @@ std::vector<int> VGGNet<T>::calc(std::string data)
   conv5_3.forward(fmap5_3, amap5_2);
     pool5.forward(pmap5, fmap5_3);
   relu5_3.forward(amap5_3, pmap5);
-#endif
 
   flatten(amap5_flat, amap5_3);
 
@@ -238,17 +145,9 @@ std::vector<int> VGGNet<T>::calc(std::string data)
   relu7.forward(aunit2, hunit2);
 
   full8.forward(output, aunit2);
-
   //output4.forward(output);
 
-  std::vector<int> index(LABEL);
-  iota(index.begin(), index.end(), 0);
-  sort(index.begin(), index.end(), [&](int a, int b){
-    return output[a] > output[b];
-  });
-  for (int i=0; i<5; i++) number[i] = index[i];
-
-  return number;
+  return classify_top(output, 5);
 }
 
 #endif

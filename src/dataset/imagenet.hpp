@@ -6,13 +6,8 @@
 class ImageNet : Dataset
 {
 private:
-#if defined _ALEX
-  AlexNet<Q_TYPE> model;
-  const std::string base = "/home/work/takau/2.mlearn/imagenet_data/input/";
-#elif defined _VGG
-  VGGNet<Q_TYPE>  model;
+  VGG<Q_TYPE>  model;
   const std::string base = "/home/work/takau/2.mlearn/imagenet_data/input224/";
-#endif
 
   auto data = [](int label, int sample) {
     return base + std::to_string(label) + "/data" + std::to_string(sample) + ".txt";

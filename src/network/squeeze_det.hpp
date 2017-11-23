@@ -61,7 +61,7 @@ public:
   void Backward(int label);
   void Update();
 
-  BBoxMask<T> calc(std::string data, int which, int amount);
+  BBoxMask<T> calc(std::string data);
 };
 
 #include "squeeze_det.cpp"

@@ -37,7 +37,7 @@ public:
   void Backward(int label);
   void Update();
 
-  int calc(std::string data, int which, int amount);
+  int calc(std::string data);
 };
 
 #include "mlp.cpp"

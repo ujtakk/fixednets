@@ -1,12 +1,8 @@
-#ifdef _MNIST_HPP_
+ _MNIST_HPP_
 
 ImageNet::ImageNet()
 {
-#if defined _ALEX
-  model.Load("/home/work/takau/imagenet_data/alexbn");
-#elif defined _VGG
   model.Load("/home/work/takau/imagenet_data/vgg12");
-#endif
 }
 
 ImageNet::~ImageNet()
@@ -17,7 +13,7 @@ int ImageNet::predict(int label, int sample)
 {
   std::string filename = data(label, sample);
   std::vector<int> ans(5);
-  ans = model.calc(filename, 0, 0);
+  ans = model.calc(filename);
 
   printf(
     "%s: answer is %3d - %3d - %3d - %3d - %3d.\n",

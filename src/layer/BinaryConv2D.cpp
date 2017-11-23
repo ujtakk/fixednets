@@ -21,20 +21,8 @@ BinaryConv2D<T>::~BinaryConv2D()
 template <typename T>
 void BinaryConv2D<T>::load(std::string path)
 {
-  std::vector<std::string> filename(shape[0]);
-
-  #ifdef _OPENMP
-  #pragma omp parallel for
-  #endif
-  for (int i = 0; i < shape[0]; i++) {
-    for (int j = 0; j < shape[1]; j++) {
-      filename[i] = path+"/data"+std::to_string(i)+"_"+std::to_string(j)+".txt";
-      load_w(filename[i], iw[i][j], shape[2], shape[3]);
-    }
-
-    filename[i] = path+"/data"+std::to_string(i)+".txt";
-    load_b(filename[i], ib[i]);
-  }
+  load_txt(iw, path+"/W.txt");
+  load_txt(ib, path+"/b.txt");
 }
 
 template <typename T>

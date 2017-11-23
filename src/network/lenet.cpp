@@ -98,7 +98,7 @@ void LeNet<T>::Update()
 }
 
 template <typename T>
-int LeNet<T>::calc(std::string data, int which, int amount)
+int LeNet<T>::calc(std::string data)
 {
   load_txt(input, data);
 
@@ -119,16 +119,7 @@ int LeNet<T>::calc(std::string data, int which, int amount)
   // full4.forward(fvec4, avec3);
   // prob4.forward(output, fvec4);
 
-  int number = -1;
-  T temp = std::numeric_limits<T>::min();
-  for (int i = 0; i < LABEL; ++i) {
-    if (temp < output[i]) {
-      temp = output[i];
-      number = i;
-    }
-  }
-
-  return number;
+  return classify(output);
 }
 
 #endif

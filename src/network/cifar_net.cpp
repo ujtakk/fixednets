@@ -3,14 +3,7 @@
 #include <limits>
 
 template <typename T>
-CIFAR<T>::CIFAR()
-#ifdef _LAZY
-  : convpool1{N_F1,    3, FHEI, FWID, PHEI, PWID}
-  , convpool2{N_F2, N_F1, FHEI, FWID, PHEI, PWID}
-  , convpool3{N_F3, N_F2, FHEI, FWID, PHEI, PWID}
-  , convpool4{N_F4, N_F3, FHEI, FWID, PHEI, PWID}
-  , convpool5{N_F5, N_F4, FHEI, FWID, PHEI, PWID}
-#else
+CifarNet<T>::CifarNet()
   : conv1{N_F1,    3, FHEI, FWID, 1, (FHEI-1)/2}
   , conv2{N_F2, N_F1, FHEI, FWID, 1, (FHEI-1)/2}
   , conv3{N_F3, N_F2, FHEI, FWID, 1, (FHEI-1)/2}
@@ -21,7 +14,6 @@ CIFAR<T>::CIFAR()
   , pool3{PHEI, PWID, 2}
   , pool4{PHEI, PWID, 2}
   , pool5{PHEI, PWID, 2}
-#endif
   , full6{N_H1, N_F5*pm5hei*pm5wid}
   , full7{LABEL, N_H1}
 {
@@ -55,70 +47,47 @@ CIFAR<T>::CIFAR()
 }
 
 template <typename T>
-CIFAR<T>::~CIFAR()
+CifarNet<T>::~CifarNet()
 {
 }
 
 template <typename T>
-void CIFAR<T>::Load(std::string path)
+void CifarNet<T>::Load(std::string path)
 {
-#ifdef _LAZY
-  convpool1.load(path+"/wb_1");
-  convpool2.load(path+"/wb_2");
-  convpool3.load(path+"/wb_3");
-  convpool4.load(path+"/wb_4");
-  convpool5.load(path+"/wb_5");
-#else
   conv1.load(path+"/wb_1");
   conv2.load(path+"/wb_2");
   conv3.load(path+"/wb_3");
   conv4.load(path+"/wb_4");
   conv5.load(path+"/wb_5");
-#endif
   full6.load(path+"/wb_6");
   full7.load(path+"/wb_7");
 }
 
 template <typename T>
-void CIFAR<T>::Save(std::string path)
+void CifarNet<T>::Save(std::string path)
 {
 }
 
 template <typename T>
-void CIFAR<T>::Forward(std::string data)
+void CifarNet<T>::Forward(std::string data)
 {
 }
 
 template <typename T>
-void CIFAR<T>::Backward(int label)
+void CifarNet<T>::Backward(int label)
 {
 }
 
 template <typename T>
-void CIFAR<T>::Update()
+void CifarNet<T>::Update()
 {
 }
 
 template <typename T>
-int CIFAR<T>::calc(std::string data, int which, int amount)
+int CifarNet<T>::calc(std::string data)
 {
-  int number = -1;
-  int temp = std::numeric_limits<int>::min();
-
   load_txt(input, data);
 
-#ifdef _LAZY
-  convpool1.forward(pmap1, input, which, amount);
-  relu1.forward(amap1, pmap1);
-  convpool2.forward(pmap2, amap1, which, amount);
-  relu2.forward(amap2, pmap2);
-  convpool3.forward(pmap3, amap2, which, amount);
-  relu3.forward(amap3, pmap3);
-  convpool4.forward(pmap4, amap3, which, amount);
-  relu4.forward(amap4, pmap4);
-  convpool5.forward(pmap5, amap4, which, amount);
-  relu5.forward(amap5, pmap5);
-#else
   conv1.forward(fmap1, input);
   pool1.forward(pmap1, fmap1);
   relu1.forward(amap1, pmap1);
@@ -134,7 +103,6 @@ int CIFAR<T>::calc(std::string data, int which, int amount)
   conv5.forward(fmap5, amap4);
   pool5.forward(pmap5, fmap5);
   relu5.forward(amap5, pmap5);
-#endif
 
   flatten(amap5_flat, amap5);
 
@@ -145,14 +113,7 @@ int CIFAR<T>::calc(std::string data, int which, int amount)
 
   //output4.forward(output);
 
-  for(int i=0;i<LABEL;i++) {
-    if(temp < output[i]) {
-      temp = output[i];
-      number = i;
-    }
-  }
-
-  return number;
+  return classify(output);
 }
 
 #endif

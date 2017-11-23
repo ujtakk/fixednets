@@ -5,6 +5,7 @@
 #include <cstdint>
 
 #if 1
+// using fixed = int16_t;
 using Q_TYPE = int16_t;
 
 const int Q_BITS = 8;

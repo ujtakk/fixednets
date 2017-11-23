@@ -12,9 +12,9 @@ CIFAR10::~CIFAR10()
 int CIFAR10::predict(int label, int sample)
 {
   std::string filename = data(label, sample);
-  int ans = model.calc(filename, 0, 0);
+  int ans = model.calc(filename);
 
-  std::cout << filename << ": answer is " << ans << std::endl;
+  // std::cout << filename << ": answer is " << ans << std::endl;
 
   return ans;
 }
