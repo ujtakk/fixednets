@@ -44,8 +44,22 @@ void softmax(Mat1D<float>& output, Mat1D<float>& input)
   // #ifdef _OPENMP
   // #pragma omp parallel for
   // #endif
-  for (int i = 0; i < len; ++i)
+  for (int i = 0; i < len; ++i) {
     output[i] = exp(input[i]) / expsum;
+    // NOTE: avoid inf / inf
+    if (isnan(output[i]))
+      output[i] = 1.0;
+  }
+}
+
+template <typename T>
+void softmax(Mat1D<T>& output, Mat1D<T>& input)
+{
+  const int len = input.size();
+
+  // TODO: implement
+  for (int i = 0; i < len; ++i)
+    output[i] = input[i];
 }
 
 #endif

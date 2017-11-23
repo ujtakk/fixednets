@@ -70,12 +70,14 @@ int MLP<T>::calc(std::string data, int which, int amount)
 {
   load_txt(input, data);
   flatten(input_flat, input);
+  // for (auto i : input_flat)
+  //   std::cout << i << std::endl;
 
   full1.forward(unit1, input_flat);
   relu1.forward(aunit1, unit1);
-  // full2.forward(output, aunit1);
-  full2.forward(unit2, aunit1);
-  prob2.forward(output, unit2);
+  full2.forward(output, aunit1);
+  // full2.forward(unit2, aunit1);
+  // prob2.forward(output, unit2);
 
   int number = -1;
   T temp = std::numeric_limits<T>::min();

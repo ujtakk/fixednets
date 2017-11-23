@@ -2,8 +2,9 @@
 #define _TYPES_HPP_
 
 #include <cmath>
+#include <cstdint>
 
-#if 0
+#if 1
 using Q_TYPE = int16_t;
 
 const int Q_BITS = 8;

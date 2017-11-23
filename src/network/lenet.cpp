@@ -65,13 +65,13 @@ void LeNet<T>::Forward(std::string data)
   relu3.forward(avec3, fvec3);
 
   full4.forward(fvec4, avec3);
-  prob4.forward(output, fvec4);
+  // prob4.forward(output, fvec4);
 }
 
 template <typename T>
 void LeNet<T>::Backward(int label)
 {
-  prob4.loss(fvec4, output, label);
+  // prob4.loss(fvec4, output, label);
   full4.backward(avec3, fvec4);
 
   relu3.backward(fvec3, avec3);
@@ -115,8 +115,9 @@ int LeNet<T>::calc(std::string data, int which, int amount)
   full3.forward(fvec3, pmap2_flat);
   relu3.forward(avec3, fvec3);
 
-  full4.forward(fvec4, avec3);
-  prob4.forward(output, fvec4);
+  full4.forward(output, avec3);
+  // full4.forward(fvec4, avec3);
+  // prob4.forward(output, fvec4);
 
   int number = -1;
   T temp = std::numeric_limits<T>::min();

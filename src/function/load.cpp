@@ -29,7 +29,7 @@ void load_txt(Mat1D<T>& x, std::string path)
   std::ifstream ifs(path);
 
   for (auto& x_i : x)
-    x_i = read(ifs);
+    x_i = read<T>(ifs);
 }
 
 template <typename T>
@@ -39,7 +39,7 @@ void load_txt(Mat2D<T>& x, std::string path)
 
   for (auto& x_i : x)
     for (auto& x_ij : x_i)
-      x_ij = read(ifs);
+      x_ij = read<T>(ifs);
 }
 
 template <typename T>
@@ -50,7 +50,7 @@ void load_txt(Mat3D<T>& x, std::string path)
   for (auto& x_i : x)
     for (auto& x_ij : x_i)
       for (auto& x_ijk : x_ij)
-        x_ijk = read(ifs);
+        x_ijk = read<T>(ifs);
 }
 
 template <typename T>
@@ -62,7 +62,7 @@ void load_txt(Mat4D<T>& x, std::string path)
     for (auto& x_ij : x_i)
       for (auto& x_ijk : x_ij)
         for (auto& x_ijkl : x_ijk)
-          x_ijkl = read(ifs);
+          x_ijkl = read<T>(ifs);
 }
 
 template <typename T>
