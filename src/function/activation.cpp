@@ -1,5 +1,6 @@
 #ifdef _ACTV_HPP_
 
+#include <cmath>
 #include <limits>
 
 template <typename T>
@@ -47,7 +48,7 @@ void softmax(Mat1D<float>& output, Mat1D<float>& input)
   for (int i = 0; i < len; ++i) {
     output[i] = exp(input[i]) / expsum;
     // NOTE: avoid inf / inf
-    if (isnan(output[i]))
+    if (std::isnan(output[i]))
       output[i] = 1.0;
   }
 }
@@ -60,6 +61,18 @@ void softmax(Mat1D<T>& output, Mat1D<T>& input)
   // TODO: implement
   for (int i = 0; i < len; ++i)
     output[i] = input[i];
+}
+
+void sigmoid(Mat1D<float>& output, Mat1D<float>& input)
+{
+  const int ilen = input.size();
+
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
+  for (int i = 0; i < ilen; i++) {
+    output[i] = (1.0/(1.0 + exp(-input[i]))) * Q_OFFSET<float>;
+  }
 }
 
 #endif

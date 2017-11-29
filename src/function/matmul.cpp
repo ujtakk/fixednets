@@ -6,11 +6,16 @@ void full(Mat1D<T>& output, Mat1D<T>& input, Mat2D<T>& weight)
   const int n_out = output.size();
   const int n_in = input.size();
 
+  #ifdef _OPENMP
+  std::cout << "openmp" << std::endl;
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < n_out; ++i) {
-    output[i] = 0;
+    T acc = 0;
     for (int j = 0; j < n_in; ++j) {
-      output[i] += mul(weight[i][j], input[j]);
+      acc += mul(weight[i][j], input[j]);
     }
+    output[i] = acc;
   }
 }
 

@@ -7,4 +7,6 @@
 #include "network/cifar_net.hpp"
 #include "network/vgg.hpp"
 
+#include "network/squeeze_det.hpp"
+
 #endif

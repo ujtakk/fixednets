@@ -2,6 +2,8 @@
 #define _FUNCTION_HPP_
 
 #include "function/utility.hpp"
+#include "function/transform.hpp"
+#include "function/arithmetic.hpp"
 #include "function/load.hpp"
 
 #include "function/convolution.hpp"

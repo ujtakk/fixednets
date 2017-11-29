@@ -33,9 +33,9 @@ void FireModule<T>::forward(Mat3D<T>& output, Mat3D<T>& input)
   const int out_h = output[0].size();
   const int out_w = output[0][0].size();
 
-  Mat3D<T> sq1x1 = zeros(s1x1, out_h, out_w);
-  Mat3D<T> ex1x1 = zeros(e1x1, out_h, out_w);
-  Mat3D<T> ex3x3 = zeros(e3x3, out_h, out_w);
+  Mat3D<T> sq1x1 = zeros<T>(s1x1, out_h, out_w);
+  Mat3D<T> ex1x1 = zeros<T>(e1x1, out_h, out_w);
+  Mat3D<T> ex3x3 = zeros<T>(e3x3, out_h, out_w);
 
   squeeze1x1.forward(sq1x1, input);
   expand1x1.forward(ex1x1, sq1x1);

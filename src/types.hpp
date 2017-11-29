@@ -4,7 +4,7 @@
 #include <cmath>
 #include <cstdint>
 
-#if 1
+#if 0
 // using fixed = int16_t;
 using Q_TYPE = int16_t;
 

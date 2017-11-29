@@ -22,7 +22,7 @@ static inline T read(std::ifstream& ifs)
   return static_cast<T>(rint(tmp * Q_OFFSET<T>));
 }
 
-#if 1
+#if 0
 template <typename T>
 void load_txt(Mat1D<T>& x, std::string path)
 {

@@ -2,6 +2,20 @@
 
 KITTI::KITTI()
 {
+  conf.PLOT_PROB_THRESH       = 0.4;
+  conf.NMS_THRESH             = 0.4;
+  conf.PROB_THRESH            = 0.005;
+  conf.TOP_N_DETECTION        = 64;
+
+  conf.DATA_AUGMENTATION      = true;
+  conf.DRIFT_X                = 150;
+  conf.DRIFT_Y                = 100;
+  conf.EXCLUDE_HARD_EXAMPLES  = false;
+
+  conf.ANCHOR_BOX             = set_anchors( c);
+  conf.ANCHORS                = len(mc.ANCHOR_BOX);
+  conf.ANCHOR_PER_GRID        = 9;
+
   model.Load("../data/kitti/squeezeDet");
 }
 
@@ -13,6 +27,7 @@ auto KITTI::set_anchors()
 {
   const int H = 24, W = 78, B = 9;
 
+  auto model_anchor = 
   anchor_shapes = np.reshape(
       [np.array(
           [[  36.,  37.], [ 366., 174.], [ 115.,  59.],
