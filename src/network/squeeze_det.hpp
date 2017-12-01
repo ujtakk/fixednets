@@ -83,6 +83,9 @@ private:
   int CLASSES;
   int IMAGE_WIDTH;
   int IMAGE_HEIGHT;
+  int TOP_N_DETECTION;
+  float NMS_THRESH;
+  float PROB_THRESH;
   Mat2D<T> ANCHOR_BOX;
 
 public:
@@ -99,6 +102,7 @@ public:
   void Update();
 
   BBoxMask calc(std::string data);
+  BBoxMask filter(BBoxMask mask);
 };
 
 #include "squeeze_det.cpp"

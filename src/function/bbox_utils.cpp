@@ -90,4 +90,28 @@ Mat1D<float> batch_iou(Mat2D<float> boxes, Mat1D<float> box)
   return intersection_area / union_area;
 }
 
+Mat1D<bool> nms(Mat2D<float> boxes, Mat1D<float> probs, float thresh)
+{
+  const int len = probs.size();
+
+  std::vector<int> order(len);
+  std::iota(order.begin(), order.end(), 0);
+  std::sort(order.begin(), order.end(), [probs](int i, int j) {
+    return probs[i] > probs[j];
+  });
+
+  Mat1D<bool> keep(len, true);
+  for (int i = 0; i < len-1; ++i) {
+    // auto sub_boxes = boxes[order[i+1:]]
+    Mat2D<float> sub_boxes(boxes.begin()+order[i+1], boxes.end());
+    auto ovps = batch_iou(sub_boxes, boxes[order[i]]);
+    for (int j = 0; j < (int)ovps.size(); ++j) {
+      if (ovps[j] > thresh)
+        keep[order[j+i+1]] = false;
+    }
+  }
+
+  return keep;
+}
+
 #endif

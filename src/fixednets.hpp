@@ -13,6 +13,9 @@
          __LINE__, basename(const_cast<char *>(__FILE__)), #fun); \
   (fun); \
 } while (0)
+#else
+#define _(s)
+#define f(fun)
 #endif
 
 #include "types.hpp"

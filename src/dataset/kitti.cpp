@@ -63,7 +63,7 @@ std::vector<std::string> KITTI::load_image_set_idx()
   std::vector<std::string> image_idx;
   std::string line;
   int idx = 0;
-  const int len = 3;
+  const int len = 1;
   while (ifs >> line) {
     image_idx.emplace_back(line);
     ++idx;
@@ -158,20 +158,15 @@ KITTI::evaluate_detections(std::string eval_dir, Mat4D<float> all_boxes)
     _(("cls_idx: "+std::to_string(cls_idx)).c_str());
       std::string cls = _classes[cls_idx];
       std::transform(cls.begin(), cls.end(), cls.begin(), tolower);
-      _("transform");
 
-      _("det0");
       std::cout << all_boxes.size() << std::endl;
       Mat2D<float> dets = all_boxes[cls_idx][im_idx];
-      _("det00");
       for (auto det : dets) {
-        _("det1");
         fprintf(fp,
           "%s -1 -1 0.0 %.2f %.2f %.2f %.2f 0.0 0.0 0.0 0.0 0.0 "
           "0.0 0.0 %.3f\n",
           cls.c_str(), det[0], det[1], det[2], det[3], det[4]
         );
-        _("det2");
       }
     }
     fclose(fp);
@@ -300,8 +295,8 @@ auto KITTI::analyze_detections(std::string detection_file_dir, std::string det_e
       if (i < (int)gt_bboxes.size())
         num_dets += 1;
       // auto ious = batch_iou(gt_bboxes[:, :4], det[:4]);
-      // auto ious = batch_iou(gt_bboxes, det);
-      Mat1D<float> ious;
+      auto ious = batch_iou(gt_bboxes, det);
+      // Mat1D<float> ious;
       auto max_iou = max(ious);
       auto gt_idx = argmax(ious);
       if (max_iou > 0.1) {
@@ -456,7 +451,9 @@ void KITTI::test()
   auto num_images = image_idx.size();
 
   // auto all_boxes = zeros<float>(num_classes, num_images, 1);
-  Mat4D<float> all_boxes;
+  Mat4D<float> all_boxes(num_classes);
+  for (auto& b : all_boxes)
+    b.resize(num_images);
 
   auto num_detection = 0.0;
   for (int i = 0; i < (int)num_images; ++i) {
@@ -471,19 +468,21 @@ void KITTI::test()
     auto det_probs = mask.det_probs;
     auto det_class = mask.det_class;
 
-    all_boxes = zeros<float>(num_classes, num_images, det_boxes.size(), 5);
-    for (int j = 0; j < (int)det_boxes.size(); ++j) {
+    // for (int j = 0; j < (int)det_boxes.size(); ++j) {
       // det_boxes[j, :, 0::2] /= scales[j][0]
       // det_boxes[j, :, 1::2] /= scales[j][1]
 
       // det_bbox, score, det_class = model.filter_prediction(
       //     det_boxes[j], det_probs[j], det_class[j]);
-      Mat2D<float> _bbox = det_boxes;
-      Mat1D<float> _score = det_probs;
-      Mat1D<int> _class = det_class;
+      auto filtered_mask = model.filter(mask);
+      Mat2D<float> _bbox  = filtered_mask.det_boxes;
+      Mat1D<float> _score = filtered_mask.det_probs;
+      Mat1D<int>   _class = filtered_mask.det_class;
 
-      num_detection += _bbox.size();
-      for (int k = 0; k < (int)_score.size(); ++k) {
+      const int mask_len = _bbox.size();
+      for (auto& b : all_boxes)
+        b[i].resize(mask_len);
+      for (int k = 0; k < mask_len; ++k) {
         auto c = _class[k];
         auto b = _bbox[k];
         auto s = _score[k];
@@ -493,7 +492,9 @@ void KITTI::test()
         all_boxes[c][i][k] =
             Mat1D<float>{bbox[0], bbox[1], bbox[2], bbox[3], s};
       }
-    }
+
+      num_detection += mask_len;
+    // }
   }
 
   printf("Evaluating detections...\n");

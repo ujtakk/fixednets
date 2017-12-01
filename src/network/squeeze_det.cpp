@@ -34,6 +34,9 @@ void SqueezeDet<T>::configure(DetConfig& conf)
   IMAGE_HEIGHT = conf.IMAGE_HEIGHT;
   CLASSES = conf.CLASSES;
   ANCHOR_BOX = conf.ANCHOR_BOX;
+  TOP_N_DETECTION = conf.TOP_N_DETECTION;
+  NMS_THRESH = conf.NMS_THRESH;
+  PROB_THRESH = conf.PROB_THRESH;
 }
 
 template <typename T>
@@ -255,5 +258,68 @@ BBoxMask SqueezeDet<T>::calc(std::string data)
   return interpret(fmap12);
 }
 
+template <typename T>
+BBoxMask SqueezeDet<T>::filter(BBoxMask mask)
+{
+  auto boxes = mask.det_boxes;
+  auto probs = mask.det_probs;
+  auto _clas = mask.det_class;
+
+  std::vector<int> whole(probs.size());
+  std::iota(whole.begin(), whole.end(), 0);
+  std::vector<int> order;
+
+  if (0 < TOP_N_DETECTION && TOP_N_DETECTION < (int)probs.size()) {
+    std::sort(whole.begin(), whole.end(), [&](int i, int j) {
+      return probs[i] > probs[j];
+    });
+    order.assign(whole.begin(), whole.begin()+TOP_N_DETECTION);
+  }
+  else {
+    std::copy_if(whole.begin(), whole.end(), order.begin(), [&](int i) {
+      return probs[i] > PROB_THRESH;
+    });
+  }
+
+  Mat2D<float>  new_boxes;
+  Mat1D<float>  new_probs;
+  Mat1D<int>    new_class;
+  for (int i : order) {
+    new_boxes.emplace_back(boxes[i]);
+    new_probs.emplace_back(probs[i]);
+    new_class.emplace_back(_clas[i]);
+  }
+
+  Mat2D<float>  final_boxes;
+  Mat1D<float>  final_probs;
+  Mat1D<int>    final_class;
+
+  for (int c = 0; c < CLASSES; ++c) {
+    Mat2D<float>  cand_boxes;
+    Mat1D<float>  cand_probs;
+    for (int i = 0; i < (int)new_class.size(); ++i) {
+      if (new_class[i] == c) {
+        cand_boxes.emplace_back(new_boxes[i]);
+        cand_probs.emplace_back(new_probs[i]);
+      }
+    }
+
+    auto keep = nms(cand_boxes, cand_probs, NMS_THRESH);
+    for (int i = 0; i < (int)keep.size(); ++i) {
+      if (keep[i]) {
+        final_boxes.emplace_back(cand_boxes[i]);
+        final_probs.emplace_back(cand_probs[i]);
+        final_class.emplace_back(c);
+      }
+    }
+  }
+
+  BBoxMask filtered_mask;
+  filtered_mask.det_boxes = final_boxes;
+  filtered_mask.det_probs = final_probs;
+  filtered_mask.det_class = final_class;
+
+  return filtered_mask;
+}
 
 #endif
