@@ -22,14 +22,17 @@ void conv_plus_pad(Mat3D<T>& output, Mat3D<T>& input, Mat4D<T>& weight,
 
   Mat3D<T> padded = zeros<T>(n_in, in_h+2*pad+stride-1, in_w+2*pad+stride-1);
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int m = 0; m < n_in; ++m)
     for (int i = 0; i < in_h; ++i)
       for (int j = 0; j < in_w; ++j)
         padded[m][i+pad][j+pad] = input[m][i][j];
 
-  // #ifdef _OPENMP
-  // #pragma omp parallel for
-  // #endif
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int n = 0; n < n_out; ++n) {
     for (int m = 0; m < n_in; ++m) {
       for (int i = 0; i < fea_h; i+=stride) {

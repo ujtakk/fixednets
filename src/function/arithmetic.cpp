@@ -8,6 +8,9 @@ Mat1D<T> operator+(Mat1D<T>& x, Mat1D<T>& y)
   const int len = x.size();
   auto z = zeros<T>(len);
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < len; ++i)
     z[i] = x[i] + y[i];
 
@@ -20,6 +23,9 @@ Mat1D<T> operator-(Mat1D<T>& x, Mat1D<T>& y)
   const int len = x.size();
   auto z = zeros<T>(len);
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < len; ++i)
     z[i] = x[i] - y[i];
 
@@ -32,6 +38,9 @@ Mat1D<T> operator*(Mat1D<T>& x, Mat1D<T>& y)
   const int len = x.size();
   auto z = zeros<T>(len);
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < len; ++i)
     z[i] = x[i] * y[i];
 
@@ -44,6 +53,9 @@ Mat1D<T> operator/(Mat1D<T>& x, Mat1D<T>& y)
   const int len = x.size();
   auto z = zeros<T>(len);
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < len; ++i)
     z[i] = x[i] / y[i];
 
@@ -56,6 +68,9 @@ Mat1D<T> operator+(T x, Mat1D<T>& y)
   const int len = y.size();
   auto z = zeros<T>(len);
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < len; ++i)
     z[i] = x + y[i];
 
@@ -68,6 +83,9 @@ Mat1D<T> operator+(Mat1D<T>& x, T y)
   const int len = x.size();
   auto z = zeros<T>(len);
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < len; ++i)
     z[i] = x[i] + y;
 
@@ -80,6 +98,9 @@ Mat1D<T> operator-(T x, Mat1D<T>& y)
   const int len = y.size();
   auto z = zeros<T>(len);
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < len; ++i)
     z[i] = x - y[i];
 
@@ -92,6 +113,9 @@ Mat1D<T> operator-(Mat1D<T>& x, T y)
   const int len = x.size();
   auto z = zeros<T>(len);
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < len; ++i)
     z[i] = x[i] - y;
 
@@ -104,6 +128,9 @@ Mat1D<T> operator*(T x, Mat1D<T>& y)
   const int len = y.size();
   auto z = zeros<T>(len);
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < len; ++i)
     z[i] = x * y[i];
 
@@ -116,6 +143,9 @@ Mat1D<T> operator*(Mat1D<T>& x, T y)
   const int len = x.size();
   auto z = zeros<T>(len);
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < len; ++i)
     z[i] = x[i] * y;
 
@@ -128,6 +158,9 @@ Mat1D<T> operator/(T x, Mat1D<T>& y)
   const int len = y.size();
   auto z = zeros<T>(len);
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < len; ++i)
     z[i] = x / y[i];
 
@@ -140,6 +173,9 @@ Mat1D<T> operator/(Mat1D<T>& x, T y)
   const int len = x.size();
   auto z = zeros<T>(len);
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < len; ++i)
     z[i] = x[i] / y;
 
@@ -152,6 +188,9 @@ Mat1D<T> clip(Mat1D<T> source, T min, T max)
   const int len = source.size();
   auto target = zeros<T>(len);
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < len; ++i) {
     const int val = source[i];
     if (val < min)

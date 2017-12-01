@@ -10,6 +10,9 @@ void relu(Mat3D<T>& output, Mat3D<T>& input)
   const int in_h = input[0].size();
   const int in_w = input[0][0].size();
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int n = 0; n < n_in; ++n)
     for (int i = 0; i < in_h; ++i)
       for (int j = 0; j < in_w; ++j)
@@ -24,6 +27,9 @@ void relu(Mat1D<T>& output, Mat1D<T>& input)
 {
   const int n_in = input.size();
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int n = 0; n < n_in; ++n)
     if (input[n] < 0)
       output[n] = 0;
@@ -43,9 +49,9 @@ void softmax(Mat1D<float>& output, Mat1D<float>& input)
   if (std::abs(expsum-0.0) < std::numeric_limits<float>::epsilon())
     throw "softmax calculation failed";
 
-  // #ifdef _OPENMP
-  // #pragma omp parallel for
-  // #endif
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < len; ++i) {
     output[i] = exp(input[i]) / expsum;
     // NOTE: avoid inf / inf
@@ -66,12 +72,12 @@ void softmax(Mat1D<float>& output, Mat1D<float>& input)
 
 void sigmoid(Mat1D<float>& output, Mat1D<float>& input)
 {
-  const int ilen = input.size();
+  const int len = input.size();
 
   #ifdef _OPENMP
   #pragma omp parallel for
   #endif
-  for (int i = 0; i < ilen; i++) {
+  for (int i = 0; i < len; ++i) {
     output[i] = (1.0/(1.0 + exp(-input[i]))) * Q_OFFSET<float>;
   }
 }

@@ -1,6 +1,7 @@
 #ifdef _KITTI_HPP_
 
 #include <cstdio>
+#include <iomanip>
 #include <sstream>
 #include <unordered_map>
 #include <libgen.h>
@@ -63,12 +64,12 @@ std::vector<std::string> KITTI::load_image_set_idx()
   std::vector<std::string> image_idx;
   std::string line;
   int idx = 0;
-  const int len = 1;
+  // const int len = 1;
   while (ifs >> line) {
     image_idx.emplace_back(line);
     ++idx;
-    if (idx == len)
-      break;
+    // if (idx == len)
+    //   break;
   }
 
   return image_idx;
@@ -122,12 +123,6 @@ std::unordered_map<std::string, Mat2D<float>> KITTI::load_kitti_annotation()
       auto ymin = std::stof(obj[5]);
       auto xmax = std::stof(obj[6]);
       auto ymax = std::stof(obj[7]);
-      // assert xmin >= 0.0 and xmin <= xmax, \
-      //     'Invalid bounding box x-coord xmin {} or xmax {} at {}.txt' \
-      //         .format(xmin, xmax, index)
-      // assert ymin >= 0.0 and ymin <= ymax, \
-      //     'Invalid bounding box y-coord ymin {} or ymax {} at {}.txt' \
-      //         .format(ymin, ymax, index)
       auto bbox = bbox_transform_inv(xmin, ymin, xmax, ymax);
       bboxes.push_back(Mat1D<float>{bbox[0], bbox[1], bbox[2], bbox[3], cls});
     }
@@ -191,8 +186,6 @@ KITTI::evaluate_detections(std::string eval_dir, Mat4D<float> all_boxes)
     if (ifs.is_open()) {
       // with open(det_file_name, "r") as f:
       //   lines = f.readlines()
-      // assert len(lines) == 3, \
-      //     "Line number of {} should be 3".format(det_file_name)
 
       for (int i = 0; i < 3; ++i) {
         float val;
@@ -457,6 +450,7 @@ void KITTI::test()
 
   auto num_detection = 0.0;
   for (int i = 0; i < (int)num_images; ++i) {
+    std::cout << i << " / " << num_images << std::endl;
     // images, scales = imdb.read_image_batch(shuffle=False)
 
     // PREDICT

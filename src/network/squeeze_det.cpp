@@ -169,8 +169,10 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
   auto pred_class = zeros<float>(ANCHOR_PER_GRID * CLASSES, out_h, out_w);
   auto pred_confidence = zeros<float>(ANCHOR_PER_GRID, out_h, out_w);
   auto pred_box = zeros<float>(num_box_delta-num_confidence_scores, out_h, out_w);
+#ifdef DEBUG
   std::cout << num_box_delta-num_confidence_scores << std::endl;
   std::cout << ANCHORS << " " << ANCHOR_PER_GRID << " " << out_h << " " << out_w << std::endl;
+#endif
   for (int i = 0; i < num_class_probs; ++i)
     pred_class[i] = preds[i];
   for (int i = num_class_probs; i < num_confidence_scores; ++i)
@@ -180,13 +182,13 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
 
   // auto pred_class_flat = zeros<T>(ANCHORS, CLASSES);
   // auto pred_class_probs = zeros<T>(ANCHORS, CLASSES);
-  // f(reshape<T>(pred_class_flat, pred_class));
-  // f(softmax(pred_class_probs, pred_class_flat));
+  // @(reshape<T>(pred_class_flat, pred_class));
+  // @(softmax(pred_class_probs, pred_class_flat));
   auto pred_class_flat = zeros<float>(ANCHORS*CLASSES);
   auto pred_class_ = zeros<float>(ANCHORS, CLASSES);
   auto pred_class_probs = zeros<float>(ANCHORS, CLASSES);
-  f(flatten(pred_class_flat, pred_class));
-  f(reshape(pred_class_, pred_class_flat));
+  _DO_(flatten(pred_class_flat, pred_class));
+  _DO_(reshape(pred_class_, pred_class_flat));
   for (int i = 0; i < ANCHORS; ++i) {
     softmax(pred_class_probs[i], pred_class_[i]);
   }
@@ -194,17 +196,17 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
   auto pred_confidence_flat = zeros<float>(ANCHORS);
   auto pred_confidence_scores = zeros<float>(ANCHORS);
   assert(ANCHORS == ANCHOR_PER_GRID*out_h*out_w);
-  f(flatten(pred_confidence_flat, pred_confidence));
-  f(sigmoid(pred_confidence_scores, pred_confidence_flat));
+  _DO_(flatten(pred_confidence_flat, pred_confidence));
+  _DO_(sigmoid(pred_confidence_scores, pred_confidence_flat));
 
   auto pred_box_flat = zeros<float>(ANCHORS*4);
   // auto pred_box_ = zeros<float>(ANCHORS, 4);
   auto pred_box_delta = zeros<float>(ANCHORS, 4);
-  f(flatten(pred_box_flat, pred_box));
-  f(reshape(pred_box_delta, pred_box_flat));
-  // f(reshape<float>(pred_box_delta, pred_box));
+  _DO_(flatten(pred_box_flat, pred_box));
+  _DO_(reshape(pred_box_delta, pred_box_flat));
+  // _DO_(reshape<float>(pred_box_delta, pred_box));
 
-  f(mask.det_boxes = merge_box_delta(ANCHOR_BOX, pred_box_delta));
+  _DO_(mask.det_boxes = merge_box_delta(ANCHOR_BOX, pred_box_delta));
 
   auto probs = zeros<float>(ANCHORS, CLASSES);
   for (int i = 0; i < ANCHORS; ++i)
@@ -233,26 +235,26 @@ BBoxMask SqueezeDet<T>::calc(std::string data)
   load_img(input, data);
   show(input);
 
-  f(conv1.forward(fmap1, input));
+  _DO_(conv1.forward(fmap1, input));
   show(fmap1);
-  f(pool1.forward(pmap1, fmap1));
+  _DO_(pool1.forward(pmap1, fmap1));
   show(pmap1);
-  f(fire2.forward(fmap2, pmap1));
-  f(fire3.forward(fmap3, fmap2));
-  f(pool3.forward(pmap3, fmap3));
+  _DO_(fire2.forward(fmap2, pmap1));
+  _DO_(fire3.forward(fmap3, fmap2));
+  _DO_(pool3.forward(pmap3, fmap3));
   show(pmap3);
-  f(fire4.forward(fmap4, pmap3));
-  f(fire5.forward(fmap5, fmap4));
-  f(pool5.forward(pmap5, fmap5));
+  _DO_(fire4.forward(fmap4, pmap3));
+  _DO_(fire5.forward(fmap5, fmap4));
+  _DO_(pool5.forward(pmap5, fmap5));
   show(pmap5);
-  f(fire6.forward(fmap6, pmap5));
-  f(fire7.forward(fmap7, fmap6));
-  f(fire8.forward(fmap8, fmap7));
-  f(fire9.forward(fmap9, fmap8));
-  f(fire10.forward(fmap10, fmap9));
-  f(fire11.forward(fmap11, fmap10));
+  _DO_(fire6.forward(fmap6, pmap5));
+  _DO_(fire7.forward(fmap7, fmap6));
+  _DO_(fire8.forward(fmap8, fmap7));
+  _DO_(fire9.forward(fmap9, fmap8));
+  _DO_(fire10.forward(fmap10, fmap9));
+  _DO_(fire11.forward(fmap11, fmap10));
   show(fmap11);
-  f(conv12.forward(fmap12, fmap11));
+  _DO_(conv12.forward(fmap12, fmap11));
   show(fmap12);
 
   return interpret(fmap12);

@@ -162,7 +162,7 @@ void concat(Mat& c, Mat& a, Mat& b)
   const int n_a = a.size();
   const int n_b = b.size();
 
-  assert(c.size() == n_b + n_a);
+  assert((int)c.size() == n_b + n_a);
 
   for (int i = 0; i < n_a; ++i)
     c[i] = a[i];

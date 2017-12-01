@@ -7,7 +7,6 @@ void full(Mat1D<T>& output, Mat1D<T>& input, Mat2D<T>& weight)
   const int n_in = weight[0].size();
 
   #ifdef _OPENMP
-  std::cout << "openmp" << std::endl;
   #pragma omp parallel for
   #endif
   for (int i = 0; i < n_out; ++i) {

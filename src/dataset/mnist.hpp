@@ -32,6 +32,7 @@ public:
 
   const int CLASS = 10;
   const int SAMPLE = 100;
+  // const int SAMPLE = 1000;
 };
 
 #include "mnist.cpp"

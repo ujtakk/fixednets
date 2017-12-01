@@ -26,6 +26,9 @@ void bias(Mat1D<T>& output, Mat1D<T>& input, Mat1D<T>& bias)
 {
   const int n_in = input.size();
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int n = 0; n < n_in; ++n)
     output[n] = input[n] + bias[n];
 }
@@ -37,6 +40,9 @@ void bias(Mat3D<T>& output, Mat3D<T>& input, Mat1D<T>& bias)
   const int in_h = input[0].size();
   const int in_w = input[0][0].size();
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int n = 0; n < n_in; ++n)
     for (int i = 0; i < in_h; ++i)
       for (int j = 0; j < in_w; ++j)
