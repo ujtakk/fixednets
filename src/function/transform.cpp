@@ -132,13 +132,29 @@ static inline int length(Mat4D<T>& x)
   return x.size() * x[0].size() * x[0][0].size() * x[0][0][0].size();
 }
 
-template <typename T, typename MatOut, typename MatIn>
-void reshape(MatOut& output, MatIn& input)
-{
-  auto flat = zeros<T>(length<T>(input));
-  flatten(flat, input);
-  reshape(output, flat);
-}
+// template <typename T>
+// void reshape(Mat2D<T>& output, Mat3D<T>& input)
+// {
+//   auto flat = zeros<T>(length<T>(input));
+//   flatten<T>(flat, input);
+//   reshape<T>(output, flat);
+// }
+
+// template <typename T>
+// void reshape(Mat2D<T>& output, Mat4D<T>& input)
+// {
+//   Mat1D<T> flat = zeros<T>(length<T>(input));
+//   flatten<T>(flat, input);
+//   reshape<T>(output, flat);
+// }
+
+// template <typename T, typename MatOut, typename MatIn>
+// void reshape(MatOut& output, MatIn& input)
+// {
+//   Mat1D<T> flat = zeros<T>(length<T>(input));
+//   flatten<T>(flat, input);
+//   reshape<T>(output, flat);
+// }
 
 template <typename Mat>
 void concat(Mat& c, Mat& a, Mat& b)

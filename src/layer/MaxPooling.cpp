@@ -3,10 +3,10 @@
 #include <limits>
 
 template <typename T>
-MaxPooling<T>::MaxPooling(const int pool_h, const int pool_w, int stride)
-  :   shape{pool_h, pool_w}
+MaxPooling<T>::MaxPooling(const int pool_h, const int pool_w, int stride, int pad)
+  : shape{pool_h, pool_w}
+  , stride(stride), pad(pad)
 {
-  this->stride = stride;
 }
 
 template <typename T>
@@ -17,7 +17,12 @@ MaxPooling<T>::~MaxPooling()
 template <typename T>
 void MaxPooling<T>::forward(Mat3D<T>& output, Mat3D<T>& input)
 {
-  pool_max(output, input, shape[0], shape[1], stride);
+  const int n_out = input.size();
+  const int out_h = (input[0].size()    - shape[0] + stride + 2*pad)/stride;
+  const int out_w = (input[0][0].size() - shape[1] + stride + 2*pad)/stride;
+  output = zeros<T>(n_out, out_h, out_w);
+
+  pool_max(output, input, shape[0], shape[1], stride, pad);
 }
 
 //propagate grads only for position of max in filter

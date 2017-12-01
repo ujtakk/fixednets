@@ -7,12 +7,12 @@ MLP<T>::MLP()
   : full1{N_UNITS, N_IN}
   , full2{N_OUT, N_UNITS}
 {
-  input       = zeros<T>(1, IMHEI, IMWID);
+  // input       = zeros<T>(1, IMHEI, IMWID);
   input_flat  = zeros<T>(1 * IMHEI * IMWID);
-  unit1       = zeros<T>(N_UNITS);
-  aunit1      = zeros<T>(N_UNITS);
-  unit2       = zeros<T>(N_OUT);
-  output      = zeros<T>(N_OUT);
+  // unit1       = zeros<T>(N_UNITS);
+  // aunit1      = zeros<T>(N_UNITS);
+  // unit2       = zeros<T>(N_OUT);
+  // output      = zeros<T>(N_OUT);
 }
 
 template <typename T>
@@ -68,8 +68,9 @@ void MLP<T>::Update()
 template <typename T>
 int MLP<T>::calc(std::string data)
 {
-  load_txt(input, data);
-  flatten(input_flat, input);
+  // load_txt(input, data);
+  // flatten(input_flat, input);
+  load_txt(input_flat, data);
 
   full1.forward(unit1, input_flat);
   relu1.forward(aunit1, unit1);

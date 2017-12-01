@@ -3,8 +3,8 @@
 
 #include "network.hpp"
 
-// #define _LENET
-#define _MLP
+#define _LENET
+// #define _MLP
 
 class MNIST : Dataset
 {

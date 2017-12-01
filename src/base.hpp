@@ -47,7 +47,7 @@ class Dataset
 {
 private:
 public:
-  virtual int predict(int label, int sample) = 0;
+  // virtual int predict(int label, int sample) = 0;
   virtual void test() = 0;
 };
 

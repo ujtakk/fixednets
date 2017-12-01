@@ -2,6 +2,7 @@
 
 #include <string>
 #include <fstream>
+#include <opencv2/opencv.hpp>
 
 #include "types.hpp"
 
@@ -156,6 +157,48 @@ void save_txt(std::string path, Mat4D<T>& y)
       for (auto& y_ijk : y_ij)
         for (auto& y_ijkl : y_ijk)
           ofs << y_ijkl << std::endl;
+}
+
+// load values in range 0 ~ 255
+template <typename T>
+void load_img(Mat3D<T>& x, std::string path)
+{
+  cv::Mat img = cv::imread(path, cv::IMREAD_COLOR);
+  cv::resize(img, img, cv::Size(1248, 384));
+
+  assert (img.channels() == 3);
+  x = zeros<T>(img.channels(), img.rows, img.cols);
+
+  int idx = 0;
+  for (int i = 0; i < img.rows; ++i) {
+    for (int j = 0; j < img.cols; ++j) {
+      for (int k = 0; k < img.channels(); ++k) {
+        // assert(img.data[idx] == img.at<Vec3b>(i, j)[k]);
+        x[k][i][j] = img.data[idx];
+        ++idx;
+      }
+    }
+  }
+}
+
+template <typename T>
+void save_img(std::string path, Mat3D<T>& x)
+{
+  assert (x.size() == 3);
+  cv::Mat img(x[0].size(), x[0][0].size(), CV_8UC3);
+
+  int idx = 0;
+  for (int i = 0; i < img.rows; ++i) {
+    for (int j = 0; j < img.cols; ++j) {
+      for (int k = 0; k < img.channels(); ++k) {
+        // assert(img.data[idx] == img.at<Vec3b>(i, j)[k]);
+        img.data[idx] = x[k][i][j];
+        ++idx;
+      }
+    }
+  }
+
+  cv::imwrite(path, img);
 }
 
 #endif

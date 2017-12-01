@@ -31,6 +31,7 @@ void relu(Mat1D<T>& output, Mat1D<T>& input)
       output[n] = input[n];
 }
 
+#include <iostream>
 void softmax(Mat1D<float>& output, Mat1D<float>& input)
 {
   const int len = input.size();
@@ -53,15 +54,15 @@ void softmax(Mat1D<float>& output, Mat1D<float>& input)
   }
 }
 
-template <typename T>
-void softmax(Mat1D<T>& output, Mat1D<T>& input)
-{
-  const int len = input.size();
-
-  // TODO: implement
-  for (int i = 0; i < len; ++i)
-    output[i] = input[i];
-}
+// template <typename T>
+// void softmax(Mat1D<T>& output, Mat1D<T>& input)
+// {
+//   const int len = input.size();
+//
+//   // TODO: implement
+//   for (int i = 0; i < len; ++i)
+//     output[i] = input[i];
+// }
 
 void sigmoid(Mat1D<float>& output, Mat1D<float>& input)
 {

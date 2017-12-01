@@ -49,6 +49,12 @@ template <typename T>
 int argmax(Mat1D<T> x);
 
 template <typename T>
+T min(Mat1D<T> x);
+
+template <typename T>
+int argmin(Mat1D<T> x);
+
+template <typename T>
 Mat2D<T> transpose(Mat2D<T>& x);
 
 #include "arithmetic.cpp"

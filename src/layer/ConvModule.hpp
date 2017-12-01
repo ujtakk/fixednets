@@ -17,6 +17,10 @@ public:
   Convolution2D<T> conv;
   Rectifier<T>     relu;
 
+  const int shape[4];
+  int stride;
+  int pad;
+
   void load(std::string path);
   void save(std::string path);
 

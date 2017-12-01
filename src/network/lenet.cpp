@@ -10,17 +10,17 @@ LeNet<T>::LeNet()
   ,  full4{LABEL, N_HL}
 {
   input = zeros<T>(1, IMHEI, IMWID);
-  fmap1 = zeros<T>(N_F1, IMHEI-FHEI+1, IMWID-FWID+1);
-  amap1 = zeros<T>(N_F1, IMHEI-FHEI+1, IMWID-FWID+1);
-  pmap1 = zeros<T>(N_F1, pm1hei, pm1wid);
-  fmap2 = zeros<T>(N_F2, pm1hei-FHEI+1, pm1wid-FWID+1);
-  amap2 = zeros<T>(N_F2, pm1hei-FHEI+1, pm1wid-FWID+1);
-  pmap2 = zeros<T>(N_F2, pm2hei, pm2wid);
-  pmap2_flat = zeros<T>(N_F2*pm2hei*pm2wid);
-  fvec3 = zeros<T>(N_HL);
-  avec3 = zeros<T>(N_HL);
-  fvec4 = zeros<T>(LABEL);
-  output = zeros<T>(LABEL);
+  // fmap1 = zeros<T>(N_F1, IMHEI-FHEI+1, IMWID-FWID+1);
+  // amap1 = zeros<T>(N_F1, IMHEI-FHEI+1, IMWID-FWID+1);
+  // pmap1 = zeros<T>(N_F1, pm1hei, pm1wid);
+  // fmap2 = zeros<T>(N_F2, pm1hei-FHEI+1, pm1wid-FWID+1);
+  // amap2 = zeros<T>(N_F2, pm1hei-FHEI+1, pm1wid-FWID+1);
+  // pmap2 = zeros<T>(N_F2, pm2hei, pm2wid);
+  // pmap2_flat = zeros<T>(N_F2*pm2hei*pm2wid);
+  // fvec3 = zeros<T>(N_HL);
+  // avec3 = zeros<T>(N_HL);
+  // fvec4 = zeros<T>(LABEL);
+  // output = zeros<T>(LABEL);
 }
 
 template <typename T>
@@ -110,6 +110,7 @@ int LeNet<T>::calc(std::string data)
   relu2.forward(amap2, fmap2);
   pool2.forward(pmap2, amap2);
 
+  pmap2_flat = zeros<T>(N_F2*pm2hei*pm2wid);
   flatten(pmap2_flat, pmap2);
 
   full3.forward(fvec3, pmap2_flat);

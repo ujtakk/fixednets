@@ -13,12 +13,20 @@ Rectifier<T>::~Rectifier()
 template <typename T>
 void Rectifier<T>::forward(Mat3D<T>& output, Mat3D<T>& input)
 {
+  const int n_out = input.size();
+  const int out_h = input[0].size();
+  const int out_w = input[0][0].size();
+  output = zeros<T>(n_out, out_h, out_w);
+
   relu(output, input);
 }
 
 template <typename T>
 void Rectifier<T>::forward(Mat1D<T>& output, Mat1D<T>& input)
 {
+  const int n_out = input.size();
+  output = zeros<T>(n_out);
+
   relu(output, input);
 }
 

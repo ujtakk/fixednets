@@ -5,13 +5,12 @@
 template <typename T>
 Convolution2D<T>::Convolution2D(int n_out, int n_in, const int fil_h, const int fil_w, int stride, int pad)
   : shape{n_out, n_in, fil_h, fil_w}
+  , stride(stride), pad(pad)
 {
   iw = zeros<T>(n_out, n_in, fil_h, fil_w);
   gw = zeros<T>(n_out, n_in, fil_h, fil_w);
   ib = zeros<T>(n_out);
   gb = zeros<T>(n_out);
-  this->stride = stride;
-  this->pad    = pad;
 }
 
 template <typename T>
@@ -36,11 +35,15 @@ void Convolution2D<T>::save(std::string path)
 template <typename T>
 void Convolution2D<T>::forward(Mat3D<T>& output, Mat3D<T>& input)
 {
-  const int n_out = output.size();
-  const int out_h = output[0].size();
-  const int out_w = output[0][0].size();
+  // const int n_out = output.size();
+  // const int out_h = output[0].size();
+  // const int out_w = output[0][0].size();
+  const int n_out =  shape[0];
+  const int out_h = (input[0].size()    - shape[2] + stride + 2*pad)/stride;
+  const int out_w = (input[0][0].size() - shape[3] + stride + 2*pad)/stride;
 
-  Mat3D<T> conved = zeros<T>(n_out, out_h, out_w);
+  auto conved = zeros<T>(n_out, out_h, out_w);
+  output = zeros<T>(n_out, out_h, out_w);
 
   conv_plus_pad(conved, input, iw, stride, pad);
   // conv_gemm(conved, input, iw, stride, pad);

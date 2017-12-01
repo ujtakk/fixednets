@@ -6,11 +6,10 @@
 #include "base.hpp"
 #include "layer.hpp"
 
-template <typename T>
 struct BBoxMask
 {
-  Mat2D<T> det_boxes;
-  Mat1D<T> det_probs;
+  Mat2D<float> det_boxes;
+  Mat1D<float> det_probs;
   Mat1D<int> det_class;
 };
 
@@ -26,6 +25,9 @@ struct DetConfig
   float PROB_THRESH;
   int TOP_N_DETECTION;
 
+  int BATCH_SIZE;
+  bool LOAD_PRETRAINED_MODEL;
+
   bool DATA_AUGMENTATION;
   int DRIFT_X;
   int DRIFT_Y;
@@ -36,7 +38,7 @@ struct DetConfig
 };
 
 template <typename T>
-class SqueezeDet : Network<T, BBoxMask<T>>
+class SqueezeDet : Network<T, BBoxMask>
 {
 private:
   ConvModule<T> conv1;
@@ -74,27 +76,29 @@ private:
 
   auto merge_box_delta(Mat2D<T>& base, Mat2D<T>& delta);
   Mat1D<float> safe_exp(Mat1D<float>& x, float thresh);
-  BBoxMask<T> interpret(Mat3D<T> preds);
+  BBoxMask interpret(Mat3D<T> preds);
 
-  const int ANCHORS;
-  const int ANCHOR_PER_GRID;
-  const int CLASSES = 3;
-  const int IMAGE_WIDTH  = 1248;
-  const int IMAGE_HEIGHT = 384;
+  int ANCHORS;
+  int ANCHOR_PER_GRID;
+  int CLASSES;
+  int IMAGE_WIDTH;
+  int IMAGE_HEIGHT;
   Mat2D<T> ANCHOR_BOX;
 
 public:
-  SqueezeDet(DetConfig& conf);
+  SqueezeDet();
   ~SqueezeDet();
+
+  void configure(DetConfig& conf);
 
   void Load(std::string path);
   void Save(std::string path);
 
   void Forward(std::string data);
-  void Backward(int label);
+  void Backward(BBoxMask label);
   void Update();
 
-  BBoxMask<T> calc(std::string data);
+  BBoxMask calc(std::string data);
 };
 
 #include "squeeze_det.cpp"

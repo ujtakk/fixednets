@@ -12,5 +12,6 @@
 #include "function/activation.hpp"
 
 #include "function/interpret.hpp"
+#include "function/bbox_utils.hpp"
 
 #endif

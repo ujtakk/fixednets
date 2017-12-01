@@ -198,6 +198,38 @@ int argmax(Mat1D<T> x)
 }
 
 template <typename T>
+T min(Mat1D<T> x)
+{
+  const int len = x.size();
+
+  T acc = std::numeric_limits<T>::max();
+  for (int i = 0; i < len; ++i) {
+    if (acc > x[i]) {
+      acc = x[i];
+    }
+  }
+
+  return acc;
+}
+
+template <typename T>
+int argmin(Mat1D<T> x)
+{
+  const int len = x.size();
+
+  int idx = -1;
+  T acc = std::numeric_limits<T>::max();
+  for (int i = 0; i < len; ++i) {
+    if (acc > x[i]) {
+      acc = x[i];
+      idx = i;
+    }
+  }
+
+  return idx;
+}
+
+template <typename T>
 Mat2D<T> transpose(Mat2D<T>& x)
 {
   const int len_x = x.size();

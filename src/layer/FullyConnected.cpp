@@ -32,9 +32,10 @@ void FullyConnected<T>::save(std::string path)
 template <typename T>
 void FullyConnected<T>::forward(Mat1D<T>& output, Mat1D<T>& input)
 {
-  const int n_out = output.size();
+  const int n_out = shape[0];
 
   auto fulled = zeros<T>(n_out);
+  output = zeros<T>(n_out);
 
   full(fulled, input, iw);
   bias(output, fulled, ib);
