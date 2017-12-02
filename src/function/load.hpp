@@ -1,6 +1,8 @@
 #ifndef _LOAD_HPP_
 #define _LOAD_HPP_
 
+#include <array>
+
 #include "matrix.hpp"
 
 template <typename T>

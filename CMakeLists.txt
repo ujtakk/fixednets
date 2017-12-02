@@ -5,8 +5,8 @@ set(FixedNets_VERSION_MAJOR 1)
 set(FixedNets_VERSION_MINOR 0)
 
 # set(CMAKE_CXX_COMPILER "g++-7")
-# set(CMAKE_CXX_COMPILER "g++")
-set(CMAKE_CXX_COMPILER "clang++")
+set(CMAKE_CXX_COMPILER "g++")
+# set(CMAKE_CXX_COMPILER "clang++")
 set(CMAKE_CXX_FLAGS "-g -MMD -MP -Wall -Wextra -Winit-self -Wno-unused-parameter -Wfloat-equal -std=c++14 -O3")
 
 # We currently use OpenCV only for reading/writing images.

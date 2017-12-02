@@ -303,12 +303,12 @@ template <typename T>
 BBoxMask SqueezeDet<T>::calc(std::string data)
 {
   auto show = [](auto fmap) {
-    std::cout << fmap.size() << " "
-              << fmap[0].size() << " "
-              << fmap[0][0].size() << std::endl;
+    // std::cout << fmap.size() << " "
+    //           << fmap[0].size() << " "
+    //           << fmap[0][0].size() << std::endl;
   };
 
-  std::cout << data << std::endl;
+  // std::cout << data << std::endl;
   auto scales = load_img(input, data);
   show(input);
   // save_txt("now_image.txt", input);
