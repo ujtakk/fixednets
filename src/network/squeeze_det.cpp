@@ -196,7 +196,6 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
     }
   }
 
-  std::cout << ANCHORS << std::endl;
   // auto pred_class_flat = zeros<T>(ANCHORS, CLASSES);
   // auto pred_class_probs = zeros<T>(ANCHORS, CLASSES);
   // @(reshape<T>(pred_class_flat, pred_class));
@@ -209,22 +208,22 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
   for (int i = 0; i < ANCHORS; ++i) {
     softmax(pred_class_probs[i], pred_class_[i]);
   }
-  save_txt("now_pred_class_probs.txt", pred_class_probs);
+  // save_txt("now_pred_class_probs.txt", pred_class_probs);
 
   auto pred_confidence_flat = zeros<float>(ANCHORS);
   auto pred_confidence_scores = zeros<float>(ANCHORS);
   flatten(pred_confidence_flat, pred_confidence);
   sigmoid(pred_confidence_scores, pred_confidence_flat);
-  save_txt("now_pred_conf.txt", pred_confidence_scores);
+  // save_txt("now_pred_conf.txt", pred_confidence_scores);
 
   // auto pred_box_ = zeros<float>(ANCHORS, 4);
   auto pred_box_flat = zeros<float>(ANCHORS*4);
   auto pred_box_delta = zeros<float>(ANCHORS, 4);
   flatten(pred_box_flat, pred_box);
   reshape(pred_box_delta, pred_box_flat);
-  save_txt("now_pred_box_delta.txt", pred_box_delta);
+  // save_txt("now_pred_box_delta.txt", pred_box_delta);
 
-  save_txt("now_anchor.txt", ANCHOR_BOX);
+  // save_txt("now_anchor.txt", ANCHOR_BOX);
   mask.det_boxes = merge_box_delta(ANCHOR_BOX, pred_box_delta);
 
   Mat2D<float> probs = zeros<float>(ANCHORS, CLASSES);
@@ -233,7 +232,7 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
     // probs[i] = pred_confidence_scores[i] * pred_class_probs[i];
     for (int j = 0; j < CLASSES; ++j)
       probs[i][j] = pred_confidence_scores[i] * pred_class_probs[i][j];
-  save_txt("now_probs.txt", probs);
+  // save_txt("now_probs.txt", probs);
 
   mask.det_probs = zeros<float>(ANCHORS);
   mask.det_class = zeros<int>(ANCHORS);
@@ -335,7 +334,7 @@ BBoxMask SqueezeDet<T>::calc(std::string data)
   _DO_(fire10.forward(fmap10, fmap9));
   _DO_(fire11.forward(fmap11, fmap10));
   _DO_(conv12.forward(fmap12, fmap11));
-  save_txt("now_preds.txt", fmap12);
+  // save_txt("now_preds.txt", fmap12);
 
   BBoxMask mask;
   _DO_(mask = interpret(fmap12));
