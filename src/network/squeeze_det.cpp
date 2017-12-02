@@ -181,16 +181,22 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
   const int out_h = preds[0].size();
   const int out_w = preds[0][0].size();
 
-  auto pred_class = zeros<float>(ANCHOR_PER_GRID * CLASSES, out_h, out_w);
-  auto pred_confidence = zeros<float>(ANCHOR_PER_GRID, out_h, out_w);
-  auto pred_box = zeros<float>(num_box_delta-num_confidence_scores, out_h, out_w);
-  for (int i = 0; i < num_class_probs; ++i)
-    pred_class[i] = preds[i];
-  for (int i = num_class_probs; i < num_confidence_scores; ++i)
-    pred_confidence[i-num_class_probs] = preds[i];
-  for (int i = num_confidence_scores; i < num_box_delta; ++i)
-    pred_box[i-num_confidence_scores] = preds[i];
+  auto pred_class = zeros<float>(out_h, out_w, ANCHOR_PER_GRID * CLASSES);
+  auto pred_confidence = zeros<float>(out_h, out_w, ANCHOR_PER_GRID);
+  auto pred_box = zeros<float>(out_h, out_w,
+                               num_box_delta-num_confidence_scores);
+  for (int j = 0; j < out_h; ++j) {
+    for (int k = 0; k < out_w; ++k) {
+      for (int i = 0; i < num_class_probs; ++i)
+        pred_class[j][k][i] = preds[i][j][k];
+      for (int i = num_class_probs; i < num_confidence_scores; ++i)
+        pred_confidence[j][k][i-num_class_probs] = preds[i][j][k];
+      for (int i = num_confidence_scores; i < num_box_delta; ++i)
+        pred_box[j][k][i-num_confidence_scores] = preds[i][j][k];
+    }
+  }
 
+  std::cout << ANCHORS << std::endl;
   // auto pred_class_flat = zeros<T>(ANCHORS, CLASSES);
   // auto pred_class_probs = zeros<T>(ANCHORS, CLASSES);
   // @(reshape<T>(pred_class_flat, pred_class));
@@ -203,26 +209,31 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
   for (int i = 0; i < ANCHORS; ++i) {
     softmax(pred_class_probs[i], pred_class_[i]);
   }
+  save_txt("now_pred_class_probs.txt", pred_class_probs);
 
   auto pred_confidence_flat = zeros<float>(ANCHORS);
   auto pred_confidence_scores = zeros<float>(ANCHORS);
-  assert(ANCHORS == ANCHOR_PER_GRID*out_h*out_w);
   flatten(pred_confidence_flat, pred_confidence);
   sigmoid(pred_confidence_scores, pred_confidence_flat);
+  save_txt("now_pred_conf.txt", pred_confidence_scores);
 
-  auto pred_box_flat = zeros<float>(ANCHORS*4);
   // auto pred_box_ = zeros<float>(ANCHORS, 4);
+  auto pred_box_flat = zeros<float>(ANCHORS*4);
   auto pred_box_delta = zeros<float>(ANCHORS, 4);
   flatten(pred_box_flat, pred_box);
   reshape(pred_box_delta, pred_box_flat);
-  // _DO_(reshape<float>(pred_box_delta, pred_box));
+  save_txt("now_pred_box_delta.txt", pred_box_delta);
 
+  save_txt("now_anchor.txt", ANCHOR_BOX);
   mask.det_boxes = merge_box_delta(ANCHOR_BOX, pred_box_delta);
 
-  auto probs = zeros<float>(ANCHORS, CLASSES);
+  Mat2D<float> probs = zeros<float>(ANCHORS, CLASSES);
   for (int i = 0; i < ANCHORS; ++i)
     // scalar * vector
-    probs[i] = pred_confidence_scores[i] * pred_class_probs[i];
+    // probs[i] = pred_confidence_scores[i] * pred_class_probs[i];
+    for (int j = 0; j < CLASSES; ++j)
+      probs[i][j] = pred_confidence_scores[i] * pred_class_probs[i][j];
+  save_txt("now_probs.txt", probs);
 
   mask.det_probs = zeros<float>(ANCHORS);
   mask.det_class = zeros<int>(ANCHORS);
@@ -302,40 +313,29 @@ BBoxMask SqueezeDet<T>::filter(BBoxMask mask)
 template <typename T>
 BBoxMask SqueezeDet<T>::calc(std::string data)
 {
-  auto show = [](auto fmap) {
-    // std::cout << fmap.size() << " "
-    //           << fmap[0].size() << " "
-    //           << fmap[0][0].size() << std::endl;
-  };
-
   // std::cout << data << std::endl;
   auto scales = load_img(input, data);
-  show(input);
   // save_txt("now_image.txt", input);
 
   _DO_(conv1.forward(fmap1, input));
-  show(fmap1);
+  // save_txt("now_conv1.txt", fmap1);
   _DO_(pool1.forward(pmap1, fmap1));
-  show(pmap1);
+  // save_txt("now_pool1.txt", pmap1);
   _DO_(fire2.forward(fmap2, pmap1));
+  // save_txt("now_fire2.txt", fmap2);
   _DO_(fire3.forward(fmap3, fmap2));
   _DO_(pool3.forward(pmap3, fmap3));
-  show(pmap3);
   _DO_(fire4.forward(fmap4, pmap3));
   _DO_(fire5.forward(fmap5, fmap4));
   _DO_(pool5.forward(pmap5, fmap5));
-  show(pmap5);
   _DO_(fire6.forward(fmap6, pmap5));
   _DO_(fire7.forward(fmap7, fmap6));
   _DO_(fire8.forward(fmap8, fmap7));
   _DO_(fire9.forward(fmap9, fmap8));
   _DO_(fire10.forward(fmap10, fmap9));
   _DO_(fire11.forward(fmap11, fmap10));
-  show(fmap11);
   _DO_(conv12.forward(fmap12, fmap11));
-  show(fmap12);
-  // save_txt("now_conv1.txt", fmap1);
-  // save_txt("now_preds.txt", fmap12);
+  save_txt("now_preds.txt", fmap12);
 
   BBoxMask mask;
   _DO_(mask = interpret(fmap12));

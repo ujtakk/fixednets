@@ -113,42 +113,55 @@ template <typename T>
 void save_txt(std::string path, Mat1D<T>& y)
 {
   std::ofstream ofs(path);
+  FILE *fp = fopen(path.c_str(), "w");
 
   /* ofs << std::hex; */
 
   for (auto& y_i : y)
-    ofs << y_i << std::endl;
+    // ofs << y_i << std::endl;
+    fprintf(fp, "%.8f\n", y_i);
+
+  fclose(fp);
 }
 
 template <typename T>
 void save_txt(std::string path, Mat2D<T>& y)
 {
-  std::ofstream ofs(path);
+  // std::ofstream ofs(path);
+  FILE *fp = fopen(path.c_str(), "w");
 
   /* ofs << std::hex; */
 
   for (auto& y_i : y)
     for (auto& y_ij : y_i)
-      ofs << y_ij << std::endl;
+      // ofs << y_ij << std::endl;
+      fprintf(fp, "%.8f\n", y_ij);
+
+  fclose(fp);
 }
 
 template <typename T>
 void save_txt(std::string path, Mat3D<T>& y)
 {
-  std::ofstream ofs(path);
+  // std::ofstream ofs(path);
+  FILE *fp = fopen(path.c_str(), "w");
 
   /* ofs << std::hex; */
 
   for (auto& y_i : y)
     for (auto& y_ij : y_i)
       for (auto& y_ijk : y_ij)
-        ofs << y_ijk << std::endl;
+        // ofs << y_ijk << std::endl;
+        fprintf(fp, "%.8f\n", y_ijk);
+
+  fclose(fp);
 }
 
 template <typename T>
 void save_txt(std::string path, Mat4D<T>& y)
 {
-  std::ofstream ofs(path);
+  // std::ofstream ofs(path);
+  FILE *fp = fopen(path.c_str(), "w");
 
   /* ofs << std::hex; */
 
@@ -156,7 +169,10 @@ void save_txt(std::string path, Mat4D<T>& y)
     for (auto& y_ij : y_i)
       for (auto& y_ijk : y_ij)
         for (auto& y_ijkl : y_ijk)
-          ofs << y_ijkl << std::endl;
+          // ofs << y_ijkl << std::endl;
+          fprintf(fp, "%.8f\n", y_ijkl);
+
+  fclose(fp);
 }
 
 // load values in range 0 ~ 255

@@ -370,12 +370,12 @@ Mat2D<float> KITTI::set_anchors()
 
   auto center_x = zeros<float>(W);
   for (int i = 0; i < W; ++i) {
-    center_x[i] = (i+1)/(W+1) * conf.IMAGE_WIDTH;
+    center_x[i] = static_cast<float>(i+1)/(W+1) * conf.IMAGE_WIDTH;
   }
 
   auto center_y = zeros<float>(H);
   for (int i = 0; i < H; ++i) {
-    center_x[i] = (i+1)/(H+1) * conf.IMAGE_HEIGHT;
+    center_y[i] = static_cast<float>(i+1)/(H+1) * conf.IMAGE_HEIGHT;
   }
 
   auto anchors = zeros<float>(H*W*B, 4);
@@ -433,9 +433,9 @@ void KITTI::test()
     auto det_boxes = mask.det_boxes;
     auto det_probs = mask.det_probs;
     auto det_class = mask.det_class;
-    // save_txt("now_boxes.txt", det_boxes);
-    // save_txt("now_probs.txt", det_probs);
-    // save_txt("now_class.txt", det_class);
+    save_txt("now_det_boxes.txt", det_boxes);
+    save_txt("now_det_probs.txt", det_probs);
+    save_txt("now_det_class.txt", det_class);
     // exit(0);
 
     // for (int j = 0; j < (int)det_boxes.size(); ++j) {

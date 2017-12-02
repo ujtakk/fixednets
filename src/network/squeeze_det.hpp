@@ -50,7 +50,7 @@ private:
   FireModule<T> fire9;
   FireModule<T> fire10;
   FireModule<T> fire11;
-  ConvModule<T> conv12;
+  Convolution2D<T> conv12;
 
   Mat3D<T> input;
   Mat3D<T> fmap1;

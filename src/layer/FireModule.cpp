@@ -42,8 +42,11 @@ void FireModule<T>::forward(Mat3D<T>& output, Mat3D<T>& input)
   output = zeros<T>(e1x1+e3x3, out_h, out_w);
 
   squeeze1x1.forward(sq1x1, input);
+  // save_txt("now_sq1x1.txt", sq1x1);
   expand1x1.forward(ex1x1, sq1x1);
+  // save_txt("now_ex1x1.txt", ex1x1);
   expand3x3.forward(ex3x3, sq1x1);
+  // save_txt("now_ex3x3.txt", ex3x3);
 
   concat(output, ex1x1, ex3x3);
 }
