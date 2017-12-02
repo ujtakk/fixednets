@@ -1,5 +1,6 @@
 #ifdef _KITTI_HPP_
 
+#include <algorithm>
 #include <cstdio>
 #include <iomanip>
 #include <sstream>
@@ -20,34 +21,25 @@ KITTI::KITTI()
   conf.IMAGE_WIDTH            = 1248;
   conf.IMAGE_HEIGHT           = 384;
 
-  conf.PLOT_PROB_THRESH       = 0.4;
   conf.NMS_THRESH             = 0.4;
   conf.PROB_THRESH            = 0.005;
   conf.TOP_N_DETECTION        = 64;
 
-  conf.DATA_AUGMENTATION      = true;
-  conf.DRIFT_X                = 150;
-  conf.DRIFT_Y                = 100;
   conf.EXCLUDE_HARD_EXAMPLES  = false;
 
   conf.ANCHOR_BOX             = set_anchors();
   conf.ANCHORS                = conf.ANCHOR_BOX.size();
   conf.ANCHOR_PER_GRID        = 9;
 
-  _("load_image_set_idx");
   image_idx = load_image_set_idx();
-  _("load_kitti_annotation");
   rois = load_kitti_annotation();
-  _("load done");
 
   num_classes = _classes.size();
   for (int i = 0; i < num_classes; ++i)
     class_to_idx[_classes[i]] = i;
 
   model.configure(conf);
-  _("model load");
   model.Load("../data/kitti/squeezeDet");
-  _("model load end");
 }
 
 KITTI::~KITTI()
@@ -64,7 +56,7 @@ std::vector<std::string> KITTI::load_image_set_idx()
   std::vector<std::string> image_idx;
   std::string line;
   int idx = 0;
-  const int len = 1;
+  const int len = 20;
   while (ifs >> line) {
     image_idx.emplace_back(line);
     ++idx;
@@ -106,15 +98,15 @@ std::unordered_map<std::string, Mat2D<float>> KITTI::load_kitti_annotation()
         obj.emplace_back(tmp);
 
       float cls;
-      try {
+      // try {
         // cls = self._class_to_idx[obj[0].lower().strip()]
         std::string c;
         std::transform(obj[0].begin(), obj[0].end(), c.begin(), tolower);
         cls = class_to_idx[c];
-      }
-      catch (std::string& e) {
-        continue;
-      }
+      // }
+      // catch (std::string& e) {
+      //   continue;
+      // }
 
       if (conf.EXCLUDE_HARD_EXAMPLES && _get_obj_level(obj) > 3)
         continue;
@@ -142,19 +134,14 @@ KITTI::evaluate_detections(std::string eval_dir, Mat4D<float> all_boxes)
   // if not os.path.isdir(det_file_dir):
   //   os.makedirs(det_file_dir)
 
-  _("f dump");
   for (auto im_idx = 0; im_idx < (int)image_idx.size(); ++im_idx) {
-    _(("im_idx: "+std::to_string(im_idx)).c_str());
     auto index = image_idx[im_idx];
     auto filename = det_file_dir+"/"+index+".txt";
-    _(filename.c_str());
     auto fp = fopen(filename.c_str(), "w");
     for (auto cls_idx = 0; cls_idx < (int)_classes.size(); ++cls_idx) {
-    _(("cls_idx: "+std::to_string(cls_idx)).c_str());
       std::string cls = _classes[cls_idx];
       std::transform(cls.begin(), cls.end(), cls.begin(), tolower);
 
-      std::cout << all_boxes.size() << std::endl;
       Mat2D<float> dets = all_boxes[cls_idx][im_idx];
       for (auto det : dets) {
         fprintf(fp,
@@ -166,7 +153,6 @@ KITTI::evaluate_detections(std::string eval_dir, Mat4D<float> all_boxes)
     }
     fclose(fp);
   }
-  _("its me");
 
   std::stringstream cmd;
   cmd << eval_tool << " "
@@ -215,11 +201,11 @@ KITTI::evaluate_detections(std::string eval_dir, Mat4D<float> all_boxes)
 
 auto KITTI::analyze_detections(std::string detection_file_dir, std::string det_error_file)
 {
-  auto _save_detection =
-  [&](FILE* fp, auto idx, auto err_type, auto det, auto score) {
+  auto _save_detection = [&](FILE* fp, std::string idx, std::string err_type,
+                             Mat1D<float> det, float score) {
     fprintf(fp,
       "%s %s %.1f %.1f %.1f %.1f %s %.3f\n",
-      idx.c_str(), err_type,
+      idx.c_str(), err_type.c_str(),
       det[0]-det[2]/2., det[1]-det[3]/2.,
       det[0]+det[2]/2., det[1]+det[3]/2.,
       _classes[(int)det[4]].c_str(),
@@ -234,21 +220,18 @@ auto KITTI::analyze_detections(std::string detection_file_dir, std::string det_e
     std::ifstream ifs(det_file_name);
     std::string line;
     Mat2D<float> bboxes;
-    std::stringstream strm;
     while (std::getline(ifs, line)) {
-      // auto obj = line.strip().split(" ")
-      // auto cls = self._class_to_idx[obj[0].lower().strip()]
-
-      strm << line;
-      std::vector<std::string> obj;
       std::string tmp;
+      std::vector<std::string> obj;
+      std::istringstream strm(line);
       while (strm >> tmp)
         obj.emplace_back(tmp);
-      auto xmin = std::stof(obj[4]);
-      auto ymin = std::stof(obj[5]);
-      auto xmax = std::stof(obj[6]);
-      auto ymax = std::stof(obj[7]);
-      auto score = std::stof(obj.back());
+
+      float xmin = std::stof(obj[4]);
+      float ymin = std::stof(obj[5]);
+      float xmax = std::stof(obj[6]);
+      float ymax = std::stof(obj[7]);
+      float score = std::stof(obj.back());
       float cls; {
         std::string c;
         std::transform(obj[0].begin(), obj[0].end(), c.begin(), tolower);
@@ -260,6 +243,9 @@ auto KITTI::analyze_detections(std::string detection_file_dir, std::string det_e
           Mat1D<float>{bbox[0], bbox[1], bbox[2], bbox[3], cls, score});
     }
     // bboxes.sort(key=lambda x: x[-1], reverse=True);
+    std::sort(bboxes.begin(), bboxes.end(), [&](auto i, auto j) {
+      return i.back() > j.back();
+    });
     det_rois[idx] = bboxes;
   }
 
@@ -412,34 +398,23 @@ Mat2D<float> KITTI::set_anchors()
 BBoxMask KITTI::predict(int sample)
 {
   std::ostringstream filename;
-  filename << image_path
-           << "/" << std::setfill('0') << std::setw(6) << sample << ".png";
-  // Mat3D<float> image;
-  // load_png(image, filename);
-  _("propagating");
+  filename << std::setfill('0') << std::setw(6)
+           << image_path << "/" << image_idx[sample] << ".png";
+
+  // cfg.BGR_MEANS = np.array([[[103.939, 116.779, 123.68]]])
   auto mask = model.calc(filename.str());
-  _("end");
-  // BBoxMask mask;
+
   return mask;
 }
 
 void KITTI::test()
 {
-  _("test start");
-  // conf = kitti_squeezeDet_config()
-  conf.BATCH_SIZE = 1;
-  conf.LOAD_PRETRAINED_MODEL = false;
-
-  // imdb = kitti(FLAGS.image_set, FLAGS.data_path, conf)
-
   std::vector<std::string> ap_names;
   for (auto cls : _classes) {
     ap_names.emplace_back(cls+"_easy");
     ap_names.emplace_back(cls+"_medium");
     ap_names.emplace_back(cls+"_hard");
   }
-
-  // saver.restore(sess, FLAGS.checkpoint_path)
 
   auto num_images = image_idx.size();
 
@@ -450,21 +425,28 @@ void KITTI::test()
 
   auto num_detection = 0.0;
   for (int i = 0; i < (int)num_images; ++i) {
-    std::cout << i << " / " << num_images << std::endl;
+    std::cout << i+1 << " / " << num_images << std::endl;
     // images, scales = imdb.read_image_batch(shuffle=False)
 
-    // PREDICT
-    // det_boxes, det_probs, det_class = sess.run(
-    //     [model.det_boxes, model.det_probs, model.det_class],
-    //     feed_dict={model.image_input:images})
     auto mask = predict(i);
+    auto scales = mask.scales;
     auto det_boxes = mask.det_boxes;
     auto det_probs = mask.det_probs;
     auto det_class = mask.det_class;
+    // save_txt("now_boxes.txt", det_boxes);
+    // save_txt("now_probs.txt", det_probs);
+    // save_txt("now_class.txt", det_class);
+    // exit(0);
 
     // for (int j = 0; j < (int)det_boxes.size(); ++j) {
       // det_boxes[j, :, 0::2] /= scales[j][0]
       // det_boxes[j, :, 1::2] /= scales[j][1]
+      for (int j = 0; j < (int)det_boxes.size(); ++j) {
+        det_boxes[j][0] /= scales[0];
+        det_boxes[j][1] /= scales[1];
+        det_boxes[j][2] /= scales[0];
+        det_boxes[j][3] /= scales[1];
+      }
 
       // det_bbox, score, det_class = model.filter_prediction(
       //     det_boxes[j], det_probs[j], det_class[j]);
@@ -474,17 +456,17 @@ void KITTI::test()
       Mat1D<int>   _class = filtered_mask.det_class;
 
       const int mask_len = _bbox.size();
-      for (auto& b : all_boxes)
-        b[i].resize(mask_len);
+      // for (auto& b : all_boxes)
+      //   b[i].resize(mask_len);
       for (int k = 0; k < mask_len; ++k) {
         auto c = _class[k];
         auto b = _bbox[k];
         auto s = _score[k];
         auto bbox = bbox_transform(b[0], b[1], b[2], b[3]);
-        // all_boxes[c][i].emplace_back(
-        //     Mat1D<float>{bbox[0], bbox[1], bbox[2], bbox[3], s});
-        all_boxes[c][i][k] =
-            Mat1D<float>{bbox[0], bbox[1], bbox[2], bbox[3], s};
+        all_boxes[c][i].emplace_back(
+            Mat1D<float>{bbox[0], bbox[1], bbox[2], bbox[3], s});
+        // all_boxes[c][i][k] =
+        //     Mat1D<float>{bbox[0], bbox[1], bbox[2], bbox[3], s};
       }
 
       num_detection += mask_len;
@@ -495,10 +477,8 @@ void KITTI::test()
 
   std::vector<float> aps;
   std::vector<std::string> names;
-  _("evaluate_detections");
   std::tie(aps, ap_names) =
     evaluate_detections(eval_dir, all_boxes);
-  _("evaluate_detections end");
 
   printf("Evaluation summary:\n");
 
@@ -507,7 +487,7 @@ void KITTI::test()
 
   printf("  Average precisions:\n");
   for (int i = 0; i < (int)aps.size(); ++i) {
-    printf("    %s: %.3f", ap_names[i].c_str(), aps[i]);
+    printf("    %s: %.3f\n", ap_names[i].c_str(), aps[i]);
   }
 
   printf("    Mean average precision: %.3f\n",

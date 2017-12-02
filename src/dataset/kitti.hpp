@@ -5,41 +5,6 @@
 
 #include "network.hpp"
 
-#if 0
-// temp
-struct BBoxMask
-{
-  Mat2D<float> det_boxes;
-  Mat1D<float> det_probs;
-  Mat1D<int> det_class;
-};
-
-// temp
-struct DetConfig
-{
-  int H, W, B;
-  int ANCHOR_PER_GRID;
-  int CLASSES;
-  int IMAGE_HEIGHT;
-  int IMAGE_WIDTH;
-  float PLOT_PROB_THRESH;
-  float NMS_THRESH;
-  float PROB_THRESH;
-  int TOP_N_DETECTION;
-
-  int BATCH_SIZE;
-  bool LOAD_PRETRAINED_MODEL;
-
-  bool DATA_AUGMENTATION;
-  int DRIFT_X;
-  int DRIFT_Y;
-  bool EXCLUDE_HARD_EXAMPLES;
-
-  Mat2D<float> ANCHOR_BOX;
-  int ANCHORS;
-};
-#endif
-
 class KITTI : Dataset
 {
 private:

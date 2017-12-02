@@ -39,8 +39,8 @@ void Convolution2D<T>::forward(Mat3D<T>& output, Mat3D<T>& input)
   // const int out_h = output[0].size();
   // const int out_w = output[0][0].size();
   const int n_out =  shape[0];
-  const int out_h = (input[0].size()    - shape[2] + stride + 2*pad)/stride;
-  const int out_w = (input[0][0].size() - shape[3] + stride + 2*pad)/stride;
+  const int out_h = (input[0].size()    - shape[2] + 2*pad) / stride + 1;
+  const int out_w = (input[0][0].size() - shape[3] + 2*pad) / stride + 1;
 
   auto conved = zeros<T>(n_out, out_h, out_w);
   output = zeros<T>(n_out, out_h, out_w);

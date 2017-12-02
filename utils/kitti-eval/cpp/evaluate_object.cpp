@@ -669,7 +669,8 @@ bool eval(string const & result_dir, string const & image_set_filename, string c
     return false;
   }
   vector< string > image_set;
-  while (!feof(fp)) {
+  // while (!feof(fp)) {
+  for (int i = 0; i < N_TESTIMAGES; ++i) {
     char str[255];
     if (fscanf(fp, "%s", str) == 1){
       image_set.push_back(str);

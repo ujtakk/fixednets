@@ -18,8 +18,10 @@ template <typename T>
 void MaxPooling<T>::forward(Mat3D<T>& output, Mat3D<T>& input)
 {
   const int n_out = input.size();
-  const int out_h = (input[0].size()    - shape[0] + stride + 2*pad)/stride;
-  const int out_w = (input[0][0].size() - shape[1] + stride + 2*pad)/stride;
+  const int out_h = (input[0].size()    - shape[0] + 2*pad) / stride + 1;
+  const int out_w = (input[0][0].size() - shape[1] + 2*pad) / stride + 1;
+  // const int out_h = (input[0].size()    - shape[0] + stride-1 + 2*pad)/stride;
+  // const int out_w = (input[0][0].size() - shape[1] + stride-1 + 2*pad)/stride;
   output = zeros<T>(n_out, out_h, out_w);
 
   pool_max(output, input, shape[0], shape[1], stride, pad);

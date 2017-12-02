@@ -10,8 +10,8 @@ void pool_max(Mat3D<T>& output, Mat3D<T>& input,
   const int in_h = input[0].size();
   const int in_w = input[0][0].size();
 
-  const int fea_h = in_h - fil_h + stride-1 + 2*pad;
-  const int fea_w = in_w - fil_w + stride-1 + 2*pad;
+  const int fea_h = in_h - fil_h + 2*pad;
+  const int fea_w = in_w - fil_w + 2*pad;
 
   Mat3D<T> padded = zeros<T>(n_in, in_h+2*pad+stride-1, in_w+2*pad+stride-1);
   #ifdef _OPENMP

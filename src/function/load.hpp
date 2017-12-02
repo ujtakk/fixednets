@@ -28,7 +28,7 @@ template <typename T>
 void save_txt(std::string path, Mat4D<T>& y);
 
 template <typename T>
-void load_img(Mat3D<T>& x, std::string path);
+std::array<float, 2> load_img(Mat3D<T>& x, std::string path);
 
 template <typename T>
 void save_img(std::string path, Mat3D<T>& x);

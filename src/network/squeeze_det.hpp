@@ -11,6 +11,7 @@ struct BBoxMask
   Mat2D<float> det_boxes;
   Mat1D<float> det_probs;
   Mat1D<int> det_class;
+  std::array<float, 2> scales;
 };
 
 struct DetConfig
@@ -25,12 +26,6 @@ struct DetConfig
   float PROB_THRESH;
   int TOP_N_DETECTION;
 
-  int BATCH_SIZE;
-  bool LOAD_PRETRAINED_MODEL;
-
-  bool DATA_AUGMENTATION;
-  int DRIFT_X;
-  int DRIFT_Y;
   bool EXCLUDE_HARD_EXAMPLES;
 
   Mat2D<float> ANCHOR_BOX;
@@ -75,7 +70,7 @@ private:
   Mat3D<T> fmap12;
 
   auto merge_box_delta(Mat2D<T>& base, Mat2D<T>& delta);
-  Mat1D<float> safe_exp(Mat1D<float>& x, float thresh);
+  Mat1D<float> safe_exp(Mat1D<float>& w, float thresh);
   BBoxMask interpret(Mat3D<T> preds);
 
   int ANCHORS;

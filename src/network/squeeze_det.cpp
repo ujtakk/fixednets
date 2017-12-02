@@ -37,6 +37,8 @@ void SqueezeDet<T>::configure(DetConfig& conf)
   TOP_N_DETECTION = conf.TOP_N_DETECTION;
   NMS_THRESH = conf.NMS_THRESH;
   PROB_THRESH = conf.PROB_THRESH;
+
+  input = zeros<T>(3, IMAGE_HEIGHT, IMAGE_WIDTH);
 }
 
 template <typename T>
@@ -109,14 +111,12 @@ auto SqueezeDet<T>::merge_box_delta(Mat2D<T>& anchor, Mat2D<T>& delta)
     return transpose(out_box);
   };
 
-  _("transpose");
   auto delta_t = transpose(delta);
   auto delta_x = delta_t[0];
   auto delta_y = delta_t[1];
   auto delta_w = delta_t[2];
   auto delta_h = delta_t[3];
 
-  _("transpose");
   auto anchor_t = transpose(anchor);
   auto anchor_x = anchor_t[0];
   auto anchor_y = anchor_t[1];
@@ -129,7 +129,6 @@ auto SqueezeDet<T>::merge_box_delta(Mat2D<T>& anchor, Mat2D<T>& delta)
   auto center_y = delta_y * anchor_h;
   center_y = anchor_y + center_y;
 
-  _("transpose");
   auto width = safe_exp(delta_w, EXP_THRESH);
   width = anchor_w * width;
   auto height = safe_exp(delta_h, EXP_THRESH);
@@ -148,10 +147,26 @@ auto SqueezeDet<T>::merge_box_delta(Mat2D<T>& anchor, Mat2D<T>& delta)
 }
 
 template <typename T>
-Mat1D<float> SqueezeDet<T>::safe_exp(Mat1D<float>& x, float thresh)
+Mat1D<float> SqueezeDet<T>::safe_exp(Mat1D<float>& w, float thresh)
 {
-  // TODO: implement
-  return x;
+  const int len = w.size();
+
+  Mat1D<float> out(len);
+  for (int i = 0; i < len; ++i) {
+    auto x = w[i];
+    auto y = 0.0;
+
+    if (x > thresh) {
+      y = exp(thresh) * (x - thresh + 1.0);
+    }
+    else {
+      y = exp(x);
+    }
+
+    out[i] = y;
+  }
+
+  return out;
 }
 
 template <typename T>
@@ -169,10 +184,6 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
   auto pred_class = zeros<float>(ANCHOR_PER_GRID * CLASSES, out_h, out_w);
   auto pred_confidence = zeros<float>(ANCHOR_PER_GRID, out_h, out_w);
   auto pred_box = zeros<float>(num_box_delta-num_confidence_scores, out_h, out_w);
-#ifdef DEBUG
-  std::cout << num_box_delta-num_confidence_scores << std::endl;
-  std::cout << ANCHORS << " " << ANCHOR_PER_GRID << " " << out_h << " " << out_w << std::endl;
-#endif
   for (int i = 0; i < num_class_probs; ++i)
     pred_class[i] = preds[i];
   for (int i = num_class_probs; i < num_confidence_scores; ++i)
@@ -187,8 +198,8 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
   auto pred_class_flat = zeros<float>(ANCHORS*CLASSES);
   auto pred_class_ = zeros<float>(ANCHORS, CLASSES);
   auto pred_class_probs = zeros<float>(ANCHORS, CLASSES);
-  _DO_(flatten(pred_class_flat, pred_class));
-  _DO_(reshape(pred_class_, pred_class_flat));
+  flatten(pred_class_flat, pred_class);
+  reshape(pred_class_, pred_class_flat);
   for (int i = 0; i < ANCHORS; ++i) {
     softmax(pred_class_probs[i], pred_class_[i]);
   }
@@ -196,17 +207,17 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
   auto pred_confidence_flat = zeros<float>(ANCHORS);
   auto pred_confidence_scores = zeros<float>(ANCHORS);
   assert(ANCHORS == ANCHOR_PER_GRID*out_h*out_w);
-  _DO_(flatten(pred_confidence_flat, pred_confidence));
-  _DO_(sigmoid(pred_confidence_scores, pred_confidence_flat));
+  flatten(pred_confidence_flat, pred_confidence);
+  sigmoid(pred_confidence_scores, pred_confidence_flat);
 
   auto pred_box_flat = zeros<float>(ANCHORS*4);
   // auto pred_box_ = zeros<float>(ANCHORS, 4);
   auto pred_box_delta = zeros<float>(ANCHORS, 4);
-  _DO_(flatten(pred_box_flat, pred_box));
-  _DO_(reshape(pred_box_delta, pred_box_flat));
+  flatten(pred_box_flat, pred_box);
+  reshape(pred_box_delta, pred_box_flat);
   // _DO_(reshape<float>(pred_box_delta, pred_box));
 
-  _DO_(mask.det_boxes = merge_box_delta(ANCHOR_BOX, pred_box_delta));
+  mask.det_boxes = merge_box_delta(ANCHOR_BOX, pred_box_delta);
 
   auto probs = zeros<float>(ANCHORS, CLASSES);
   for (int i = 0; i < ANCHORS; ++i)
@@ -222,42 +233,6 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
 
   // return det_boxes, det_probs, det_class;
   return mask;
-}
-
-template <typename T>
-BBoxMask SqueezeDet<T>::calc(std::string data)
-{
-  auto show = [](auto fmap) {
-    // std::cout << fmap.size() << " "
-    //           << fmap[0].size() << " "
-    //           << fmap[0][0].size() << std::endl;
-  };
-  load_img(input, data);
-  show(input);
-
-  _DO_(conv1.forward(fmap1, input));
-  show(fmap1);
-  _DO_(pool1.forward(pmap1, fmap1));
-  show(pmap1);
-  _DO_(fire2.forward(fmap2, pmap1));
-  _DO_(fire3.forward(fmap3, fmap2));
-  _DO_(pool3.forward(pmap3, fmap3));
-  show(pmap3);
-  _DO_(fire4.forward(fmap4, pmap3));
-  _DO_(fire5.forward(fmap5, fmap4));
-  _DO_(pool5.forward(pmap5, fmap5));
-  show(pmap5);
-  _DO_(fire6.forward(fmap6, pmap5));
-  _DO_(fire7.forward(fmap7, fmap6));
-  _DO_(fire8.forward(fmap8, fmap7));
-  _DO_(fire9.forward(fmap9, fmap8));
-  _DO_(fire10.forward(fmap10, fmap9));
-  _DO_(fire11.forward(fmap11, fmap10));
-  show(fmap11);
-  _DO_(conv12.forward(fmap12, fmap11));
-  show(fmap12);
-
-  return interpret(fmap12);
 }
 
 template <typename T>
@@ -322,6 +297,51 @@ BBoxMask SqueezeDet<T>::filter(BBoxMask mask)
   filtered_mask.det_class = final_class;
 
   return filtered_mask;
+}
+
+template <typename T>
+BBoxMask SqueezeDet<T>::calc(std::string data)
+{
+  auto show = [](auto fmap) {
+    std::cout << fmap.size() << " "
+              << fmap[0].size() << " "
+              << fmap[0][0].size() << std::endl;
+  };
+
+  std::cout << data << std::endl;
+  auto scales = load_img(input, data);
+  show(input);
+  // save_txt("now_image.txt", input);
+
+  _DO_(conv1.forward(fmap1, input));
+  show(fmap1);
+  _DO_(pool1.forward(pmap1, fmap1));
+  show(pmap1);
+  _DO_(fire2.forward(fmap2, pmap1));
+  _DO_(fire3.forward(fmap3, fmap2));
+  _DO_(pool3.forward(pmap3, fmap3));
+  show(pmap3);
+  _DO_(fire4.forward(fmap4, pmap3));
+  _DO_(fire5.forward(fmap5, fmap4));
+  _DO_(pool5.forward(pmap5, fmap5));
+  show(pmap5);
+  _DO_(fire6.forward(fmap6, pmap5));
+  _DO_(fire7.forward(fmap7, fmap6));
+  _DO_(fire8.forward(fmap8, fmap7));
+  _DO_(fire9.forward(fmap9, fmap8));
+  _DO_(fire10.forward(fmap10, fmap9));
+  _DO_(fire11.forward(fmap11, fmap10));
+  show(fmap11);
+  _DO_(conv12.forward(fmap12, fmap11));
+  show(fmap12);
+  // save_txt("now_conv1.txt", fmap1);
+  // save_txt("now_preds.txt", fmap12);
+
+  BBoxMask mask;
+  _DO_(mask = interpret(fmap12));
+  mask.scales = scales;
+
+  return mask;
 }
 
 #endif

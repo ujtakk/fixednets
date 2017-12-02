@@ -78,7 +78,8 @@ void sigmoid(Mat1D<float>& output, Mat1D<float>& input)
   #pragma omp parallel for
   #endif
   for (int i = 0; i < len; ++i) {
-    output[i] = (1.0/(1.0 + exp(-input[i]))) * Q_OFFSET<float>;
+    // output[i] = (1.0/(1.0 + exp(-input[i]))) * Q_OFFSET<float>;
+    output[i] = (1.0/(1.0 + exp(-input[i])));
   }
 }
 

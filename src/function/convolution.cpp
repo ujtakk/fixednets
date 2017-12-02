@@ -15,8 +15,8 @@ void conv_plus_pad(Mat3D<T>& output, Mat3D<T>& input, Mat4D<T>& weight,
   const int fil_h = weight[0][0].size();
   const int fil_w = weight[0][0][0].size();
 
-  const int fea_h = in_h - fil_h + stride-1 + 2*pad;
-  const int fea_w = in_w - fil_w + stride-1 + 2*pad;
+  const int fea_h = in_h - fil_h + 2*pad;
+  const int fea_w = in_w - fil_w + 2*pad;
 
   // TODO: add static_assert
 

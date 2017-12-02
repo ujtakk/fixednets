@@ -114,7 +114,7 @@ void save_txt(std::string path, Mat1D<T>& y)
 {
   std::ofstream ofs(path);
 
-  ofs << std::hex;
+  /* ofs << std::hex; */
 
   for (auto& y_i : y)
     ofs << y_i << std::endl;
@@ -125,7 +125,7 @@ void save_txt(std::string path, Mat2D<T>& y)
 {
   std::ofstream ofs(path);
 
-  ofs << std::hex;
+  /* ofs << std::hex; */
 
   for (auto& y_i : y)
     for (auto& y_ij : y_i)
@@ -137,7 +137,7 @@ void save_txt(std::string path, Mat3D<T>& y)
 {
   std::ofstream ofs(path);
 
-  ofs << std::hex;
+  /* ofs << std::hex; */
 
   for (auto& y_i : y)
     for (auto& y_ij : y_i)
@@ -150,7 +150,7 @@ void save_txt(std::string path, Mat4D<T>& y)
 {
   std::ofstream ofs(path);
 
-  ofs << std::hex;
+  /* ofs << std::hex; */
 
   for (auto& y_i : y)
     for (auto& y_ij : y_i)
@@ -161,24 +161,47 @@ void save_txt(std::string path, Mat4D<T>& y)
 
 // load values in range 0 ~ 255
 template <typename T>
-void load_img(Mat3D<T>& x, std::string path)
+std::array<float, 2> load_img(Mat3D<T>& x, std::string path)
 {
+  const int in_c = x.size();
+  const int n_row = x[0].size();
+  const int n_col = x[0][0].size();
+
   cv::Mat img = cv::imread(path, cv::IMREAD_COLOR);
-  cv::resize(img, img, cv::Size(1248, 384));
 
-  assert (img.channels() == 3);
-  x = zeros<T>(img.channels(), img.rows, img.cols);
+  std::array<float, 2> scales =
+    {{(float)n_row/img.rows, (float)n_col/img.cols}};
+  assert (img.channels() == in_c);
 
-  int idx = 0;
-  for (int i = 0; i < img.rows; ++i) {
-    for (int j = 0; j < img.cols; ++j) {
-      for (int k = 0; k < img.channels(); ++k) {
-        // assert(img.data[idx] == img.at<Vec3b>(i, j)[k]);
-        x[k][i][j] = img.data[idx];
-        ++idx;
+  cv::Mat img_f;
+  img.convertTo(img_f, CV_32FC3);
+  /* std::cout << img_f.type() << " " << CV_32FC3 << std::endl; */
+
+  cv::resize(img_f, img_f, cv::Size(n_col, n_row));
+
+  float BGR_MEANS[3] = {103.939, 116.779, 123.68};
+  // for (int i = 0; i < img_f.rows; ++i) {
+  //   for (int j = 0; j < img_f.cols; ++j) {
+  //     for (int k = 0; k < img_f.channels(); ++k) {
+  //       /* std::cout << "----" << std::endl;                       */
+  //       /* std::cout << img_f.at<cv::Vec3f>(i, j)[k] << std::endl; */
+  //       img_f.at<cv::Vec3f>(i, j)[k] -= BGR_MEANS[k];
+  //       /* std::cout << img_f.at<cv::Vec3f>(i, j)[k] << std::endl; */
+  //     }
+  //   }
+  // }
+
+  /* std::ofstream ofs("now_image.txt"); */
+  for (int i = 0; i < n_row; ++i) {
+    for (int j = 0; j < n_col; ++j) {
+      for (int k = 0; k < in_c; ++k) {
+        x[k][i][j] = img_f.at<cv::Vec3f>(i, j)[k] - BGR_MEANS[k];
+        /* ofs << x[k][i][j] << std::endl; */
       }
     }
   }
+
+  return scales;
 }
 
 template <typename T>
