@@ -3,6 +3,40 @@
 
 #include "matrix.hpp"
 
+template <typename T>
+inline T T_of_float(float& x);
+
+inline float T_of_float(float& x);
+
+template <typename T>
+inline Mat1D<T> T_of_float(Mat1D<float>& x);
+
+template <typename T>
+inline Mat1D<T> T_of_float(Mat2D<float>& x);
+
+template <typename T>
+inline Mat1D<T> T_of_float(Mat3D<float>& x);
+
+template <typename T>
+inline Mat1D<T> T_of_float(Mat4D<float>& x);
+
+template <typename T>
+inline float float_of_T(T& x);
+
+inline float float_of_T(float& x);
+
+template <typename T>
+inline Mat1D<float> float_of_T(Mat1D<T>& x);
+
+template <typename T>
+inline Mat1D<float> float_of_T(Mat2D<T>& x);
+
+template <typename T>
+inline Mat1D<float> float_of_T(Mat3D<T>& x);
+
+template <typename T>
+inline Mat1D<float> float_of_T(Mat4D<T>& x);
+
 inline float mul(float a, float b);
 
 template <typename BaseT>

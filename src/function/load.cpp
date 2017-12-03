@@ -6,7 +6,17 @@
 
 #include "types.hpp"
 
-static inline float read(std::ifstream& ifs)
+template <typename T>
+static inline T read(std::ifstream& ifs)
+{
+  float tmp = 0.0;
+  ifs >> tmp;
+
+  return static_cast<T>(rint(tmp * Q_OFFSET<T>));
+}
+
+template <>
+static inline float read<float>(std::ifstream& ifs)
 {
   float tmp = 0.0;
   ifs >> tmp;
@@ -14,16 +24,7 @@ static inline float read(std::ifstream& ifs)
   return tmp;
 }
 
-template <typename T>
-static inline T read(std::ifstream& ifs)
-{
-  double tmp = 0.0;
-  ifs >> tmp;
-
-  return static_cast<T>(rint(tmp * Q_OFFSET<T>));
-}
-
-#if 0
+#if 1
 template <typename T>
 void load_txt(Mat1D<T>& x, std::string path)
 {
@@ -113,55 +114,42 @@ template <typename T>
 void save_txt(std::string path, Mat1D<T>& y)
 {
   std::ofstream ofs(path);
-  FILE *fp = fopen(path.c_str(), "w");
 
   /* ofs << std::hex; */
 
   for (auto& y_i : y)
-    // ofs << y_i << std::endl;
-    fprintf(fp, "%.8f\n", (float)y_i);
-
-  fclose(fp);
+    ofs << y_i << std::endl;
 }
 
 template <typename T>
 void save_txt(std::string path, Mat2D<T>& y)
 {
-  // std::ofstream ofs(path);
-  FILE *fp = fopen(path.c_str(), "w");
+  std::ofstream ofs(path);
 
   /* ofs << std::hex; */
 
   for (auto& y_i : y)
     for (auto& y_ij : y_i)
-      // ofs << y_ij << std::endl;
-      fprintf(fp, "%.8f\n", y_ij);
-
-  fclose(fp);
+      ofs << y_ij << std::endl;
 }
 
 template <typename T>
 void save_txt(std::string path, Mat3D<T>& y)
 {
-  // std::ofstream ofs(path);
-  FILE *fp = fopen(path.c_str(), "w");
+  std::ofstream ofs(path);
 
   /* ofs << std::hex; */
 
   for (auto& y_i : y)
     for (auto& y_ij : y_i)
       for (auto& y_ijk : y_ij)
-        // ofs << y_ijk << std::endl;
-        fprintf(fp, "%.8f\n", y_ijk);
-
-  fclose(fp);
+        ofs << y_ijk << std::endl;
 }
 
 template <typename T>
 void save_txt(std::string path, Mat4D<T>& y)
 {
-  // std::ofstream ofs(path);
-  FILE *fp = fopen(path.c_str(), "w");
+  std::ofstream ofs(path);
 
   /* ofs << std::hex; */
 
@@ -169,10 +157,7 @@ void save_txt(std::string path, Mat4D<T>& y)
     for (auto& y_ij : y_i)
       for (auto& y_ijk : y_ij)
         for (auto& y_ijkl : y_ijk)
-          // ofs << y_ijkl << std::endl;
-          fprintf(fp, "%.8f\n", y_ijkl);
-
-  fclose(fp);
+          ofs << y_ijkl << std::endl;
 }
 
 // load values in range 0 ~ 255
@@ -191,28 +176,16 @@ std::array<float, 2> load_img(Mat3D<T>& x, std::string path)
 
   cv::Mat img_f;
   img.convertTo(img_f, CV_32FC3);
-  /* std::cout << img_f.type() << " " << CV_32FC3 << std::endl; */
 
   cv::resize(img_f, img_f, cv::Size(n_col, n_row));
 
   float BGR_MEANS[3] = {103.939, 116.779, 123.68};
-  // for (int i = 0; i < img_f.rows; ++i) {
-  //   for (int j = 0; j < img_f.cols; ++j) {
-  //     for (int k = 0; k < img_f.channels(); ++k) {
-  //       /* std::cout << "----" << std::endl;                       */
-  //       /* std::cout << img_f.at<cv::Vec3f>(i, j)[k] << std::endl; */
-  //       img_f.at<cv::Vec3f>(i, j)[k] -= BGR_MEANS[k];
-  //       /* std::cout << img_f.at<cv::Vec3f>(i, j)[k] << std::endl; */
-  //     }
-  //   }
-  // }
 
-  /* std::ofstream ofs("now_image.txt"); */
   for (int i = 0; i < n_row; ++i) {
     for (int j = 0; j < n_col; ++j) {
       for (int k = 0; k < in_c; ++k) {
-        x[k][i][j] = img_f.at<cv::Vec3f>(i, j)[k] - BGR_MEANS[k];
-        /* ofs << x[k][i][j] << std::endl; */
+        float acc = img_f.at<cv::Vec3f>(i, j)[k] - BGR_MEANS[k];
+        x[k][i][j] = T_of_float<T>(acc);
       }
     }
   }

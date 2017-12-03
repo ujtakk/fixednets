@@ -48,6 +48,7 @@ void MNIST::train()
 int MNIST::predict(int label, int sample)
 {
   std::string filename = data(label, sample);
+  _(filename.c_str());
   int ans = model.calc(filename);
 
   // std::cout << filename << ": answer is " << ans << std::endl;
@@ -60,12 +61,12 @@ void MNIST::test()
   int ans[SAMPLE];
 
   double total = 0.0;
-  for (int label = 0; label < CLASS; label++) {
-    for (int sample = 0; sample < SAMPLE; sample++)
+  for (int label = 0; label < CLASS; ++label) {
+    for (int sample = 0; sample < SAMPLE; ++sample)
       ans[sample] = predict(label, sample);
 
     int count = 0;
-    for (int sample=0; sample < SAMPLE; sample++)
+    for (int sample=0; sample < SAMPLE; ++sample)
       if(ans[sample] == label) count++;
 
     double prob = count / (double)SAMPLE;

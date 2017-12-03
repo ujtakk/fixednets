@@ -9,10 +9,10 @@ void relu(Mat3D<T>& output, Mat3D<T>& input);
 template <typename T>
 void relu(Mat1D<T>& output, Mat1D<T>& input);
 
-void softmax(Mat1D<float>& output, Mat1D<float>& input);
+template <typename T>
+void softmax(Mat1D<T>& output, Mat1D<T>& input);
 
-// template <typename T>
-// void softmax(Mat1D<T>& output, Mat1D<T>& input);
+void softmax(Mat1D<float>& output, Mat1D<float>& input);
 
 #include "activation.cpp"
 #endif

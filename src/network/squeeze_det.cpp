@@ -79,7 +79,7 @@ void SqueezeDet<T>::Update()
 }
 
 template <typename T>
-auto SqueezeDet<T>::merge_box_delta(Mat2D<T>& anchor, Mat2D<T>& delta)
+auto SqueezeDet<T>::merge_box_delta(Mat2D<float>& anchor, Mat2D<float>& delta)
 {
   auto bbox_transform =
   [](Mat1D<float> cx, Mat1D<float> cy, Mat1D<float> w, Mat1D<float> h) {
@@ -135,6 +135,7 @@ auto SqueezeDet<T>::merge_box_delta(Mat2D<T>& anchor, Mat2D<T>& delta)
 
   auto width = safe_exp(delta_w, EXP_THRESH);
   width = anchor_w * width;
+
   auto height = safe_exp(delta_h, EXP_THRESH);
   height = anchor_h * height;
 
@@ -160,12 +161,10 @@ Mat1D<float> SqueezeDet<T>::safe_exp(Mat1D<float>& w, float thresh)
     auto x = w[i];
     auto y = 0.0;
 
-    if (x > thresh) {
+    if (x > thresh)
       y = exp(thresh) * (x - thresh + 1.0);
-    }
-    else {
+    else
       y = exp(x);
-    }
 
     out[i] = y;
   }
@@ -191,12 +190,14 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
                                num_box_delta-num_confidence_scores);
   for (int j = 0; j < out_h; ++j) {
     for (int k = 0; k < out_w; ++k) {
+      // convert to tensorflow encoding
+      // TODO: convert fixed to float
       for (int i = 0; i < num_class_probs; ++i)
-        pred_class[j][k][i] = preds[i][j][k];
+        pred_class[j][k][i] = float_of_T(preds[i][j][k]);
       for (int i = num_class_probs; i < num_confidence_scores; ++i)
-        pred_confidence[j][k][i-num_class_probs] = preds[i][j][k];
+        pred_confidence[j][k][i-num_class_probs] = float_of_T(preds[i][j][k]);
       for (int i = num_confidence_scores; i < num_box_delta; ++i)
-        pred_box[j][k][i-num_confidence_scores] = preds[i][j][k];
+        pred_box[j][k][i-num_confidence_scores] = float_of_T(preds[i][j][k]);
     }
   }
 
@@ -225,8 +226,6 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
   for (int i = 0; i < ANCHORS; ++i)
     // scalar * vector
     probs[i] = pred_confidence_scores[i] * pred_class_probs[i];
-    // for (int j = 0; j < CLASSES; ++j)
-    //   probs[i][j] = pred_confidence_scores[i] * pred_class_probs[i][j];
 
   mask.det_probs = zeros<float>(ANCHORS);
   mask.det_class = zeros<int>(ANCHORS);
@@ -316,14 +315,10 @@ BBoxMask SqueezeDet<T>::calc(std::string data)
 {
   // std::cout << data << std::endl;
   auto scales = load_img(input, data);
-  // save_txt("now_image.txt", input);
 
   _DO_(conv1.forward(fmap1, input));
-  // save_txt("now_conv1.txt", fmap1);
   _DO_(pool1.forward(pmap1, fmap1));
-  // save_txt("now_pool1.txt", pmap1);
   _DO_(fire2.forward(fmap2, pmap1));
-  // save_txt("now_fire2.txt", fmap2);
   _DO_(fire3.forward(fmap3, fmap2));
   _DO_(pool3.forward(pmap3, fmap3));
   _DO_(fire4.forward(fmap4, pmap3));
@@ -336,9 +331,9 @@ BBoxMask SqueezeDet<T>::calc(std::string data)
   _DO_(fire10.forward(fmap10, fmap9));
   _DO_(fire11.forward(fmap11, fmap10));
   _DO_(conv12.forward(fmap12, fmap11));
-  // save_txt("now_preds.txt", fmap12);
 
   BBoxMask mask;
+
   _DO_(mask = interpret(fmap12));
   mask.scales = scales;
 

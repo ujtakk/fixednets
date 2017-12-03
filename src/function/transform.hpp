@@ -21,15 +21,6 @@ void reshape(Mat3D<T>& output, Mat1D<T>& input);
 template <typename T>
 void reshape(Mat4D<T>& output, Mat1D<T>& input);
 
-// template <typename T>
-// void reshape(Mat2D<T>& output, Mat3D<T>& input);
-
-// template <typename T>
-// void reshape(Mat2D<T>& output, Mat4D<T>& input);
-
-// template <typename T, typename MatOut, typename MatIn>
-// void reshape(MatOut& output, MatIn& input);
-
 template <typename Mat>
 void concat(Mat& c, Mat& a, Mat& b);
 

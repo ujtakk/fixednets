@@ -4,25 +4,19 @@
 #include <cmath>
 #include <cstdint>
 
-#if 0
-// using fixed = int16_t;
-using Q_TYPE = int16_t;
+using fixed = int16_t;
 
-const int Q_BITS = 8;
-
-template <typename T>
-T Q_OFFSET = static_cast<T>(pow(2, Q_BITS));
+#if 1
+// using Q_TYPE = int16_t;
+// const int Q_BITS = 8;
+using Q_TYPE = int32_t;
+const int Q_BITS = 16;
 #else
 using Q_TYPE = float;
-
 const int Q_BITS = 0;
+#endif
 
 template <typename T>
 T Q_OFFSET = static_cast<T>(pow(2, Q_BITS));
-#endif
-
-#if 0
-using fixed = int16_t;
-#endif
 
 #endif

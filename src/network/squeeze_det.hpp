@@ -69,7 +69,7 @@ private:
   Mat3D<T> fmap11;
   Mat3D<T> fmap12;
 
-  auto merge_box_delta(Mat2D<T>& base, Mat2D<T>& delta);
+  auto merge_box_delta(Mat2D<float>& base, Mat2D<float>& delta);
   Mat1D<float> safe_exp(Mat1D<float>& w, float thresh);
   BBoxMask interpret(Mat3D<T> preds);
 
@@ -81,7 +81,7 @@ private:
   int TOP_N_DETECTION;
   float NMS_THRESH;
   float PROB_THRESH;
-  Mat2D<T> ANCHOR_BOX;
+  Mat2D<float> ANCHOR_BOX;
 
 public:
   SqueezeDet();

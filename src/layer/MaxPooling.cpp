@@ -18,6 +18,8 @@ template <typename T>
 void MaxPooling<T>::forward(Mat3D<T>& output, Mat3D<T>& input)
 {
   const int n_out = input.size();
+  // const int out_h = (input[0].size()    + 2*pad - shape[0] + stride) / stride;
+  // const int out_w = (input[0][0].size() + 2*pad - shape[1] + stride) / stride;
   const int out_h = (input[0].size()    + 2*pad - shape[0] + 1) / stride;
   const int out_w = (input[0][0].size() + 2*pad - shape[1] + 1) / stride;
   output = zeros<T>(n_out, out_h, out_w);

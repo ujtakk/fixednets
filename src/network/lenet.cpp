@@ -102,21 +102,21 @@ int LeNet<T>::calc(std::string data)
 {
   load_txt(input, data);
 
-  conv1.forward(fmap1, input);
-  relu1.forward(amap1, fmap1);
-  pool1.forward(pmap1, amap1);
+  _DO_(conv1.forward(fmap1, input));
+  _DO_(relu1.forward(amap1, fmap1));
+  _DO_(pool1.forward(pmap1, amap1));
 
-  conv2.forward(fmap2, pmap1);
-  relu2.forward(amap2, fmap2);
-  pool2.forward(pmap2, amap2);
+  _DO_(conv2.forward(fmap2, pmap1));
+  _DO_(relu2.forward(amap2, fmap2));
+  _DO_(pool2.forward(pmap2, amap2));
 
   pmap2_flat = zeros<T>(N_F2*pm2hei*pm2wid);
   flatten(pmap2_flat, pmap2);
 
-  full3.forward(fvec3, pmap2_flat);
-  relu3.forward(avec3, fvec3);
+  _DO_(full3.forward(fvec3, pmap2_flat));
+  _DO_(relu3.forward(avec3, fvec3));
 
-  full4.forward(output, avec3);
+  _DO_(full4.forward(output, avec3));
   // full4.forward(fvec4, avec3);
   // prob4.forward(output, fvec4);
 
