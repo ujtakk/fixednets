@@ -1,7 +1,7 @@
 #ifndef _FIXEDNETS_HPP_
 #define _FIXEDNETS_HPP_
 
-#define DEBUG
+// #define DEBUG
 #ifdef DEBUG
 #include <iostream>
 #include <libgen.h>
