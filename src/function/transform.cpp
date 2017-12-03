@@ -6,7 +6,7 @@ void flatten(Mat1D<T>& output, Mat2D<T>& input)
   const int size0 = input.size();
   const int size1 = input[0].size();
 
-  assert(output.size() == size0 * size1);
+  assert((int)output.size() == size0 * size1);
 
   int idx = 0;
   for (int i = 0; i < size0; ++i) {
@@ -24,7 +24,7 @@ void flatten(Mat1D<T>& output, Mat3D<T>& input)
   const int size1 = input[0].size();
   const int size2 = input[0][0].size();
 
-  assert(output.size() == size0 * size1 * size2);
+  assert((int)output.size() == size0 * size1 * size2);
 
   int idx = 0;
   for (int i = 0; i < size0; ++i) {
@@ -45,7 +45,7 @@ void flatten(Mat1D<T>& output, Mat4D<T>& input)
   const int size2 = input[0][0].size();
   const int size3 = input[0][0][0].size();
 
-  assert(output.size() == size0 * size1 * size2 * size3);
+  assert((int)output.size() == size0 * size1 * size2 * size3);
 
   int idx = 0;
   for (int i = 0; i < size0; ++i) {
@@ -66,7 +66,7 @@ void reshape(Mat2D<T>& output, Mat1D<T>& input)
   const int size0 = output.size();
   const int size1 = output[0].size();
 
-  assert(input.size() == size0 * size1);
+  assert((int)input.size() == size0 * size1);
 
   int idx = 0;
   for (int i = 0; i < size0; ++i) {
@@ -84,7 +84,7 @@ void reshape(Mat3D<T>& output, Mat1D<T>& input)
   const int size1 = output[0].size();
   const int size2 = output[0][0].size();
 
-  assert(input.size() == size0 * size1 * size2);
+  assert((int)input.size() == size0 * size1 * size2);
 
   int idx = 0;
   for (int i = 0; i < size0; ++i) {
@@ -105,7 +105,7 @@ void reshape(Mat4D<T>& output, Mat1D<T>& input)
   const int size2 = output[0][0].size();
   const int size3 = output[0][0][0].size();
 
-  assert(input.size() == size0 * size1 * size2 * size3);
+  assert((int)input.size() == size0 * size1 * size2 * size3);
 
   int idx = 0;
   for (int i = 0; i < size0; ++i) {

@@ -192,7 +192,7 @@ Mat1D<T> clip(Mat1D<T> source, T min, T max)
   #pragma omp parallel for
   #endif
   for (int i = 0; i < len; ++i) {
-    const int val = source[i];
+    const T val = source[i];
     if (val < min)
       target[i] = min;
     else if (val > max)

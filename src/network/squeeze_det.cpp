@@ -81,11 +81,12 @@ void SqueezeDet<T>::Update()
 template <typename T>
 auto SqueezeDet<T>::merge_box_delta(Mat2D<T>& anchor, Mat2D<T>& delta)
 {
-  auto bbox_transform = [](auto cx, auto cy, auto w, auto h) {
-    auto out_box = zeros<T>(4, cx.size());
+  auto bbox_transform =
+  [](Mat1D<float> cx, Mat1D<float> cy, Mat1D<float> w, Mat1D<float> h) {
+    Mat2D<float> out_box = zeros<float>(4, cx.size());
 
-    auto half_w = w / (float)2.0;
-    auto half_h = h / (float)2.0;
+    Mat1D<float> half_w = w / (float)2.0;
+    Mat1D<float> half_h = h / (float)2.0;
     out_box[0] = cx - half_w;
     out_box[1] = cy - half_h;
     out_box[2] = cx + half_w;
@@ -94,15 +95,18 @@ auto SqueezeDet<T>::merge_box_delta(Mat2D<T>& anchor, Mat2D<T>& delta)
     return out_box;
   };
 
-  auto bbox_transform_inv = [](auto xmin, auto ymin, auto xmax, auto ymax) {
-    auto width  = xmax - xmin;
-    width = width + static_cast<T>(1.0);
-    auto height = ymax - ymin;
-    height = height + static_cast<T>(1.0);
-    auto out_box = zeros<T>(4, xmin.size());
+  auto bbox_transform_inv =
+  [](Mat1D<float> xmin, Mat1D<float> ymin, Mat1D<float> xmax, Mat1D<float> ymax) {
+    Mat2D<float> out_box = zeros<float>(4, xmin.size());
 
-    auto half_w = static_cast<T>(0.5) * width;
-    auto half_h = static_cast<T>(0.5) * height;
+    Mat1D<float> width  = xmax - xmin;
+    width = width + static_cast<float>(1.0);
+
+    Mat1D<float> height = ymax - ymin;
+    height = height + static_cast<float>(1.0);
+
+    Mat1D<float> half_w = static_cast<float>(0.5) * width;
+    Mat1D<float> half_h = static_cast<float>(0.5) * height;
     out_box[0]  = xmin + half_w;
     out_box[1]  = ymin + half_h;
     out_box[2]  = width;
@@ -136,10 +140,10 @@ auto SqueezeDet<T>::merge_box_delta(Mat2D<T>& anchor, Mat2D<T>& delta)
 
   auto boxes = bbox_transform(center_x, center_y, width, height);
 
-  auto xmins = clip<T>(boxes[0], 0.0, IMAGE_WIDTH-1.0);
-  auto ymins = clip<T>(boxes[1], 0.0, IMAGE_HEIGHT-1.0);
-  auto xmaxs = clip<T>(boxes[2], 0.0, IMAGE_WIDTH-1.0);
-  auto ymaxs = clip<T>(boxes[3], 0.0, IMAGE_HEIGHT-1.0);
+  auto xmins = clip<float>(boxes[0], 0.0, IMAGE_WIDTH-1.0);
+  auto ymins = clip<float>(boxes[1], 0.0, IMAGE_HEIGHT-1.0);
+  auto xmaxs = clip<float>(boxes[2], 0.0, IMAGE_WIDTH-1.0);
+  auto ymaxs = clip<float>(boxes[3], 0.0, IMAGE_HEIGHT-1.0);
 
   auto det_boxes = bbox_transform_inv(xmins, ymins, xmaxs, ymaxs);
 
@@ -196,10 +200,6 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
     }
   }
 
-  // auto pred_class_flat = zeros<T>(ANCHORS, CLASSES);
-  // auto pred_class_probs = zeros<T>(ANCHORS, CLASSES);
-  // @(reshape<T>(pred_class_flat, pred_class));
-  // @(softmax(pred_class_probs, pred_class_flat));
   auto pred_class_flat = zeros<float>(ANCHORS*CLASSES);
   auto pred_class_ = zeros<float>(ANCHORS, CLASSES);
   auto pred_class_probs = zeros<float>(ANCHORS, CLASSES);
@@ -208,31 +208,25 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
   for (int i = 0; i < ANCHORS; ++i) {
     softmax(pred_class_probs[i], pred_class_[i]);
   }
-  // save_txt("now_pred_class_probs.txt", pred_class_probs);
 
   auto pred_confidence_flat = zeros<float>(ANCHORS);
   auto pred_confidence_scores = zeros<float>(ANCHORS);
   flatten(pred_confidence_flat, pred_confidence);
   sigmoid(pred_confidence_scores, pred_confidence_flat);
-  // save_txt("now_pred_conf.txt", pred_confidence_scores);
 
-  // auto pred_box_ = zeros<float>(ANCHORS, 4);
   auto pred_box_flat = zeros<float>(ANCHORS*4);
   auto pred_box_delta = zeros<float>(ANCHORS, 4);
   flatten(pred_box_flat, pred_box);
   reshape(pred_box_delta, pred_box_flat);
-  // save_txt("now_pred_box_delta.txt", pred_box_delta);
 
-  // save_txt("now_anchor.txt", ANCHOR_BOX);
   mask.det_boxes = merge_box_delta(ANCHOR_BOX, pred_box_delta);
 
   Mat2D<float> probs = zeros<float>(ANCHORS, CLASSES);
   for (int i = 0; i < ANCHORS; ++i)
     // scalar * vector
-    // probs[i] = pred_confidence_scores[i] * pred_class_probs[i];
-    for (int j = 0; j < CLASSES; ++j)
-      probs[i][j] = pred_confidence_scores[i] * pred_class_probs[i][j];
-  // save_txt("now_probs.txt", probs);
+    probs[i] = pred_confidence_scores[i] * pred_class_probs[i];
+    // for (int j = 0; j < CLASSES; ++j)
+    //   probs[i][j] = pred_confidence_scores[i] * pred_class_probs[i][j];
 
   mask.det_probs = zeros<float>(ANCHORS);
   mask.det_class = zeros<int>(ANCHORS);
@@ -241,7 +235,6 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
     mask.det_class[i] = argmax(probs[i]);
   }
 
-  // return det_boxes, det_probs, det_class;
   return mask;
 }
 

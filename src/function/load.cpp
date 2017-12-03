@@ -119,7 +119,7 @@ void save_txt(std::string path, Mat1D<T>& y)
 
   for (auto& y_i : y)
     // ofs << y_i << std::endl;
-    fprintf(fp, "%.8f\n", y_i);
+    fprintf(fp, "%.8f\n", (float)y_i);
 
   fclose(fp);
 }

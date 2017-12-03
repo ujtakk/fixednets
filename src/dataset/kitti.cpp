@@ -56,11 +56,11 @@ std::vector<std::string> KITTI::load_image_set_idx()
   std::vector<std::string> image_idx;
   std::string line;
   int idx = 0;
-  // const int len = 100;
+  const int len = 1;
   while (ifs >> line) {
     image_idx.emplace_back(line);
     ++idx;
-    // if (idx == len) break;
+    if (idx == len) break;
   }
 
   return image_idx;
@@ -432,19 +432,15 @@ void KITTI::test()
     auto det_boxes = mask.det_boxes;
     auto det_probs = mask.det_probs;
     auto det_class = mask.det_class;
-    // save_txt("now_det_boxes.txt", det_boxes);
-    // save_txt("now_det_probs.txt", det_probs);
-    // save_txt("now_det_class.txt", det_class);
-    // exit(0);
 
     // for (int j = 0; j < (int)det_boxes.size(); ++j) {
       // det_boxes[j, :, 0::2] /= scales[j][0]
       // det_boxes[j, :, 1::2] /= scales[j][1]
       for (int j = 0; j < (int)det_boxes.size(); ++j) {
-        det_boxes[j][0] /= scales[0];
-        det_boxes[j][1] /= scales[1];
-        det_boxes[j][2] /= scales[0];
-        det_boxes[j][3] /= scales[1];
+        det_boxes[j][0] /= scales[1];
+        det_boxes[j][1] /= scales[0];
+        det_boxes[j][2] /= scales[1];
+        det_boxes[j][3] /= scales[0];
       }
 
       // det_bbox, score, det_class = model.filter_prediction(
@@ -453,6 +449,9 @@ void KITTI::test()
       Mat2D<float> _bbox  = filtered_mask.det_boxes;
       Mat1D<float> _score = filtered_mask.det_probs;
       Mat1D<int>   _class = filtered_mask.det_class;
+      save_txt("now_det_boxes.txt", filtered_mask.det_boxes);
+      save_txt("now_det_probs.txt", filtered_mask.det_probs);
+      save_txt("now_det_class.txt", filtered_mask.det_class);
 
       const int mask_len = _bbox.size();
       // for (auto& b : all_boxes)
