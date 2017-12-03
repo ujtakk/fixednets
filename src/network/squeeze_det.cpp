@@ -273,8 +273,6 @@ BBoxMask SqueezeDet<T>::filter(BBoxMask mask)
   Mat1D<float>  final_probs;
   Mat1D<int>    final_class;
 
-  int idx = 0;
-  auto hoge = zeros<float>(order.size());
   for (int c = 0; c < CLASSES; ++c) {
     Mat2D<float>  cand_boxes;
     Mat1D<float>  cand_probs;
@@ -286,13 +284,6 @@ BBoxMask SqueezeDet<T>::filter(BBoxMask mask)
     }
 
     auto keep = nms(cand_boxes, cand_probs, NMS_THRESH);
-    for (int i = 0; i < (int)keep.size(); ++i) {
-      if (keep[i])
-        hoge[idx] = 1.0;
-      else
-        hoge[idx] = 0.0;
-      ++idx;
-    }
     for (int i = 0; i < (int)keep.size(); ++i) {
       if (keep[i]) {
         final_boxes.emplace_back(cand_boxes[i]);

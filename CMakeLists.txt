@@ -9,6 +9,7 @@ if(APPLE)
   set(CMAKE_CXX_COMPILER "clang++")
 else()
   set(CMAKE_CXX_COMPILER "g++")
+  # set(CMAKE_CXX_COMPILER "clang++")
 endif()
 set(CMAKE_CXX_FLAGS "-g -MMD -MP -Wall -Wextra -Winit-self -Wno-unused-parameter -Wfloat-equal -std=c++14 -O3")
 

@@ -82,7 +82,7 @@ inline Mat4D<T> T_of_float(Mat4D<float>& x)
 template <typename T>
 inline float float_of_T(T& x)
 {
-  return static_cast<float>(x / Q_OFFSET<T>);
+  return static_cast<float>(x) / Q_OFFSET<float>;
 }
 
 inline float float_of_T(float& x)

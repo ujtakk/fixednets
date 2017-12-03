@@ -6,7 +6,7 @@
 
 using fixed = int16_t;
 
-#if 1
+#if 0
 // using Q_TYPE = int16_t;
 // const int Q_BITS = 8;
 using Q_TYPE = int32_t;

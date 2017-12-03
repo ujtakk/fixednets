@@ -7,31 +7,30 @@
 #include "types.hpp"
 
 template <typename T>
-static inline T read(std::ifstream& ifs)
+static inline void read(std::ifstream& ifs, T& x)
 {
   float tmp = 0.0;
   ifs >> tmp;
 
-  return static_cast<T>(rint(tmp * Q_OFFSET<T>));
+  x = static_cast<T>(rint(tmp * Q_OFFSET<T>));
 }
 
-template <>
-static inline float read<float>(std::ifstream& ifs)
+static inline void read(std::ifstream& ifs, float& x)
 {
   float tmp = 0.0;
   ifs >> tmp;
 
-  return tmp;
+  x = tmp;
 }
 
-#if 1
+#if 0
 template <typename T>
 void load_txt(Mat1D<T>& x, std::string path)
 {
   std::ifstream ifs(path);
 
   for (auto& x_i : x)
-    x_i = read<T>(ifs);
+    read<T>(ifs, x_i);
 }
 
 template <typename T>
@@ -41,7 +40,7 @@ void load_txt(Mat2D<T>& x, std::string path)
 
   for (auto& x_i : x)
     for (auto& x_ij : x_i)
-      x_ij = read<T>(ifs);
+      read<T>(ifs, x_ij);
 }
 
 template <typename T>
@@ -52,7 +51,7 @@ void load_txt(Mat3D<T>& x, std::string path)
   for (auto& x_i : x)
     for (auto& x_ij : x_i)
       for (auto& x_ijk : x_ij)
-        x_ijk = read<T>(ifs);
+        read<T>(ifs, x_ijk);
 }
 
 template <typename T>
@@ -64,7 +63,7 @@ void load_txt(Mat4D<T>& x, std::string path)
     for (auto& x_ij : x_i)
       for (auto& x_ijk : x_ij)
         for (auto& x_ijkl : x_ijk)
-          x_ijkl = read<T>(ifs);
+          read<T>(ifs, x_ijkl);
 }
 #else
 template <typename T>
@@ -73,7 +72,7 @@ void load_txt(Mat1D<T>& x, std::string path)
   std::ifstream ifs(path);
 
   for (auto& x_i : x)
-    x_i = read(ifs);
+    read(ifs, x_i);
 }
 
 template <typename T>
@@ -83,7 +82,7 @@ void load_txt(Mat2D<T>& x, std::string path)
 
   for (auto& x_i : x)
     for (auto& x_ij : x_i)
-      x_ij = read(ifs);
+      read(ifs, x_ij);
 }
 
 template <typename T>
@@ -94,7 +93,7 @@ void load_txt(Mat3D<T>& x, std::string path)
   for (auto& x_i : x)
     for (auto& x_ij : x_i)
       for (auto& x_ijk : x_ij)
-        x_ijk = read(ifs);
+        read(ifs, x_ijk);
 }
 
 template <typename T>
@@ -106,7 +105,7 @@ void load_txt(Mat4D<T>& x, std::string path)
     for (auto& x_ij : x_i)
       for (auto& x_ijk : x_ij)
         for (auto& x_ijkl : x_ijk)
-          x_ijkl = read(ifs);
+          read(ifs, x_ijkl);
 }
 #endif
 

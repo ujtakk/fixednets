@@ -450,9 +450,9 @@ void KITTI::test()
       Mat2D<float> _bbox  = filtered_mask.det_boxes;
       Mat1D<float> _score = filtered_mask.det_probs;
       Mat1D<int>   _class = filtered_mask.det_class;
-      save_txt("now_det_boxes.txt", filtered_mask.det_boxes);
-      save_txt("now_det_probs.txt", filtered_mask.det_probs);
-      save_txt("now_det_class.txt", filtered_mask.det_class);
+      // save_txt("now_det_boxes.txt", filtered_mask.det_boxes);
+      // save_txt("now_det_probs.txt", filtered_mask.det_probs);
+      // save_txt("now_det_class.txt", filtered_mask.det_class);
 
       const int mask_len = _bbox.size();
       // for (auto& b : all_boxes)
