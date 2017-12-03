@@ -75,13 +75,13 @@ Mat1D<float> batch_iou(Mat2D<float> boxes, Mat1D<float> box)
 
   using std::numeric_limits;
 
-  auto left   = clip(boxes_left,    box_left, max(boxes_left));
-  auto right  = clip(boxes_right,   min(boxes_right), box_right);
-  auto top    = clip(boxes_top,     box_top, max(boxes_top));
-  auto bottom = clip(boxes_bottom,  min(boxes_bottom), box_bottom);
+  auto left   = clip<float>(boxes_left,    box_left, max(boxes_left));
+  auto right  = clip<float>(boxes_right,   min(boxes_right), box_right);
+  auto top    = clip<float>(boxes_top,     box_top, max(boxes_top));
+  auto bottom = clip<float>(boxes_bottom,  min(boxes_bottom), box_bottom);
 
-  auto left_right = clip(right-left, (float)0.0, numeric_limits<float>::max());
-  auto top_bottom = clip(bottom-top, (float)0.0, numeric_limits<float>::max());
+  auto left_right = clip<float>(right-left, (float)0.0, numeric_limits<float>::max());
+  auto top_bottom = clip<float>(bottom-top, (float)0.0, numeric_limits<float>::max());
 
   auto intersection_area = left_right * top_bottom;
   auto base_area = boxes_t[2] * boxes_t[3];
