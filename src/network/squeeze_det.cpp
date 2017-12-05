@@ -176,7 +176,7 @@ template <typename T>
 BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
 {
   BBoxMask mask;
-  auto preds_float = float_of_T(preds);
+  Mat3D<float> preds_float = float_of_T(preds);
 
   const int num_class_probs = ANCHOR_PER_GRID * CLASSES;
   const int num_confidence_scores = ANCHOR_PER_GRID + num_class_probs;
@@ -193,7 +193,7 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
     for (int k = 0; k < out_w; ++k) {
       // convert to tensorflow encoding
       for (int i = 0; i < num_class_probs; ++i)
-        pred_class[j][k][i] = preds[i][j][k];
+        pred_class[j][k][i] = preds_float[i][j][k];
 
       for (int i = num_class_probs; i < num_confidence_scores; ++i)
         pred_confidence[j][k][i-num_class_probs] = preds_float[i][j][k];

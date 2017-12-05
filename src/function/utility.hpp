@@ -12,13 +12,13 @@ template <typename T>
 inline Mat1D<T> T_of_float(Mat1D<float>& x);
 
 template <typename T>
-inline Mat1D<T> T_of_float(Mat2D<float>& x);
+inline Mat2D<T> T_of_float(Mat2D<float>& x);
 
 template <typename T>
-inline Mat1D<T> T_of_float(Mat3D<float>& x);
+inline Mat3D<T> T_of_float(Mat3D<float>& x);
 
 template <typename T>
-inline Mat1D<T> T_of_float(Mat4D<float>& x);
+inline Mat4D<T> T_of_float(Mat4D<float>& x);
 
 template <typename T>
 inline float float_of_T(T& x);
@@ -29,13 +29,13 @@ template <typename T>
 inline Mat1D<float> float_of_T(Mat1D<T>& x);
 
 template <typename T>
-inline Mat1D<float> float_of_T(Mat2D<T>& x);
+inline Mat2D<float> float_of_T(Mat2D<T>& x);
 
 template <typename T>
-inline Mat1D<float> float_of_T(Mat3D<T>& x);
+inline Mat3D<float> float_of_T(Mat3D<T>& x);
 
 template <typename T>
-inline Mat1D<float> float_of_T(Mat4D<T>& x);
+inline Mat4D<float> float_of_T(Mat4D<T>& x);
 
 inline float mul(float a, float b);
 
