@@ -176,6 +176,7 @@ template <typename T>
 BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
 {
   BBoxMask mask;
+  auto preds_float = float_of_T(preds);
 
   const int num_class_probs = ANCHOR_PER_GRID * CLASSES;
   const int num_confidence_scores = ANCHOR_PER_GRID + num_class_probs;
@@ -191,13 +192,14 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
   for (int j = 0; j < out_h; ++j) {
     for (int k = 0; k < out_w; ++k) {
       // convert to tensorflow encoding
-      // TODO: convert fixed to float
       for (int i = 0; i < num_class_probs; ++i)
-        pred_class[j][k][i] = float_of_T(preds[i][j][k]);
+        pred_class[j][k][i] = preds[i][j][k];
+
       for (int i = num_class_probs; i < num_confidence_scores; ++i)
-        pred_confidence[j][k][i-num_class_probs] = float_of_T(preds[i][j][k]);
+        pred_confidence[j][k][i-num_class_probs] = preds_float[i][j][k];
+
       for (int i = num_confidence_scores; i < num_box_delta; ++i)
-        pred_box[j][k][i-num_confidence_scores] = float_of_T(preds[i][j][k]);
+        pred_box[j][k][i-num_confidence_scores] = preds_float[i][j][k];
     }
   }
 
@@ -301,6 +303,9 @@ BBoxMask SqueezeDet<T>::filter(BBoxMask mask)
   return filtered_mask;
 }
 
+#define show(fmap) \
+  printf("%s:\t%4d %4d %4d\n", \
+         #fmap, (int)fmap.size(), (int)fmap[0][0].size(), (int)fmap[0].size());
 template <typename T>
 BBoxMask SqueezeDet<T>::calc(std::string data)
 {
@@ -323,6 +328,23 @@ BBoxMask SqueezeDet<T>::calc(std::string data)
   _DO_(fire11.forward(fmap11, fmap10));
   _DO_(conv12.forward(fmap12, fmap11));
 
+  // show(input);
+  // show(fmap1);
+  // show(pmap1);
+  // show(fmap2);
+  // show(fmap3);
+  // show(pmap3);
+  // show(fmap4);
+  // show(fmap5);
+  // show(pmap5);
+  // show(fmap6);
+  // show(fmap7);
+  // show(fmap8);
+  // show(fmap9);
+  // show(fmap10);
+  // show(fmap11);
+  // show(fmap12);
+  // exit(0);
   BBoxMask mask;
 
   _DO_(mask = interpret(fmap12));
