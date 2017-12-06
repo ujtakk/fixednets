@@ -191,8 +191,11 @@ std::array<float, 2> load_img(Mat3D<T>& x, std::string path)
       for (int k = 0; k < in_c; ++k) {
         float acc = img_f.at<cv::Vec3f>(i, j)[k] - BGR_MEANS[k];
         acc /= 255.0;
-        // x[k][i][j] = T_of_float(acc);
+        #ifdef FIXED
         x[k][i][j] = T_of_float<T>(acc);
+        #else
+        x[k][i][j] = T_of_float(acc);
+        #endif
       }
     }
   }

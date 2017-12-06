@@ -4,17 +4,36 @@
 #include <cmath>
 #include <cstdint>
 
-// using fixed = int16_t;
-using fixed = int32_t;
+// #define FLOAT
+#define FIXED
+// #define QUANT
 
-#if 1
-// const int Q_BITS = 8;
-const int Q_BITS = 16;
+// #define Q8_8
+#define Q8_24
+
+#if defined(Q8_8)
+using fixed = int16_t;
+#elif defined(Q8_24)
+using fixed = int32_t;
+#endif
+
+using quant = uint8_t;
+
+#if defined(FIXED)
+
+#if defined(Q8_8)
+const int Q_BITS = 8;
+#elif defined(Q8_24)
+const int Q_BITS = 24;
+#endif
 using     Q_TYPE = fixed;
 
+#elif defined(QUANT)
 #else
+
 using     Q_TYPE = float;
 const int Q_BITS = 0;
+
 #endif
 
 template <typename T>
