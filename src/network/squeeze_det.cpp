@@ -177,7 +177,7 @@ BBoxMask SqueezeDet<T>::interpret(Mat3D<T> preds)
 {
   BBoxMask mask;
   Mat3D<float> preds_float = float_of_T(preds);
-  save_txt("now_preds.txt", preds_float);
+  // save_txt("now_preds.txt", preds_float);
   // exit(0);
 
   const int num_class_probs = ANCHOR_PER_GRID * CLASSES;
@@ -313,10 +313,10 @@ BBoxMask SqueezeDet<T>::calc(std::string data)
 {
   auto scales = load_img(input, data);
   Mat3D<float> fim = float_of_T(input);
-  save_txt("now_image.txt", fim);
+  // save_txt("now_image.txt", fim);
 
   _DO_(conv1.forward(fmap1, input));
-  save_txt("conv1.txt", fmap1);
+  // save_txt("conv1.txt", fmap1);
   _DO_(pool1.forward(pmap1, fmap1));
   _DO_(fire2.forward(fmap2, pmap1));
   _DO_(fire3.forward(fmap3, fmap2));

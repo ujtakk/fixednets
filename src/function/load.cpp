@@ -142,13 +142,13 @@ void save_txt(std::string path, Mat3D<T>& y)
 
   /* ofs << std::hex; */
 
-  FILE *fp = fopen(path.c_str(), "w");
+  // FILE *fp = fopen(path.c_str(), "w");
   for (auto& y_i : y)
     for (auto& y_ij : y_i)
       for (auto& y_ijk : y_ij)
-        // ofs << y_ijk << std::endl;
-        fprintf(fp, "%.8f\n", y_ijk);
-  fclose(fp);
+        ofs << y_ijk << std::endl;
+        // fprintf(fp, "%.8f\n", y_ijk);
+  // fclose(fp);
 }
 
 template <typename T>
