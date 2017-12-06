@@ -12,7 +12,7 @@ void full(Mat1D<T>& output, Mat1D<T>& input, Mat2D<T>& weight)
   for (int i = 0; i < n_out; ++i) {
     T acc = 0;
     for (int j = 0; j < n_in; ++j) {
-      acc += mul(weight[i][j], input[j]);
+      acc += mlt(weight[i][j], input[j]);
     }
     output[i] = acc;
   }

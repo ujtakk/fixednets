@@ -64,7 +64,7 @@ void conv_plus_pad(Mat3D<T>& output, Mat3D<T>& input, Mat4D<T>& weight,
           T acc = 0;
           for (int k = 0; k < fil_h; ++k)
             for (int l = 0; l < fil_w; ++l)
-              acc += mul(padded[m][i+k][j+l], weight[n][m][k][l]);
+              acc += mlt(weight[n][m][k][l], padded[m][i+k][j+l]);
           output[n][i/stride][j/stride] += acc;
         }
       }

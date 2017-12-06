@@ -31,7 +31,8 @@ void BatchNormalization<T>::load(std::string path)
   load_txt(var, path+"/var.txt");
 
   for (int i=0; i<shape; i++)
-    std[i] = sqrt((double)(var[i]*Q_OFFSET<T> + eps*Q_OFFSET<T>));
+    // std[i] = sqrt((double)(var[i]*Q_OFFSET<T> + eps*Q_OFFSET<T>));
+    std[i] = sqrt(static_cast<double>(to_fixed(var[i] + eps)));
 }
 
 template <typename T>
@@ -42,36 +43,13 @@ void BatchNormalization<T>::save(std::string path)
 template <typename T>
 void BatchNormalization<T>::forward(Mat1D<T>& output, Mat1D<T>& input)
 {
-  const int ilen = input.size();
-
-  #ifdef _OPENMP
-  #pragma omp parallel for
-  #endif
-  for (int i=0; i<ilen; i++) {
-    output[i] = gamma[i] * ( (input[i] - mean[i]) * Q_OFFSET<T> / std[i] )
-              / Q_OFFSET<T> + beta[i];
-  }
+  norm_batch(output, input, gamma, beta, eps, mean, var);
 }
 
 template <typename T>
 void BatchNormalization<T>::forward(Mat3D<T>& output, Mat3D<T>& input)
 {
-  const int inum = input.size();
-  const int ihei = input[0].size();
-  const int iwid = input[0][0].size();
-
-  #ifdef _OPENMP
-  #pragma omp parallel for
-  #endif
-  for (int n=0; n<inum; n++) {
-    for (int i=0; i<ihei; i++) {
-      for (int j=0; j<iwid; j++) {
-        output[n][i][j] = gamma[n]
-                        * ( (input[n][i][j] - mean[n]) * Q_OFFSET<T> / std[n] )
-                        / Q_OFFSET<T> + beta[n];
-      }
-    }
-  }
+  norm_batch(output, input, gamma, beta, eps, mean, var);
 }
 
 template <typename T>

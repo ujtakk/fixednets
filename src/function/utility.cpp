@@ -4,10 +4,54 @@
 
 #include "types.hpp"
 
+template <typename Func, typename T>
+auto apply(Func f, T v) -> T
+{
+  return f(v);
+}
+
+template <typename Func, typename T>
+auto apply(Func f, std::vector<T> v) -> std::vector<T>
+{
+  const int len = v.size();
+  std::vector<T> fv(len);
+
+  for (int i = 0; i < len; ++i)
+    fv[i] = apply(f, v[i]);
+
+  return fv;
+}
+
+auto to_fixed(float x) -> fixed
+{
+  return static_cast<fixed>(rint(x * Q_OFFSET<float>));
+}
+
+auto to_float(fixed x) -> float
+{
+  return static_cast<float>(x) / Q_OFFSET<float>;
+}
+
+template <typename T>
+inline float float_of_T(T& x)
+{
+  // return static_cast<float>(x) / Q_OFFSET<float>;
+  return to_float(x);
+}
+
+#include <iostream>
+inline float float_of_T(float& x)
+{
+  return x;
+}
+
+// Mats
+// {{{
 template <typename T>
 inline T T_of_float(float& x)
 {
-  return static_cast<T>(rint(x * Q_OFFSET<float>));
+  // return static_cast<T>(rint(x * Q_OFFSET<float>));
+  return to_fixed(x);
 }
 
 inline float T_of_float(float& x)
@@ -80,17 +124,6 @@ inline Mat4D<T> T_of_float(Mat4D<float>& x)
 }
 
 template <typename T>
-inline float float_of_T(T& x)
-{
-  return static_cast<float>(x) / Q_OFFSET<float>;
-}
-
-inline float float_of_T(float& x)
-{
-  return x;
-}
-
-template <typename T>
 inline Mat1D<float> float_of_T(Mat1D<T>& x)
 {
   const int size0 = x.size();
@@ -153,22 +186,44 @@ inline Mat4D<float> float_of_T(Mat4D<T>& x)
 
   return y;
 }
+// }}}
 
-inline float mul(float a, float b)
+inline float mlt(float a, float b)
 {
   return a * b;
 }
 
-template <typename BaseT>
-inline BaseT mul(BaseT a, BaseT b)
+inline fixed mlt(fixed a, fixed b)
 {
-  using MultT = int64_t;
-  MultT c = a * b;
+  // int64_t c = (a * b) >> Q_BITS;
+  // int64_t c = (a * b) / Q_OFFSET<float>;
+  int64_t c = a * b;
 
-  if (c >= 0)
-    return c / Q_OFFSET<BaseT>;
+  // if (c < 0)
+  //   return c - 1;
+  // else
+  //   return c;
+  if (c < 0)
+    return (c >> Q_BITS) - 1;
   else
-    return c / Q_OFFSET<BaseT> - 1;
+    return (c >> Q_BITS);
+  // if (c >= 0)
+  //   return c / Q_OFFSET<fixed>;
+  // else
+  //   return c / Q_OFFSET<fixed> - 1;
+}
+
+inline float dvd(float a, float b)
+{
+  return a / b;
+}
+
+inline fixed dvd(fixed a, fixed b)
+{
+  int64_t c = (a << Q_BITS) / b;
+  // int64_t c = (a * Q_OFFSET<float>) / b;
+
+  return c;
 }
 
 template <typename T>

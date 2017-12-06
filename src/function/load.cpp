@@ -5,14 +5,17 @@
 #include <opencv2/opencv.hpp>
 
 #include "types.hpp"
+#include "function.hpp"
 
 template <typename T>
 static inline void read(std::ifstream& ifs, T& x)
+// static inline void read(std::ifstream& ifs, fixed& x)
 {
   float tmp = 0.0;
   ifs >> tmp;
 
   x = static_cast<T>(rint(tmp * Q_OFFSET<T>));
+  // x = to_fixed(tmp);
 }
 
 static inline void read(std::ifstream& ifs, float& x)
@@ -139,10 +142,13 @@ void save_txt(std::string path, Mat3D<T>& y)
 
   /* ofs << std::hex; */
 
+  FILE *fp = fopen(path.c_str(), "w");
   for (auto& y_i : y)
     for (auto& y_ij : y_i)
       for (auto& y_ijk : y_ij)
-        ofs << y_ijk << std::endl;
+        // ofs << y_ijk << std::endl;
+        fprintf(fp, "%.8f\n", y_ijk);
+  fclose(fp);
 }
 
 template <typename T>
@@ -184,6 +190,8 @@ std::array<float, 2> load_img(Mat3D<T>& x, std::string path)
     for (int j = 0; j < n_col; ++j) {
       for (int k = 0; k < in_c; ++k) {
         float acc = img_f.at<cv::Vec3f>(i, j)[k] - BGR_MEANS[k];
+        acc /= 255.0;
+        // x[k][i][j] = T_of_float(acc);
         x[k][i][j] = T_of_float<T>(acc);
       }
     }

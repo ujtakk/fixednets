@@ -39,7 +39,8 @@ KITTI::KITTI()
     class_to_idx[_classes[i]] = i;
 
   model.configure(conf);
-  model.Load("../data/kitti/squeezeDet");
+  // model.Load("../data/kitti/squeezeDet");
+  model.Load("../data/kitti/squeezeDet_01");
 }
 
 KITTI::~KITTI()
@@ -129,9 +130,7 @@ KITTI::evaluate_detections(std::string eval_dir, Mat4D<float> all_boxes)
 {
   auto det_file_dir = eval_dir + "/detection_files" + "/data";
 
-  // TODO: needed
-  // if not os.path.isdir(det_file_dir):
-  //   os.makedirs(det_file_dir)
+  system(("mkdir -p "+det_file_dir).c_str());
 
   for (auto im_idx = 0; im_idx < (int)image_idx.size(); ++im_idx) {
     auto index = image_idx[im_idx];
@@ -349,8 +348,7 @@ auto KITTI::do_detection_analysis_in_eval(std::string eval_dir)
   auto det_error_dir = eval_dir + "/detection_files" + "/error_analysis";
   auto det_error_file = det_error_dir + "det_error_file.txt";
 
-  // if not os.path.exists(det_error_dir):
-  //   os.makedirs(det_error_dir)
+  system(("mkdir -p "+det_error_dir).c_str());
 
   auto stats = analyze_detections(det_file_dir, det_error_file);
 
@@ -450,9 +448,9 @@ void KITTI::test()
       Mat2D<float> _bbox  = filtered_mask.det_boxes;
       Mat1D<float> _score = filtered_mask.det_probs;
       Mat1D<int>   _class = filtered_mask.det_class;
-      // save_txt("now_det_boxes.txt", filtered_mask.det_boxes);
-      // save_txt("now_det_probs.txt", filtered_mask.det_probs);
-      // save_txt("now_det_class.txt", filtered_mask.det_class);
+      save_txt("now_det_boxes.txt", filtered_mask.det_boxes);
+      save_txt("now_det_probs.txt", filtered_mask.det_probs);
+      save_txt("now_det_class.txt", filtered_mask.det_class);
 
       const int mask_len = _bbox.size();
       // for (auto& b : all_boxes)

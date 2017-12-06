@@ -1,7 +1,16 @@
 #ifndef _UTIL_HPP_
 #define _UTIL_HPP_
 
+#include "types.hpp"
 #include "matrix.hpp"
+
+template <typename F, typename T>
+auto apply(F f, T v) -> T;
+template <typename F, typename T>
+auto apply(F f, std::vector<T> v) -> std::vector<T>;
+
+auto to_fixed(float x) -> fixed;
+auto to_float(fixed x) -> float;
 
 template <typename T>
 inline T T_of_float(float& x);
@@ -37,10 +46,11 @@ inline Mat3D<float> float_of_T(Mat3D<T>& x);
 template <typename T>
 inline Mat4D<float> float_of_T(Mat4D<T>& x);
 
-inline float mul(float a, float b);
+inline float mlt(float a, float b);
+inline fixed mlt(fixed a, fixed b);
 
-template <typename BaseT>
-inline BaseT mul(BaseT a, BaseT b);
+inline float dvd(float a, float b);
+inline fixed dvd(fixed a, fixed b);
 
 template <typename T>
 void bias(Mat1D<T>& output, Mat1D<T>& input, Mat1D<T>& bias);

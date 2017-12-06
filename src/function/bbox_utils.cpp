@@ -31,35 +31,6 @@ Mat1D<float> bbox_transform_inv(float xmin, float ymin, float xmax, float ymax)
 
 Mat1D<float> batch_iou(Mat2D<float> boxes, Mat1D<float> box)
 {
-  // const int len = boxes.size();
-
-  // auto left   = zeros<T>(len);
-  // auto right  = zeros<T>(len);
-  // auto bottom = zeros<T>(len);
-  // auto top    = zeros<T>(len);
-  //
-  // for (int i = 0; i < len; ++i) {
-  //   if (box_left < boxes_left[i])
-  //     left[i] = boxes_left[i];
-  //   else
-  //     left[i] = box_left;
-  //
-  //   if (boxes_right[i] < box_right)
-  //     right[i] = boxes_right[i];
-  //   else
-  //     right[i] = box_right;
-  //
-  //   if (box_top < boxes_top[i])
-  //     top[i] = boxes_top[i];
-  //   else
-  //     top[i] = box_top;
-  //
-  //   if (boxes_bottom[i] < box_bottom)
-  //     bottom[i] = boxes_bottom[i];
-  //   else
-  //     bottom[i] = box_bottom;
-  // }
-
   auto boxes_t = transpose(boxes);
 
   auto half_width = ((float)0.5 * boxes_t[2]);

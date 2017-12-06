@@ -17,6 +17,26 @@ void pool_max(Mat3D<T>& output, Mat3D<T>& input,
 
   Mat3D<T> padded = zeros<T>(n_in, in_h+2*pad+stride-1, in_w+2*pad+stride-1);
 
+#if 1
+  auto tf_pad = [](auto fil_size, auto in_size, auto stride) {
+    int pad_whole;
+    if (in_size % stride == 0)
+      pad_whole = fil_size - stride;
+    else
+      pad_whole = fil_size - (in_size % stride);
+
+    int pad_side;
+    if (pad_whole < 0)
+      pad_side = 0;
+    else
+      pad_side = pad_whole / 2;
+
+    return pad_side;
+  };
+  const int tf_pad_h = tf_pad(fil_h, in_h, stride);
+  const int tf_pad_w = tf_pad(fil_w, in_w, stride);
+#endif
+
   #ifdef _OPENMP
   #pragma omp parallel for
   #endif
@@ -26,7 +46,7 @@ void pool_max(Mat3D<T>& output, Mat3D<T>& input,
         // chainer mode
         // padded[m][i+pad][j+pad] = input[m][i][j];
         // tensorflow mode
-        padded[m][i][j] = input[m][i][j];
+        padded[m][i+tf_pad_h][j+tf_pad_w] = input[m][i][j];
 
   Mat1D<T> max(n_in, std::numeric_limits<T>::min());
 
