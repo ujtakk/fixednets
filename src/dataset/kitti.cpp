@@ -31,12 +31,12 @@ KITTI::KITTI()
   conf.ANCHORS                = conf.ANCHOR_BOX.size();
   conf.ANCHOR_PER_GRID        = 9;
 
-  image_idx = load_image_set_idx();
-  rois = load_kitti_annotation();
-
   num_classes = _classes.size();
   for (int i = 0; i < num_classes; ++i)
     class_to_idx[_classes[i]] = i;
+
+  image_idx = load_image_set_idx();
+  rois = load_kitti_annotation();
 
   model.configure(conf);
   // model.Load("../data/kitti/squeezeDet");
@@ -98,15 +98,14 @@ std::unordered_map<std::string, Mat2D<float>> KITTI::load_kitti_annotation()
         obj.emplace_back(tmp);
 
       float cls;
-      // try {
-        // cls = self._class_to_idx[obj[0].lower().strip()]
-        std::string c;
-        std::transform(obj[0].begin(), obj[0].end(), c.begin(), tolower);
-        cls = class_to_idx[c];
-      // }
-      // catch (std::string& e) {
-      //   continue;
-      // }
+      try {
+        std::string c = obj[0];
+        std::transform(c.begin(), c.end(), c.begin(), tolower);
+        cls = class_to_idx.at(c);
+      }
+      catch (std::out_of_range& e) {
+        continue;
+      }
 
       if (conf.EXCLUDE_HARD_EXAMPLES && _get_obj_level(obj) > 3)
         continue;
@@ -168,9 +167,6 @@ KITTI::evaluate_detections(std::string eval_dir, Mat4D<float> all_boxes)
     auto det_file_name = dirname(det_file_dir) + "/stats_"+cls+"_ap.txt";
     std::ifstream ifs(det_file_name);
     if (ifs.is_open()) {
-      // with open(det_file_name, "r") as f:
-      //   lines = f.readlines()
-
       for (int i = 0; i < 3; ++i) {
         float val;
         std::string lval;
@@ -178,13 +174,8 @@ KITTI::evaluate_detections(std::string eval_dir, Mat4D<float> all_boxes)
         ifs >> val;
         aps.emplace_back(val);
       }
-
-      // aps.emplace_back(float(lines[0].split("=")[1].strip()));
-      // aps.emplace_back(float(lines[1].split("=")[1].strip()));
-      // aps.emplace_back(float(lines[2].split("=")[1].strip()));
     }
     else {
-      // aps.extend([0.0, 0.0, 0.0])
       aps.assign({0.0, 0.0, 0.0});
     }
 
@@ -193,7 +184,6 @@ KITTI::evaluate_detections(std::string eval_dir, Mat4D<float> all_boxes)
     names.emplace_back(cls+"_hard");
   }
 
-  // return aps, names;
   return std::make_pair(aps, names);
 }
 
@@ -231,17 +221,20 @@ auto KITTI::analyze_detections(std::string detection_file_dir,
       float xmax = std::stof(obj[6]);
       float ymax = std::stof(obj[7]);
       float score = std::stof(obj.back());
-      float cls; {
-        std::string c;
-        std::transform(obj[0].begin(), obj[0].end(), c.begin(), tolower);
-        cls = class_to_idx[c];
+      float cls;
+      try {
+        std::string c = obj[0];
+        std::transform(c.begin(), c.end(), c.begin(), tolower);
+        cls = class_to_idx.at(c);
+      }
+      catch (std::out_of_range& e) {
+        continue;
       }
 
       auto bbox = bbox_transform_inv(xmin, ymin, xmax, ymax);
       bboxes.emplace_back(
           Mat1D<float>{bbox[0], bbox[1], bbox[2], bbox[3], cls, score});
     }
-    // bboxes.sort(key=lambda x: x[-1], reverse=True);
     std::sort(bboxes.begin(), bboxes.end(), [&](auto i, auto j) {
       return i.back() > j.back();
     });
@@ -272,9 +265,7 @@ auto KITTI::analyze_detections(std::string detection_file_dir,
       auto det = det_bboxes[i];
       if (i < (int)gt_bboxes.size())
         num_dets += 1;
-      // auto ious = batch_iou(gt_bboxes[:, :4], det[:4]);
       auto ious = batch_iou(gt_bboxes, det);
-      // Mat1D<float> ious;
       auto max_iou = max(ious);
       auto gt_idx = argmax(ious);
       if (max_iou > 0.1) {
@@ -345,11 +336,8 @@ auto KITTI::analyze_detections(std::string detection_file_dir,
 
 auto KITTI::do_detection_analysis_in_eval(std::string eval_dir)
 {
-  // auto det_file_dir  = eval_dir + "/detection_files" + "/data";
-  // auto det_error_dir = eval_dir + "/detection_files" + "/error_analysis";
-  // auto det_error_file = det_error_dir + "/det_error_file.txt";
-  auto det_file_dir  = eval_dir + "/detection_files_50000" + "/data";
-  auto det_error_dir = eval_dir + "/detection_files_50000" + "/error_analysis";
+  auto det_file_dir  = eval_dir + "/detection_files" + "/data";
+  auto det_error_dir = eval_dir + "/detection_files" + "/error_analysis";
   auto det_error_file = det_error_dir + "/det_error_file.txt";
 
   system(("mkdir -p "+det_error_dir).c_str());
