@@ -346,7 +346,7 @@ auto KITTI::do_detection_analysis_in_eval(std::string eval_dir)
 {
   auto det_file_dir  = eval_dir + "/detection_files" + "/data";
   auto det_error_dir = eval_dir + "/detection_files" + "/error_analysis";
-  auto det_error_file = det_error_dir + "det_error_file.txt";
+  auto det_error_file = det_error_dir + "/det_error_file.txt";
 
   system(("mkdir -p "+det_error_dir).c_str());
 
