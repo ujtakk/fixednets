@@ -197,7 +197,8 @@ KITTI::evaluate_detections(std::string eval_dir, Mat4D<float> all_boxes)
   return std::make_pair(aps, names);
 }
 
-auto KITTI::analyze_detections(std::string detection_file_dir, std::string det_error_file)
+auto KITTI::analyze_detections(std::string detection_file_dir,
+                               std::string det_error_file)
 {
   auto _save_detection = [&](FILE* fp, std::string idx, std::string err_type,
                              Mat1D<float> det, float score) {
@@ -211,7 +212,7 @@ auto KITTI::analyze_detections(std::string detection_file_dir, std::string det_e
     );
   };
 
-  // // load detections
+  // load detections
   std::unordered_map<std::string, Mat2D<float>> det_rois;
   for (auto idx : image_idx) {
     auto det_file_name = detection_file_dir+"/"+idx+".txt";
@@ -344,8 +345,11 @@ auto KITTI::analyze_detections(std::string detection_file_dir, std::string det_e
 
 auto KITTI::do_detection_analysis_in_eval(std::string eval_dir)
 {
-  auto det_file_dir  = eval_dir + "/detection_files" + "/data";
-  auto det_error_dir = eval_dir + "/detection_files" + "/error_analysis";
+  // auto det_file_dir  = eval_dir + "/detection_files" + "/data";
+  // auto det_error_dir = eval_dir + "/detection_files" + "/error_analysis";
+  // auto det_error_file = det_error_dir + "/det_error_file.txt";
+  auto det_file_dir  = eval_dir + "/detection_files_50000" + "/data";
+  auto det_error_dir = eval_dir + "/detection_files_50000" + "/error_analysis";
   auto det_error_file = det_error_dir + "/det_error_file.txt";
 
   system(("mkdir -p "+det_error_dir).c_str());
@@ -406,6 +410,7 @@ BBoxMask KITTI::predict(int sample)
 
 void KITTI::test()
 {
+#if 0
   std::vector<std::string> ap_names;
   for (auto cls : _classes) {
     ap_names.emplace_back(cls+"_easy");
@@ -490,6 +495,7 @@ void KITTI::test()
   printf("    Mean average precision: %.3f\n",
       std::accumulate(aps.begin(), aps.end(), 0.0)/aps.size());
   // feed_dict[eval_summary_phs["num_det_per_image"]] = num_detection/num_images
+#endif
 
   printf("Analyzing detections...\n");
   auto stats = do_detection_analysis_in_eval(eval_dir);
