@@ -12,12 +12,15 @@ class FireModule : ParamLayer<Mat3D<T>>
 private:
 
 public:
-  FireModule(int s1x1, int e1x1, int e3x3, int n_in);
+  FireModule(int s1x1, int e1x1, int e3x3, int n_in,
+             bool quantized=false);
   ~FireModule();
 
   ConvModule<T> squeeze1x1;
   ConvModule<T> expand1x1;
   ConvModule<T> expand3x3;
+
+  bool quantized;
 
   int s1x1, e1x1, e3x3, n_in;
 

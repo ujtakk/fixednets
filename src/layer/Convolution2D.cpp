@@ -3,9 +3,11 @@
 #include "function.hpp"
 
 template <typename T>
-Convolution2D<T>::Convolution2D(int n_out, int n_in, const int fil_h, const int fil_w, int stride, int pad)
+Convolution2D<T>::Convolution2D(int n_out, int n_in, int fil_h, int fil_w,
+                                int stride, int pad, bool quantized)
   : shape{n_out, n_in, fil_h, fil_w}
   , stride(stride), pad(pad)
+  , quantized(quantized)
 {
   iw = zeros<T>(n_out, n_in, fil_h, fil_w);
   gw = zeros<T>(n_out, n_in, fil_h, fil_w);
@@ -21,8 +23,14 @@ Convolution2D<T>::~Convolution2D()
 template <typename T>
 void Convolution2D<T>::load(std::string path)
 {
-  load_txt(iw, path+"/W.txt");
-  load_txt(ib, path+"/b.txt");
+  if (quantized) {
+    load_quantized(iw, path, "W.txt");
+    load_quantized(ib, path, "b.txt");
+  }
+  else {
+    load_txt(iw, path+"/W.txt");
+    load_txt(ib, path+"/b.txt");
+  }
 }
 
 template <typename T>

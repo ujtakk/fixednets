@@ -1,11 +1,13 @@
 #ifdef _FIREMODULE_HPP_
 
 template <typename T>
-FireModule<T>::FireModule(int s1x1, int e1x1, int e3x3, int n_in)
-  : squeeze1x1{s1x1, n_in, 1, 1, 1, 0}
-  , expand1x1{e1x1, s1x1, 1, 1, 1, 0}
-  , expand3x3{e3x3, s1x1, 3, 3, 1, 1}
+FireModule<T>::FireModule(int s1x1, int e1x1, int e3x3, int n_in,
+                          bool quantized)
+  : squeeze1x1{s1x1, n_in, 1, 1, 1, 0, quantized}
+  , expand1x1{e1x1, s1x1, 1, 1, 1, 0, quantized}
+  , expand3x3{e3x3, s1x1, 3, 3, 1, 1, quantized}
   , s1x1(s1x1) , e1x1(e1x1) , e3x3(e3x3) , n_in(n_in)
+  , quantized(quantized)
 {
 }
 

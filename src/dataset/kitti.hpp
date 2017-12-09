@@ -36,7 +36,8 @@ private:
   std::pair<std::vector<float>, std::vector<std::string>>
   evaluate_detections(std::string eval_dir, Mat4D<float> all_boxes);
 
-  auto analyze_detections(std::string detection_file_dir, std::string det_error_file);
+  auto analyze_detections(std::string detection_file_dir,
+                          std::string det_error_file);
 
   auto do_detection_analysis_in_eval(std::string eval_dir);
 

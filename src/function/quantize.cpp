@@ -5,6 +5,7 @@
 #include <limits>
 #include <vector>
 
+#include "load.hpp"
 #include "utility.hpp"
 
 auto range(std::vector<float> xs) -> Q_RANGE
@@ -82,5 +83,20 @@ auto to_float(quant x, Q_RANGE xs_range) -> float
   const double result = xs_min_rounded + (x_offset * scale);
 
   return static_cast<float>(result);
+}
+
+template <typename T>
+void load_quantized(Mat1D<T>& x, std::string path, std::string name)
+{
+  const int len = x.size();
+  auto xs = zeros<quant>(len);
+  T xs_min, xs_max;
+  load_txt(xs_min, path+"/min_"+name);
+  load_txt(xs_max, path+"/max_"+name);
+  load_txt(xs, path+name);
+
+  auto xs_range = std::make_pair(xs_min, xs_max);
+  for (int i = 0; i < len; ++i)
+    x[i] = T_of_float(to_float(xs[i], xs_range));
 }
 

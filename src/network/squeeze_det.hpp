@@ -84,7 +84,7 @@ private:
   Mat2D<float> ANCHOR_BOX;
 
 public:
-  SqueezeDet();
+  SqueezeDet(bool quantized=false);
   ~SqueezeDet();
 
   void configure(DetConfig& conf);

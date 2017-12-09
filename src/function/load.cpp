@@ -70,6 +70,14 @@ void load_txt(Mat4D<T>& x, std::string path)
 }
 #else
 template <typename T>
+void load_txt(T& x, std::string path)
+{
+  std::ifstream ifs(path);
+
+  read(ifs, x);
+}
+
+template <typename T>
 void load_txt(Mat1D<T>& x, std::string path)
 {
   std::ifstream ifs(path);
@@ -111,6 +119,16 @@ void load_txt(Mat4D<T>& x, std::string path)
           read(ifs, x_ijkl);
 }
 #endif
+
+template <typename T>
+void save_txt(std::string path, T& y)
+{
+  std::ofstream ofs(path);
+
+  /* ofs << std::hex; */
+
+  ofs << y << std::endl;
+}
 
 template <typename T>
 void save_txt(std::string path, Mat1D<T>& y)

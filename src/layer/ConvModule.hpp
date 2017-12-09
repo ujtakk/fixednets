@@ -11,7 +11,7 @@ class ConvModule : ParamLayer<Mat3D<T>>
 private:
 public:
   ConvModule(int n_out, int n_in, int fil_h, int fil_w,
-             int stride=1, int pad=0);
+             int stride=1, int pad=0, bool quantized=false);
   ~ConvModule();
 
   Convolution2D<T> conv;
@@ -20,6 +20,8 @@ public:
   const int shape[4];
   int stride;
   int pad;
+
+  bool quantized;
 
   void load(std::string path);
   void save(std::string path);

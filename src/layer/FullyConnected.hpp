@@ -12,7 +12,7 @@ class FullyConnected : ParamLayer<Mat1D<T>>
 private:
 
 public:
-  FullyConnected(int n_out, int n_in);
+  FullyConnected(int n_out, int n_in, bool quantized=false);
   ~FullyConnected();
 
   Mat2D<T> iw;
@@ -21,6 +21,8 @@ public:
   Mat1D<T> gb;
 
   const int shape[2];
+
+  bool quantized;
 
   void load(std::string path);
   void save(std::string path);

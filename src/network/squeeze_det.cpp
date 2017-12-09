@@ -1,22 +1,22 @@
 #ifdef _SQUEEZE_DET_HPP_
 
 template <typename T>
-SqueezeDet<T>::SqueezeDet()
-  : conv1  {64, 3, 3, 3, 2, 1}
+SqueezeDet<T>::SqueezeDet(bool quantized)
+  : conv1  {64, 3, 3, 3, 2, 1, quantized}
   , pool1  {3, 3, 2, 1}
-  , fire2  {16, 64, 64, 64}
-  , fire3  {16, 64, 64, 128}
+  , fire2  {16, 64, 64, 64, quantized}
+  , fire3  {16, 64, 64, 128, quantized}
   , pool3  {3, 3, 2, 1}
-  , fire4  {32, 128, 128, 128}
-  , fire5  {32, 128, 128, 256}
+  , fire4  {32, 128, 128, 128, quantized}
+  , fire5  {32, 128, 128, 256, quantized}
   , pool5  {3, 3, 2, 1}
-  , fire6  {48, 192, 192, 256}
-  , fire7  {48, 192, 192, 384}
-  , fire8  {64, 256, 256, 384}
-  , fire9  {64, 256, 256, 512}
-  , fire10 {96, 384, 384, 512}
-  , fire11 {96, 384, 384, 768}
-  , conv12 {72, 768, 3, 3, 1, 1}
+  , fire6  {48, 192, 192, 256, quantized}
+  , fire7  {48, 192, 192, 384, quantized}
+  , fire8  {64, 256, 256, 384, quantized}
+  , fire9  {64, 256, 256, 512, quantized}
+  , fire10 {96, 384, 384, 512, quantized}
+  , fire11 {96, 384, 384, 768, quantized}
+  , conv12 {72, 768, 3, 3, 1, 1, quantized}
 {
 }
 

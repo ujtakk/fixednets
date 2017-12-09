@@ -12,7 +12,8 @@ class Convolution2D : ParamLayer<Mat3D<T>>
 private:
 
 public:
-  Convolution2D(int n_out, int n_in, int fil_h, int fil_w, int stride=1, int pad=0);
+  Convolution2D(int n_out, int n_in, int fil_h, int fil_w,
+                int stride=1, int pad=0, bool quantized=false);
   ~Convolution2D();
 
   Mat4D<T> iw;
@@ -23,6 +24,8 @@ public:
   const int shape[4];
   int stride;
   int pad;
+
+  bool quantized;
 
   void load(std::string path);
   void save(std::string path);

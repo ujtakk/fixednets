@@ -2,10 +2,11 @@
 
 template <typename T>
 ConvModule<T>::ConvModule(int n_out, int n_in, int fil_h, int fil_w,
-                          int stride, int pad)
-  : conv{n_out, n_in, fil_h, fil_w, stride, pad}
+                          int stride, int pad, bool quantized)
+  : conv{n_out, n_in, fil_h, fil_w, stride, pad, quantized}
   , shape{n_out, n_in, fil_h, fil_w}
   , stride(stride), pad(pad)
+  , quantized(quantized)
 {
 }
 

@@ -3,8 +3,9 @@
 #include "matrix.hpp"
 
 template <typename T>
-FullyConnected<T>::FullyConnected(int n_out, int n_in)
+FullyConnected<T>::FullyConnected(int n_out, int n_in, bool quantized)
   : shape{n_out, n_in}
+  , quantized(quantized)
 {
   iw = zeros<T>(n_out, n_in);
   gw = zeros<T>(n_out, n_in);
@@ -20,8 +21,14 @@ FullyConnected<T>::~FullyConnected()
 template <typename T>
 void FullyConnected<T>::load(std::string path)
 {
-  load_txt(iw, path+"/W.txt");
-  load_txt(ib, path+"/b.txt");
+  if (quantized) {
+    load_quantized(iw, path, "W.txt");
+    load_quantized(ib, path, "b.txt");
+  }
+  else {
+    load_txt(iw, path+"/W.txt");
+    load_txt(ib, path+"/b.txt");
+  }
 }
 
 template <typename T>

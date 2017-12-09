@@ -5,6 +5,7 @@
 #include "function/transform.hpp"
 #include "function/arithmetic.hpp"
 #include "function/load.hpp"
+#include "function/quantize.hpp"
 
 #include "function/convolution.hpp"
 #include "function/matmul.hpp"

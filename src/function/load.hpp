@@ -6,6 +6,9 @@
 #include "matrix.hpp"
 
 template <typename T>
+void load_txt(T& x, std::string path);
+
+template <typename T>
 void load_txt(Mat1D<T>& x, std::string path);
 
 template <typename T>
@@ -16,6 +19,9 @@ void load_txt(Mat3D<T>& x, std::string path);
 
 template <typename T>
 void load_txt(Mat4D<T>& x, std::string path);
+
+template <typename T>
+void save_txt(std::string path, T& y);
 
 template <typename T>
 void save_txt(std::string path, Mat1D<T>& y);
