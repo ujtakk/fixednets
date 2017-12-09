@@ -1,8 +1,8 @@
 #ifndef _TYPES_HPP_
 #define _TYPES_HPP_
 
-#include <cmath>
 #include <cstdint>
+#include <utility>
 
 // #define FLOAT
 #define FIXED
@@ -19,7 +19,7 @@ using fixed = int32_t;
 
 using quant = uint8_t;
 
-#if defined(FIXED)
+#if defined(FIXED) || defined(QUANT)
 
 #if defined(Q8_8)
 const int Q_BITS = 8;
@@ -28,7 +28,6 @@ const int Q_BITS = 24;
 #endif
 using     Q_TYPE = fixed;
 
-#elif defined(QUANT)
 #else
 
 using     Q_TYPE = float;
@@ -37,7 +36,8 @@ const int Q_BITS = 0;
 #endif
 
 template <typename T>
-// T Q_OFFSET = static_cast<T>(pow(2, Q_BITS));
-T Q_OFFSET = static_cast<T>(1 << Q_BITS);
+const T   Q_OFFSET = static_cast<T>(1 << Q_BITS);
+
+using     Q_RANGE = std::pair<float, float>;
 
 #endif

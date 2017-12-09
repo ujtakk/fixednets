@@ -45,8 +45,8 @@ void Convolution2D<T>::forward(Mat3D<T>& output, Mat3D<T>& input)
   auto conved = zeros<T>(n_out, out_h, out_w);
   output = zeros<T>(n_out, out_h, out_w);
 
-  // conv_plus_pad(conved, input, iw, stride, pad);
-  conv_aligned(conved, input, iw, stride, pad);
+  conv_plus_pad(conved, input, iw, stride, pad);
+  // conv_aligned(conved, input, iw, stride, pad);
   bias(output, conved, ib);
 }
 

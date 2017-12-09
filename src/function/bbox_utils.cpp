@@ -78,8 +78,15 @@ Mat1D<bool> nms(Mat2D<float> boxes, Mat1D<float> probs, float thresh)
     Mat2D<float> sub_boxes(boxes.begin()+order[i+1], boxes.end());
     auto ovps = batch_iou(sub_boxes, boxes[order[i]]);
     for (int j = 0; j < (int)ovps.size(); ++j) {
-      if (ovps[j] > thresh)
-        keep[order[j+i+1]] = false;
+      if (ovps[j] > thresh) {
+        // keep[order[j+i+1]] = false;
+        try {
+          keep.at(order[j+i+1]) = false;
+        }
+        catch (std::out_of_range& e) {
+          continue;
+        }
+      }
     }
   }
 

@@ -1,6 +1,7 @@
 #ifdef _UTIL_HPP_
 
 #include <cassert>
+#include <cmath>
 
 #include "types.hpp"
 

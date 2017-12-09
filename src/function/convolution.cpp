@@ -105,6 +105,9 @@ static void im2col(Mat4D<T>& x_a, Mat3D<T>& w_a,
 
   w_a = zeros<T>(n_out, n_in, n_fil);
 
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < n_out; ++i)
     for (int j = 0; j < n_in; ++j)
       for (int l = 0; l < fil_h; ++l)
@@ -117,6 +120,10 @@ static void im2col(Mat4D<T>& x_a, Mat3D<T>& w_a,
   const int fea_w = in_w + 2*pad - fil_w + 1;
 
   x_a = zeros<T>(n_in, out_h, out_w, n_fil);
+
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int j = 0; j < n_in; ++j)
     for (int k = 0; k < fea_h; k+=stride)
       for (int l = 0; l < fea_w; l+=stride)
@@ -142,9 +149,12 @@ void conv_aligned(Mat3D<T>& output, Mat3D<T>& input, Mat4D<T>& weight,
   Mat3D<T> weight_aligned;
   im2col(input_aligned, weight_aligned, output, input, weight, stride, pad);
 
-  for (int i = 0; i < n_out; ++i)
-    for (int j = 0; j < n_in; ++j)
-      for (int k = 0; k < out_h; ++k)
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
+  for (int i = 0; i < n_out; ++i) {
+    for (int j = 0; j < n_in; ++j) {
+      for (int k = 0; k < out_h; ++k) {
         for (int l = 0; l < out_w; ++l) {
           T acc = 0.0;
           for (int m = 0; m < n_fil; ++m)
@@ -152,6 +162,9 @@ void conv_aligned(Mat3D<T>& output, Mat3D<T>& input, Mat4D<T>& weight,
             // acc += input_aligned[j][k][l][m] * weight_aligned[i][j][m];
           output[i][k][l] += acc;
         }
+      }
+    }
+  }
 }
 
 template <typename T>

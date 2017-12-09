@@ -31,6 +31,9 @@ Mat2D<T> zeros(int size1, int size2)
   Mat2D<T> inst;
 
   inst.resize(size1);
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < size1; ++i) {
     inst[i].resize(size2, 0.0);
   }
@@ -44,6 +47,9 @@ Mat3D<T> zeros(int size1, int size2, int size3)
   Mat3D<T> inst;
 
   inst.resize(size1);
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < size1; ++i) {
     inst[i].resize(size2);
     for (int j = 0; j < size2; ++j) {
@@ -60,6 +66,9 @@ Mat4D<T> zeros(int size1, int size2, int size3, int size4)
   Mat4D<T> inst;
 
   inst.resize(size1);
+  #ifdef _OPENMP
+  #pragma omp parallel for
+  #endif
   for (int i = 0; i < size1; ++i) {
     inst[i].resize(size2);
     for (int j = 0; j < size2; ++j) {

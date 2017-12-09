@@ -56,12 +56,10 @@ std::vector<std::string> KITTI::load_image_set_idx()
 
   std::vector<std::string> image_idx;
   std::string line;
-  // int idx = 0;
-  // const int len = 1;
+  int len = 100, idx = 0;
   while (ifs >> line) {
     image_idx.emplace_back(line);
-    // ++idx;
-    // if (idx == len) break;
+    if (++idx == len) break;
   }
 
   return image_idx;
@@ -398,7 +396,6 @@ BBoxMask KITTI::predict(int sample)
 
 void KITTI::test()
 {
-#if 0
   std::vector<std::string> ap_names;
   for (auto cls : _classes) {
     ap_names.emplace_back(cls+"_easy");
@@ -483,7 +480,6 @@ void KITTI::test()
   printf("    Mean average precision: %.3f\n",
       std::accumulate(aps.begin(), aps.end(), 0.0)/aps.size());
   // feed_dict[eval_summary_phs["num_det_per_image"]] = num_detection/num_images
-#endif
 
   printf("Analyzing detections...\n");
   auto stats = do_detection_analysis_in_eval(eval_dir);
