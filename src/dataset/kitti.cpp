@@ -14,10 +14,8 @@ static inline std::string dirname(std::string path)
   return std::string(dirname(const_cast<char *>(path.c_str())));
 }
 
-#define __KITTI_QUANT
-
 KITTI::KITTI()
-#ifdef __KITTI_QUANT
+#ifdef QUANT
   : model(true)
 #else
   : model(false)
@@ -46,7 +44,7 @@ KITTI::KITTI()
   rois = load_kitti_annotation();
 
   model.configure(conf);
-#ifdef __KITTI_QUANT
+#ifdef QUANT
   model.Load("../data/kitti/Q_squeezeDet_01");
 #else
   // model.Load("../data/kitti/squeezeDet");
@@ -67,7 +65,8 @@ std::vector<std::string> KITTI::load_image_set_idx()
 
   std::vector<std::string> image_idx;
   std::string line;
-  int len = 100, idx = 0;
+  // int len = 100, idx = 0;
+  int len = 10, idx = 0;
   while (ifs >> line) {
     image_idx.emplace_back(line);
     if (++idx == len) break;

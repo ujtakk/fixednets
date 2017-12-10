@@ -20,9 +20,9 @@ public:
   ConvModule<T> expand1x1;
   ConvModule<T> expand3x3;
 
-  bool quantized;
-
   int s1x1, e1x1, e3x3, n_in;
+
+  bool quantized;
 
   void load(std::string path);
   void save(std::string path);

@@ -26,6 +26,9 @@ void Convolution2D<T>::load(std::string path)
   if (quantized) {
     load_quantized(iw, path, "W.txt");
     load_quantized(ib, path, "b.txt");
+    // save_txt("now_conv1_kernels.txt", iw);
+    // save_txt("now_conv1_biases.txt", ib);
+    // exit(0);
   }
   else {
     load_txt(iw, path+"/W.txt");

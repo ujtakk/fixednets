@@ -7,14 +7,20 @@
 #include "types.hpp"
 #include "function.hpp"
 
-template <typename T>
-static inline void read(std::ifstream& ifs, T& x)
-// static inline void read(std::ifstream& ifs, fixed& x)
+static inline void read(std::ifstream& ifs, quant& x)
+{
+  int tmp = 0.0;
+  ifs >> tmp;
+
+  x = static_cast<quant>(tmp);
+}
+
+static inline void read(std::ifstream& ifs, fixed& x)
 {
   float tmp = 0.0;
   ifs >> tmp;
 
-  x = static_cast<T>(rint(tmp * Q_OFFSET<T>));
+  x = static_cast<fixed>(rint(tmp * Q_OFFSET<fixed>));
   // x = to_fixed(tmp);
 }
 
@@ -160,13 +166,13 @@ void save_txt(std::string path, Mat3D<T>& y)
 
   /* ofs << std::hex; */
 
-  // FILE *fp = fopen(path.c_str(), "w");
+  FILE *fp = fopen(path.c_str(), "w");
   for (auto& y_i : y)
     for (auto& y_ij : y_i)
       for (auto& y_ijk : y_ij)
-        ofs << y_ijk << std::endl;
-        // fprintf(fp, "%.8f\n", y_ijk);
-  // fclose(fp);
+        // ofs << y_ijk << std::endl;
+        fprintf(fp, "%.8f\n", y_ijk);
+  fclose(fp);
 }
 
 template <typename T>
@@ -176,11 +182,14 @@ void save_txt(std::string path, Mat4D<T>& y)
 
   /* ofs << std::hex; */
 
+  FILE *fp = fopen(path.c_str(), "w");
   for (auto& y_i : y)
     for (auto& y_ij : y_i)
       for (auto& y_ijk : y_ij)
         for (auto& y_ijkl : y_ijk)
           ofs << y_ijkl << std::endl;
+          // fprintf(fp, "%.8f\n", y_ijkl);
+  fclose(fp);
 }
 
 // load values in range 0 ~ 255

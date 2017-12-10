@@ -6,7 +6,7 @@
 
 // #define FLOAT
 #define FIXED
-// #define QUANT
+#define QUANT
 
 // #define Q8_8
 #define Q8_24
@@ -19,7 +19,7 @@ using fixed = int32_t;
 
 using quant = uint8_t;
 
-#if defined(FIXED) || defined(QUANT)
+#if defined(FIXED)
 
 #if defined(Q8_8)
 const int Q_BITS = 8;

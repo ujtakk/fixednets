@@ -312,11 +312,10 @@ template <typename T>
 BBoxMask SqueezeDet<T>::calc(std::string data)
 {
   auto scales = load_img(input, data);
-  Mat3D<float> fim = float_of_T(input);
+  // Mat3D<float> fim = float_of_T(input);
   // save_txt("now_image.txt", fim);
 
   _DO_(conv1.forward(fmap1, input));
-  // save_txt("conv1.txt", fmap1);
   _DO_(pool1.forward(pmap1, fmap1));
   _DO_(fire2.forward(fmap2, pmap1));
   _DO_(fire3.forward(fmap3, fmap2));
@@ -331,6 +330,11 @@ BBoxMask SqueezeDet<T>::calc(std::string data)
   _DO_(fire10.forward(fmap10, fmap9));
   _DO_(fire11.forward(fmap11, fmap10));
   _DO_(conv12.forward(fmap12, fmap11));
+
+  // Mat3D<float> ff = float_of_T(pmap1);
+  // save_txt("now_pool1.txt", ff);
+  // _("done");
+  // exit(0);
 
   // show(input);
   // show(fmap1);
