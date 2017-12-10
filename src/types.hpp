@@ -8,6 +8,7 @@
 #define FIXED
 #define QUANT
 
+// integer part requires n bits.
 // #define Q8_8
 #define Q8_24
 
