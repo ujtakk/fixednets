@@ -6,8 +6,8 @@
 
 Q_RANGE range(std::vector<float> xs);
 
-quant to_quant(float x, Q_RANGE xs_range);
-float to_float(quant x, Q_RANGE xs_range);
+quant quantize(float x, Q_RANGE xs_range);
+float dequantize(quant x, Q_RANGE xs_range);
 
 template <typename T>
 void load_quantized(Mat1D<T>& x, std::string path, std::string name);

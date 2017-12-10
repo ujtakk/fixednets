@@ -40,7 +40,7 @@ static auto to_quant_impl(float x, float xs_min, float xs_max) -> int64_t
 }
 
 // QuantizeV2Op (MIN_COMBINED)
-auto to_quant(float x, Q_RANGE xs_range) -> quant
+auto quantize(float x, Q_RANGE xs_range) -> quant
 {
 // This old version
 #if 1
@@ -65,7 +65,7 @@ auto to_quant(float x, Q_RANGE xs_range) -> quant
 }
 
 // DequantizeOp (MIN_COMBINED)
-auto to_float(quant x, Q_RANGE xs_range) -> float
+auto dequantize(quant x, Q_RANGE xs_range) -> float
 {
 // This old version
 #if 0
@@ -111,6 +111,7 @@ auto to_float(quant x, Q_RANGE xs_range) -> float
   //                      std::numeric_limits<T>::min() + 1) /
   //                         2.0f;
   const float half_range_ = 0.0f;
+  // cf.) 255 = numeric_limits<quant>::max() - numeric_limits<quant>::min()
   const float scale = (xs_max - xs_min)
                     / (static_cast<float>(std::numeric_limits<quant>::max())
                                         - std::numeric_limits<quant>::min());
@@ -144,7 +145,7 @@ void load_quantized(Mat1D<T>& x, std::string path, std::string name)
 
   auto xs_range = std::make_pair(xs_min, xs_max);
   for (int i = 0; i < size0; ++i) {
-    float xs_i = to_float(xs[i], xs_range);
+    float xs_i = dequantize(xs[i], xs_range);
     x[i] = T_of_float(xs_i);
     // std::cout << (int)xs[i] << ", " << xs_i << std::endl;
   }
@@ -165,7 +166,7 @@ void load_quantized(Mat2D<T>& x, std::string path, std::string name)
   auto xs_range = std::make_pair(xs_min, xs_max);
   for (int i = 0; i < size0; ++i) {
     for (int j = 0; j < size1; ++j) {
-      float xs_ij = to_float(xs[i][j], xs_range);
+      float xs_ij = dequantize(xs[i][j], xs_range);
       x[i][j] = T_of_float(xs_ij);
     }
   }
@@ -188,7 +189,7 @@ void load_quantized(Mat3D<T>& x, std::string path, std::string name)
   for (int i = 0; i < size0; ++i) {
     for (int j = 0; j < size1; ++j) {
       for (int k = 0; k < size2; ++k) {
-        float xs_ijk = to_float(xs[i][j][k], xs_range);
+        float xs_ijk = dequantize(xs[i][j][k], xs_range);
         x[i][j][k] = T_of_float(xs_ijk);
       }
     }
@@ -214,7 +215,7 @@ void load_quantized(Mat4D<T>& x, std::string path, std::string name)
     for (int j = 0; j < size1; ++j) {
       for (int k = 0; k < size2; ++k) {
         for (int l = 0; l < size3; ++l) {
-          float xs_ijkl = to_float(xs[i][j][k][l], xs_range);
+          float xs_ijkl = dequantize(xs[i][j][k][l], xs_range);
           x[i][j][k][l] = T_of_float(xs_ijkl);
           // std::cout << (int)xs[i][j][k][l] << ", " << xs_ijkl << std::endl;
         }
