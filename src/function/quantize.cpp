@@ -39,8 +39,11 @@ static auto to_quant_impl(float x, float xs_min, float xs_max) -> int64_t
   return quantized;
 }
 
+// QuantizeV2Op (MIN_COMBINED)
 auto to_quant(float x, Q_RANGE xs_range) -> quant
 {
+// This old version
+#if 1
   const float xs_min = xs_range.first;
   const float xs_max = xs_range.second;
 
@@ -57,10 +60,15 @@ auto to_quant(float x, Q_RANGE xs_range) -> quant
   auto clipped = clip(quantized, quant_min, quant_max);
 
   return static_cast<quant>(clipped);
+#else
+#endif
 }
 
+// DequantizeOp (MIN_COMBINED)
 auto to_float(quant x, Q_RANGE xs_range) -> float
 {
+// This old version
+#if 0
   const float xs_min = xs_range.first;
   const float xs_max = xs_range.second;
 
@@ -93,6 +101,34 @@ auto to_float(quant x, Q_RANGE xs_range) -> float
   // const float result = xs_min_rounded + (x_offset * scale);
 
   return static_cast<float>(result);
+#else
+  const float xs_min = xs_range.first;
+  const float xs_max = xs_range.second;
+
+  // const float half_range_ = !std::is_signed<T>::value
+  //                   ? 0.0f
+  //                   : (static_cast<float>(std::numeric_limits<T>::max()) -
+  //                      std::numeric_limits<T>::min() + 1) /
+  //                         2.0f;
+  const float half_range_ = 0.0f;
+  const float scale = (xs_max - xs_min)
+                    / (static_cast<float>(std::numeric_limits<quant>::max())
+                                        - std::numeric_limits<quant>::min());
+
+  // float* out_ptr = output->flat<float>().data();
+  // const T* in_ptr = input.flat<T>().data();
+  //
+  // const int64 num_elements = input.NumElements();
+  // for (int i = 0; i < num_elements; ++i) {
+  //   out_ptr[i] =
+  //       ((static_cast<int>(in_ptr[i]) + half_range_) * scale) +
+  //       min_range;
+  // }
+
+  const float y = ((static_cast<int>(x) + half_range_) * scale) + xs_min;
+
+  return y;
+#endif
 }
 
 template <typename T>
