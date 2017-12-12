@@ -489,7 +489,6 @@ void KITTI::test()
 
   printf("    Mean average precision: %.3f\n",
       std::accumulate(aps.begin(), aps.end(), 0.0)/aps.size());
-  // feed_dict[eval_summary_phs["num_det_per_image"]] = num_detection/num_images
 
   printf("Analyzing detections...\n");
   auto stats = do_detection_analysis_in_eval(eval_dir);

@@ -22,7 +22,7 @@ static auto to_quant_impl(float x, float xs_min, float xs_max) -> int64_t
 {
   const int64_t quant_min = static_cast<double>(std::numeric_limits<quant>::min());
 
-  if (abs(xs_min - xs_max) < std::numeric_limits<float>::epsilon()) {
+  if (std::abs(xs_min - xs_max) < std::numeric_limits<float>::epsilon()) {
     return quant_min;
   }
 
@@ -148,7 +148,7 @@ auto dequantize(quant x, Q_RANGE xs_range) -> float
   const float xs_min = xs_range.first;
   const float xs_max = xs_range.second;
 
-  if (abs(xs_min - xs_max) < std::numeric_limits<float>::epsilon()) {
+  if (std::abs(xs_min - xs_max) < std::numeric_limits<float>::epsilon()) {
     return xs_min;
   }
 
