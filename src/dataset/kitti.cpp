@@ -66,7 +66,7 @@ std::vector<std::string> KITTI::load_image_set_idx()
   std::vector<std::string> image_idx;
   std::string line;
   // int len = 100, idx = 0;
-  int len = 10, idx = 0;
+  int len = 1, idx = 0;
   while (ifs >> line) {
     image_idx.emplace_back(line);
     if (++idx == len) break;
